@@ -3,6 +3,7 @@ package edu.ncsu.csc.itrust2.models.persistent;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -45,6 +46,16 @@ public class Patient extends DomainObject<Patient> implements Serializable {
      * Randomly generated ID.
      */
     private static final long serialVersionUID = 4617248041239679701L;
+    
+    /**
+     * List of personal representatives of Patient.
+     */
+    private List<Patient> representatives = new ArrayList<Patient>();
+    
+    /**
+     * List of patients that are represented.
+     */
+    private List<Patient> representees = new ArrayList<Patient>(); 
 
     /**
      * Get all patients in the database
