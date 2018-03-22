@@ -13,10 +13,14 @@ Scenario Outline: Declare Representatives
 	And I submit the change
 	Then a success message is displayed
 	And I am presented with an added representative to the list of all representatives of mine
+	Then I log out of iTrust2 account
+	And Shelly has logged in with username: <rep MID> and password: <rep Name>
+	When Shelly navigates to View Representatives page
+	Then Shelly is presented with an added representative user: aagarw10 and name: Anu in the list of all patients she represents
 	
 Examples:
-	| user   | pass   | name   | role     | representative            | type     |
-	| aagarw | 123456 | Anu    | Patient  | svang (Shelly) - Patient  | declare  |
+	| user   | pass   | name   | role     | rep MID         | rep Name          | type     |
+	| aagarw | 123456 | Anu    | Patient  | svang (Patient) | Shelly (Patient)  | declare  |
 
 
 Scenario Outline: Undeclare Representatives
@@ -26,10 +30,14 @@ Scenario Outline: Undeclare Representatives
 	And I submit the change
 	Then a success message is displayed
 	And I am presented with a representative removed from the list of all representatives of mine
+	Then I log out of iTrust2 account
+	And Shelly has logged in with username: <rep MID> and password: <rep Name>
+	When Shelly navigates to View Representatives page
+	Then Shelly is presented with an empty list of all patients she represents
 	
 Examples:
-	| user   | pass   | name   | role     | representative            | type       |
-	| aagarw | 123456 | Anu    | Patient  | svang (Shelly) - Patient  | undeclare  |
+	| user   | pass   | name   | role     | rep MID         | rep Name          | type       |
+	| aagarw | 123456 | Anu    | Patient  | svang (Patient) | Shelly (Patient)  | undeclare  |
 
 
 Scenario Outline: Patient View Representatives
