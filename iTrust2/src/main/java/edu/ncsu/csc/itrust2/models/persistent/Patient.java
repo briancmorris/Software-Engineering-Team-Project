@@ -6,9 +6,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -16,6 +19,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -48,14 +53,19 @@ public class Patient extends DomainObject<Patient> implements Serializable {
     private static final long serialVersionUID = 4617248041239679701L;
     
     /**
-     * List of personal representatives of Patient.
+     * Set of personal representatives of Patient.
      */
-    private List<Patient> representatives = new ArrayList<Patient>();
+    @ManyToMany(cascade={CascadeType.ALL})
+    @JoinTable(name="PATIENT_REPRESENTATIVES",
+        joinColumns={@JoinColumn(name="REP_ID")},
+        inverseJoinColumns={@JoinColumn(name="PATIENT_ID")})
+    private Set<Patient> representatives = new HashSet<Patient>();
     
     /**
-     * List of patients that are represented.
+     * Set of patients that are represented.
      */
-    private List<Patient> representees = new ArrayList<Patient>(); 
+    @ManyToMany(mappedBy="representatives")
+    private Set<Patient> representees = new HashSet<Patient>(); 
 
     /**
      * Get all patients in the database
@@ -321,6 +331,11 @@ public class Patient extends DomainObject<Patient> implements Serializable {
      */
     @GeneratedValue ( strategy = GenerationType.AUTO )
     private Long      id;
+    
+    /**
+     * Whether the patient is a representative or not
+     */
+    private boolean isRepresentative;
 
     /**
      * Set the id of this patient
@@ -737,4 +752,43 @@ public class Patient extends DomainObject<Patient> implements Serializable {
         this.gender = gender;
     }
 
+    /**
+     * Get the list of representatives of this patient
+     * 
+     * @return representatives the list of patient's representatives
+     */
+    public Set<Patient> getRepresentatives() {
+        return representatives;
+    }
+    
+    /**
+     * Get the list of people this patient represents
+     * 
+     * @return representees the list of people this patient represents
+     */
+    public Set<Patient> getRepresentees() {
+        return representees;
+    }
+    
+    /**
+    
+    public boolean isRep() {
+        return isRepresentative;
+    }
+    
+    public void declareSelfRep(Patient p) {
+        representees.add( p );
+        isRepresentative = true;
+    }
+    
+    public void undeclareSelfRep(Patient p) {
+        representees.remove( p );
+        isRepresentative = false;
+    }
+    
+    public void declareRep(Patient p) {
+        representatives.add( p );
+    }
+    */
+    
 }

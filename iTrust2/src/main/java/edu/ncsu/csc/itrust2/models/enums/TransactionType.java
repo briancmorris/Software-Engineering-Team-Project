@@ -266,8 +266,49 @@ public enum TransactionType {
     /**
      * An email would be sent but email address is missing.
      */
-    CREATE_MISSING_EMAIL_LOG ( 1404, "Email notification could not be sent due to missing email address", true );
+    CREATE_MISSING_EMAIL_LOG ( 1404, "Email notification could not be sent due to missing email address", true ),
 
+    /**
+     * Patient declares representative
+     */
+    DEC_REP (1600, "Patient declared representative", true),
+    
+    /**
+     * A representative views their list of patients
+     */
+    VIEW_REP_PATIENT_lIST (1601, "Representative viewed list of patients", true),
+    
+    /**
+     * Patient views their list of representatives
+     */
+    VIEW_REP_LIST (1602, "Patient viewed list of representatives", true),
+    
+    /**
+     * Patient undeclared self as a representative
+     */
+    UNDEC_SELF_REP (1603, "Patient undeclared self as a representative", true),
+    
+    /**
+     * Patient undeclared a representative
+     */
+    UNDEC_REP (1604, "Patient undeclared representative", true),
+    
+    /**
+     * HCP declares a representative for a patient
+     */
+    HCP_DEC_REP (1605, "HCP declared representative for patient", true),
+    
+    /**
+     * HCP views a representative's list of patients
+     */
+    HCP_VIEW_PATIENTOWNED_REP_LIST (1606, "HCP viewed patient's list of people they are representing", true),
+    
+    /**
+     * HPC views a list of a patient's representatives
+     */
+    HCP_VIEW_PATIENT_REP_LIST (1607, "HCP viewed list of patient's representatives", true);
+           
+    
     /**
      * Creates a TransactionType for logging events
      *
