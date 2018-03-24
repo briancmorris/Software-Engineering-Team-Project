@@ -89,6 +89,16 @@ public class AdminUserController {
                     pat.setSelf( u );
                     pat.save();
                     break;
+                case ROLE_ER:
+                    final Personnel per2 = new Personnel();
+                    per2.setSelf( u );
+                    per2.save();
+                    break;
+                case ROLE_LT:
+                    final Personnel per3 = new Personnel();
+                    per3.setSelf( u );
+                    per3.save();
+                    break;
                 default:
                     // shouldn't reach
                     break;

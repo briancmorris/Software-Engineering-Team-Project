@@ -126,6 +126,14 @@ public class HibernateDataGenerator {
                 Role.ROLE_ADMIN, 1 );
         admin.save();
 
+        final User er = new User( "er", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_ER,
+                1 );
+        er.save();
+
+        final User lt = new User( "lt", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_LT,
+                1 );
+        lt.save();
+
         final User alminister = new User( "Al Minister", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
                 Role.ROLE_ADMIN, 1 );
         alminister.save();
