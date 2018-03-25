@@ -770,21 +770,21 @@ public class Patient extends DomainObject<Patient> implements Serializable {
         return representees;
     }
     
-    /**
+    
     
     public boolean isRep() {
         return isRepresentative;
     }
     
-    public void declareSelfRep(Patient p) {
-        representees.add( p );
+    
+    public void declareSelfRep() {
         isRepresentative = true;
     }
     
-    public void undeclareSelfRep(Patient p) {
-        representees.remove( p );
+    public void undeclareSelfRep() {
         isRepresentative = false;
     }
+    /**
     
     public void declareRep(Patient p) {
         representatives.add( p );

@@ -276,7 +276,7 @@ public enum TransactionType {
     /**
      * A representative views their list of patients
      */
-    VIEW_REP_PATIENT_lIST (1601, "Representative viewed list of patients", true),
+    VIEW_REP_PATIENT_LIST (1601, "Representative viewed list of patients", true),
     
     /**
      * Patient views their list of representatives
