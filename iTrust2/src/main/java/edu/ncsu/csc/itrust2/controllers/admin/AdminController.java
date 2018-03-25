@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * Controller to manage basic abilities for Admin roles
- * 
+ *
  * @author Kai Presler-Marshall
  *
  */
@@ -17,7 +17,7 @@ public class AdminController {
 
     /**
      * Returns the admin for the given model
-     * 
+     *
      * @param model
      *            model to check
      * @return role
@@ -26,6 +26,19 @@ public class AdminController {
     @PreAuthorize ( "hasRole('ROLE_ADMIN')" )
     public String index ( final Model model ) {
         return edu.ncsu.csc.itrust2.models.enums.Role.ROLE_ADMIN.getLanding();
+    }
+
+    /**
+     * Returns the editLabCodes screen for the admin.
+     *
+     * @param model
+     *            Data from the front end
+     * @return The page to display
+     */
+    @RequestMapping ( value = "admin/editLabCodes" )
+    @PreAuthorize ( "hasRole('ROLE_ADMIN')" )
+    public String emergencyHealthRecords ( final Model model ) {
+        return "/admin/editLabCodes";
     }
 
 }
