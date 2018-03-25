@@ -1,11 +1,15 @@
 package edu.ncsu.csc.itrust2.apitest;
 
+import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -19,6 +23,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -193,6 +198,98 @@ public class APIPatientTest {
         patient.setSelf( "patient" );
         mvc.perform( put( "/api/v1/patients/patient" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( patient ) ) ).andExpect( status().isUnauthorized() );
+    }
+
+    /**
+     * Testing the end point for editDemographics in PatientController
+     *
+     * @throws Exception
+     */
+    @Test
+    @WithMockUser ( username = "antti", roles = { "PATIENT" } )
+    public void testPatientController () throws Exception {
+
+        // Adding an extra test here to test APIPatientController's get method
+        mvc.perform( get( "/api/v1/patient" ).contentType( MediaType.APPLICATION_JSON ).content( "" ) )
+                .andExpect( status().isOk() );
+
+        // Test the Get end point for viewOfficeVisits
+        mvc.perform( get( "/patient/viewOfficeVisits" ).contentType( MediaType.APPLICATION_JSON ).content( "" ) )
+                .andExpect( status().isOk() );
+
+        // Test the Get end point for viewPrescriptions
+        mvc.perform( get( "/patient/viewPrescriptions" ).contentType( MediaType.APPLICATION_JSON ).content( "" ) )
+                .andExpect( status().isOk() );
+
+        // Test the Get end point for editDemographics
+        mvc.perform( get( "/patient/editDemographics" ).contentType( MediaType.APPLICATION_JSON ).content( "" ) )
+                .andExpect( status().isOk() );
+
+        // Test the Post end point for editDemographics
+        RequestBuilder request = post( "/patient/editDemographics" ).param( "firstName", "Antti" )
+                .param( "lastName", "Walhelm" ).param( "email", "antti@itrust.fi" ).param( "address1", "1 Test Street" )
+                .param( "address2", "Some Location" ).param( "city", "Raleigh" ).param( "state", "AL" )
+                .param( "zip", "55555" ).param( "phone", "555-555-5555" ).param( "dateOfBirth", "06/19/1994" )
+                .param( "bloodType", "A+" ).param( "ethnicity", "Caucasian" ).param( "gender", "Male" );
+
+        mvc.perform( request ).andExpect( status().isOk() );
+
+        final Patient p = Patient.getByName( "antti" );
+        assertEquals( "Antti", p.getFirstName() );
+        assertEquals( "555-555-5555", p.getPhone() );
+        assertEquals( "55555", p.getZip() );
+        final SimpleDateFormat sdf = new SimpleDateFormat( "MM/dd/yyyy", Locale.ENGLISH );
+        String parsedDate = sdf.format( p.getDateOfBirth().getTime() );
+        assertEquals( "06/19/1994", parsedDate );
+        assertEquals( "Raleigh", p.getCity() );
+
+        // Bad phone number
+        request = post( "/patient/editDemographics" ).param( "firstName", "Antti" ).param( "lastName", "Walhelm" )
+                .param( "email", "antti@itrust.fi" ).param( "address1", "1 Test Street" )
+                .param( "address2", "Some Location" ).param( "city", "Raleigh" ).param( "state", "AL" )
+                .param( "zip", "55555" ).param( "phone", "555655565555" ).param( "dateOfBirth", "06/19/1994" )
+                .param( "bloodType", "A+" ).param( "ethnicity", "Caucasian" ).param( "gender", "Male" );
+        mvc.perform( request ).andExpect( status().isOk() );
+        assertEquals( "555-555-5555", p.getPhone() );
+
+        // Bad city
+        request = post( "/patient/editDemographics" ).param( "firstName", "Antti" ).param( "lastName", "Walhelm" )
+                .param( "email", "antti@itrust.fi" ).param( "address1", "1 Test Street" )
+                .param( "address2", "Some Location" ).param( "city", "Raleigh 45" ).param( "state", "AL" )
+                .param( "zip", "55555" ).param( "phone", "555-555-5555" ).param( "dateOfBirth", "06/19/1994" )
+                .param( "bloodType", "A+" ).param( "ethnicity", "Caucasian" ).param( "gender", "Male" );
+        mvc.perform( request ).andExpect( status().isOk() );
+        assertEquals( "Raleigh", p.getCity() );
+
+        // bad zip
+        request = post( "/patient/editDemographics" ).param( "firstName", "Antti" ).param( "lastName", "Walhelm" )
+                .param( "email", "antti@itrust.fi" ).param( "address1", "1 Test Street" )
+                .param( "address2", "Some Location" ).param( "city", "Raleigh" ).param( "state", "AL" )
+                .param( "zip", "5555555" ).param( "phone", "555-555-5555" ).param( "dateOfBirth", "06/19/1994" )
+                .param( "bloodType", "A+" ).param( "ethnicity", "Caucasian" ).param( "gender", "Male" );
+
+        mvc.perform( request ).andExpect( status().isOk() );
+        assertEquals( "55555", p.getZip() );
+
+        // bad dateOfBirth
+        request = post( "/patient/editDemographics" ).param( "firstName", "Antti" ).param( "lastName", "Walhelm" )
+                .param( "email", "antti@itrust.fi" ).param( "address1", "1 Test Street" )
+                .param( "address2", "Some Location" ).param( "city", "Raleigh" ).param( "state", "AL" )
+                .param( "zip", "55555" ).param( "phone", "555-555-5555" ).param( "dateOfBirth", "0671971994" )
+                .param( "bloodType", "A+" ).param( "ethnicity", "Caucasian" ).param( "gender", "Male" );
+
+        mvc.perform( request ).andExpect( status().isOk() );
+        parsedDate = sdf.format( p.getDateOfBirth().getTime() );
+        assertEquals( "06/19/1994", parsedDate );
+
+        // Resetting antti back to normal just in case
+        request = post( "/patient/editDemographics" ).param( "firstName", "Antti" ).param( "lastName", "Walhelm" )
+                .param( "email", "antti@itrust.fi" ).param( "address1", "1 Test Street" )
+                .param( "address2", "Some Location" ).param( "city", "Viipuri" ).param( "state", "AL" )
+                .param( "zip", "27514" ).param( "phone", "123-456-7890" ).param( "dateOfBirth", "06/15/1977" )
+                .param( "bloodType", "A+" ).param( "ethnicity", "Caucasian" ).param( "gender", "Male" );
+
+        mvc.perform( request ).andExpect( status().isOk() );
     }
 
 }
