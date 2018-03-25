@@ -99,4 +99,17 @@ public class ERController {
         }
     }
 
+    /**
+     * Returns the emergencyHealthRecords screen for the ER.
+     *
+     * @param model
+     *            Data from the front end
+     * @return The page to display
+     */
+    @RequestMapping ( value = "er/emergencyHealthRecords" )
+    @PreAuthorize ( "hasRole('ROLE_ER')" )
+    public String emergencyHealthRecords ( final Model model ) {
+        return "/er/emergencyHealthRecords";
+    }
+
 }

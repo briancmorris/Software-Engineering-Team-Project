@@ -99,4 +99,17 @@ public class LTController {
         }
     }
 
+    /**
+     * Returns the lab procedures screen for the LT.
+     *
+     * @param model
+     *            Data from the front end
+     * @return The page to display
+     */
+    @RequestMapping ( value = "lt/labProcedures" )
+    @PreAuthorize ( "hasRole('ROLE_LT')" )
+    public String labProcedures ( final Model model ) {
+        return "/lt/labProcedures";
+    }
+
 }
