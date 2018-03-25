@@ -24,11 +24,11 @@ public enum Role {
     /**
      * Emergency Responder
      */
-    ROLE_ER ( 3, "er/index" ),
+    ROLE_ER ( 4, "er/index" ),
     /**
      * Lab Tech
      */
-    ROLE_LT ( 3, "lt/index" ),
+    ROLE_LT ( 5, "lt/index" ),
 
     ;
 
