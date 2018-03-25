@@ -3,7 +3,6 @@ package edu.ncsu.csc.itrust2.models.persistent;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -335,6 +334,7 @@ public class Patient extends DomainObject<Patient> implements Serializable {
     /**
      * Whether the patient is a representative or not
      */
+    @SuppressWarnings ( "unused" )
     private boolean isRepresentative;
 
     /**
