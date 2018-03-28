@@ -32,12 +32,6 @@ public class NewRolesStepDefs {
 
     }
 
-    private void setTextField ( final By byval, final Object value ) {
-        final WebElement elem = driver.findElement( byval );
-        elem.clear();
-        elem.sendKeys( value.toString() );
-    }
-
     @After
     public void tearDown () {
         driver.close();
