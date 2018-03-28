@@ -51,7 +51,7 @@ public class NewRolesStepDefs {
         lt.save();
     }
 
-    @When ( "When I enter username: (.+) and password: (.+) to log in" )
+    @When ( "I enter username: (.+) and password: (.+) to log in" )
     public void attemptLogin ( final String username, final String password ) {
         driver.get( baseUrl );
 
@@ -68,7 +68,7 @@ public class NewRolesStepDefs {
 
     }
 
-    @Then ( "Then I am greeted as an Emergency Responder user" )
+    @Then ( "I am greeted as an Emergency Responder user" )
     public void checkLandingER () {
         // Check Greeting
         assertTrue( driver.getPageSource().contains( "Emergency Responder" ) );
@@ -76,7 +76,7 @@ public class NewRolesStepDefs {
         assertTrue( driver.getPageSource().contains( "View Emergency Health Records" ) );
     }
 
-    @Then ( "Then I am greeted as a Lab Tech user" )
+    @Then ( "I am greeted as a Lab Tech user" )
     public void checkLandingLT () {
         // Check Greeting
         assertTrue( driver.getPageSource().contains( "Lab Tech" ) );
