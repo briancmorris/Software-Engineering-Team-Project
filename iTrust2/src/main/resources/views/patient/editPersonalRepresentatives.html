@@ -1,6 +1,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:include="layout :: head(title=~{::title},links=~{})">
 <title>Edit Personal Representatives</title>
+<!-- AngularJS library -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 </head>
 <body th:include="layout :: body" th:with="content=~{::content}">
 	<div th:fragment="content" ng-app="repApp" ng-controller="repCtrl">
@@ -10,6 +12,7 @@
 		/*<![CDATA[*/
 			var app = angular.module("repApp", []);
 			app.controller('repCtrl', function($scope, $http) {
+				
 				$scope.reps = [];
 				$scope.loadTable = function() {
 					// Get list of reps from rest api.
@@ -21,7 +24,17 @@
 							$scope.reps = [];
 							$scope.message = "Could not display personal representatives.";
 						});
-				}		
+				}
+				
+				$scope.removeRow = function() {
+					$http.delete("/iTrust2/api/v1/editPersonalRepresentatives").then(
+							function(response) {
+								$scope.loadTable();
+								$scope.message = "";
+							}, function(rejection) {
+								$scope.message = "Could not remove personal representative";
+							})
+				}
 
 				// load table upon page loading
 				$scope.loadTable();
@@ -30,22 +43,29 @@
 		/*]]>*/
 		</script>		
 		
-		
-		<div>	
+		<div ng-app="repApp" ng-controller="repCtrl">	
 			<h4 style="color:red" ng-model="message"></h4>
 			<h1>Your Personal Representatives</h1>
-			<table class="table" style="width:100%">
-				<tr style="vertical-align: top">
-					<th>Username</th>
-				</tr>
-				<tr name="entryRow" style="vertical-align: top" ng-repeat="r in reps">
-					<td name="nameCell">{{r.id}}</td>
+			<table style="width:100%">
+				<tr>
+					<td style="vertical-align: top">
+						<table class="table">
+							<tr>
+								<th>Patient ID</th>
+								<th>Action</th>
+							</tr>
+							<tr name="idRow" ng-repeat="r in reps">
+								<td name="idCell">{{r.id}}</td>
+								<td>
+									<input type="button" value="Remove" class="btn btn-primary" ng-click="removeRow(r)"/>
+								</td>
+							</tr>
+						</table>
+					</td>
 				</tr>
 			</table>
 		</div>
-		
-		<h1>Patients You Represent</h1>
-		
+				
 		<script th:inline="javascript">
 		/*<![CDATA[*/
 			var app = angular.module("repApp", []);
@@ -61,7 +81,17 @@
 							$scope.reps = [];
 							$scope.message = "Could not display patients represented.";
 						});
-				}		
+				}
+				
+				$scope.removeRow = function() {
+					$http.delete("/iTrust2/api/v1/editPersonalRepresentatives").then(
+							function(response) {
+								$scope.loadTable();
+								$scope.message = "";
+							}, function(rejection) {
+								$scope.message = "Could not remove patient represented";
+							})
+				}
 
 				// load table upon page loading
 				$scope.loadTable();
@@ -70,7 +100,28 @@
 		/*]]>*/
 		</script>
 		
-		
+		<div ng-app="repApp" ng-controller="repCtrl">	
+			<h4 style="color:red" ng-model="message"></h4>
+			<h1>Your Personal Representatives</h1>
+			<table style="width:100%">
+				<tr>
+					<td style="vertical-align: top">
+						<table class="table">
+							<tr>
+								<th>Patient ID</th>
+								<th>Action</th>
+							</tr>
+							<tr name="idRow" ng-repeat="r in reps">
+								<td name="idCell">{{r.id}}</td>
+								<td>
+									<input type="button" value="Remove" class="btn btn-primary" ng-click="removeRow(r)"/>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</div>
 
 	</div>
 </body>
