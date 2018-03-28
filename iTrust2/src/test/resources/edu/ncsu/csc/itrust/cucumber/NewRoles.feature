@@ -1,5 +1,3 @@
-#Author aagarw10, gcwatts
-
 Feature: New Roles
 	As an ER and Lab Tech
 	I want the same basic functionality as other Personnel roles
@@ -11,8 +9,8 @@ Scenario Outline: ER Role User
 	Then I am greeted as an Emergency Responder user
 	
 Examples:
-	| user   | pass   | name   | role   |
-	| er     | 123456 | er     | ER     |
+	| user   | pass   |
+	| er     | 123456 |
 
 
 Scenario Outline: Lab Tech Role User
@@ -21,5 +19,5 @@ Scenario Outline: Lab Tech Role User
 	Then I am greeted as a Lab Tech user
 	
 Examples:
-	| user   | pass   | name   | role      |
-	| lt     | 123456 | lt     | Lab Tech  |
+	| user   | pass   |
+	| lt     | 123456 |
