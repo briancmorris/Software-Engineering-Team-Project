@@ -3,6 +3,7 @@ package edu.ncsu.csc.itrust2.models.persistent;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -724,6 +725,49 @@ public class Patient extends DomainObject<Patient> implements Serializable {
      */
     public void setGender ( final Gender gender ) {
         this.gender = gender;
+    }
+
+    /**
+     * Adds a personal representative to this patient's representative list.
+     *
+     * @param rep
+     *            The representative to add.
+     */
+    public void addRepresentaive ( final Patient rep ) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * Removes a personal representative from this patient's representative
+     * list.
+     *
+     * @param rep
+     *            The representative to remove.
+     */
+    public void removeRepresentaive ( final Patient rep ) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * Returns the list of representatives for this patient.
+     *
+     * @return The list of representatives for this patient.
+     */
+    public ArrayList<Patient> getRepresentatives () {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * Returns the list of users this patient represents.
+     * 
+     * @return The list of users this patient represents.
+     */
+    public ArrayList<Patient> getRepresent () {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

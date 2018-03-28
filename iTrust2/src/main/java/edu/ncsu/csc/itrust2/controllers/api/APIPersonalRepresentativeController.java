@@ -1,5 +1,6 @@
 package edu.ncsu.csc.itrust2.controllers.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -7,6 +8,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import edu.ncsu.csc.itrust2.models.persistent.Patient;
+import edu.ncsu.csc.itrust2.utils.LoggerUtil;
 
 /**
  * Controller for personal representatives, used to add and edit the lists of
@@ -30,7 +34,9 @@ public class APIPersonalRepresentativeController extends APIController {
     @PostMapping ( BASE_PATH + "/patient/addRepresentative/{repID}" )
     @PreAuthorize ( "hasRole('ROLE_PATIENT')" )
     public void addRepresentativePatient ( @PathVariable ( "repID" ) final String repID ) {
-
+        final Patient p = Patient.getByName( LoggerUtil.currentUser() );
+        final Patient rep = Patient.getByName( repID );
+        p.addRepresentaive( rep );
     }
 
     /**
@@ -43,7 +49,9 @@ public class APIPersonalRepresentativeController extends APIController {
     @PostMapping ( BASE_PATH + "/patient/removeRepresentative/{repID}" )
     @PreAuthorize ( "hasRole('ROLE_PATIENT')" )
     public void removeRepresentativePatient ( @PathVariable ( "repID" ) final String repID ) {
-
+        final Patient p = Patient.getByName( LoggerUtil.currentUser() );
+        final Patient rep = Patient.getByName( repID );
+        p.removeRepresentaive( rep );
     }
 
     /**
@@ -56,7 +64,9 @@ public class APIPersonalRepresentativeController extends APIController {
     @PostMapping ( BASE_PATH + "/patient/removeRepresentative/{patientID}" )
     @PreAuthorize ( "hasRole('ROLE_PATIENT')" )
     public void removeSelf ( @PathVariable ( "patientID" ) final String patientID ) {
-
+        final Patient self = Patient.getByName( LoggerUtil.currentUser() );
+        final Patient p = Patient.getByName( patientID );
+        p.removeRepresentaive( self );
     }
 
     /**
@@ -67,8 +77,11 @@ public class APIPersonalRepresentativeController extends APIController {
      */
     @GetMapping ( BASE_PATH + "/patient/getRepresentatives/" )
     @PreAuthorize ( "hasRole('ROLE_PATIENT')" )
-    public List getRepresentativesPatient () {
-        return null;
+    public List<Patient> getRepresentativesPatient () {
+        final Patient p = Patient.getByName( LoggerUtil.currentUser() );
+        final ArrayList<Patient> representatives = p.getRepresentatives();
+
+        return representatives;
     }
 
     /**
@@ -80,8 +93,11 @@ public class APIPersonalRepresentativeController extends APIController {
      */
     @GetMapping ( BASE_PATH + "/patient/getRepresent/" )
     @PreAuthorize ( "hasRole('ROLE_PATIENT')" )
-    public List getRepresentPatient () {
-        return null;
+    public List<Patient> getRepresentPatient () {
+        final Patient p = Patient.getByName( LoggerUtil.currentUser() );
+        final ArrayList<Patient> represent = p.getRepresent();
+
+        return represent;
     }
 
     /**
@@ -99,7 +115,10 @@ public class APIPersonalRepresentativeController extends APIController {
     @PreAuthorize ( "hasRole('ROLE_HCP')" )
     public void addRepresentativeHCP ( @PathVariable ( "patientID" ) final String patientID,
             @PathVariable ( "repID" ) final String repID ) {
+        final Patient p = Patient.getByName( patientID );
+        final Patient rep = Patient.getByName( repID );
 
+        p.addRepresentaive( rep );
     }
 
     /**
@@ -111,8 +130,11 @@ public class APIPersonalRepresentativeController extends APIController {
      */
     @GetMapping ( BASE_PATH + "/hcp/getRepresentatives/{patientID}" )
     @PreAuthorize ( "hasRole('ROLE_HCP')" )
-    public List getRepresentativesHCP ( @PathVariable ( "patientID" ) final String patientID ) {
-        return null;
+    public List<Patient> getRepresentativesHCP ( @PathVariable ( "patientID" ) final String patientID ) {
+        final Patient p = Patient.getByName( patientID );
+        final ArrayList<Patient> representatives = p.getRepresentatives();
+
+        return representatives;
     }
 
     /**
@@ -125,7 +147,10 @@ public class APIPersonalRepresentativeController extends APIController {
      */
     @GetMapping ( BASE_PATH + "/hcp/getRepresent/{patientID}" )
     @PreAuthorize ( "hasRole('ROLE_HCP')" )
-    public List getRepresentHCP ( @PathVariable ( "patientID" ) final String patientID ) {
-        return null;
+    public List<Patient> getRepresentHCP ( @PathVariable ( "patientID" ) final String patientID ) {
+        final Patient p = Patient.getByName( patientID );
+        final ArrayList<Patient> represent = p.getRepresent();
+
+        return represent;
     }
 }
