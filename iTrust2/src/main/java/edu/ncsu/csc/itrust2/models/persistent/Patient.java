@@ -55,16 +55,17 @@ public class Patient extends DomainObject<Patient> implements Serializable {
     /**
      * Set of personal representatives of Patient.
      */
-    @ManyToMany ( fetch = FetchType.EAGER, cascade = { CascadeType.ALL } )
-    @JoinTable ( name = "PATIENT_REPRESENTATIVES", joinColumns = { @JoinColumn ( name = "REP_ID" ) },
-            inverseJoinColumns = { @JoinColumn ( name = "PATIENT_ID" ) } )
-    private final Set<Patient> representatives  = new HashSet<Patient>();
-
+    @ManyToMany(fetch = FetchType.EAGER, cascade={CascadeType.ALL})
+    @JoinTable(name="PATIENT_REPRESENTATIVES",
+        joinColumns={@JoinColumn(name="REP_ID")},
+        inverseJoinColumns={@JoinColumn(name="PATIENT_ID")})
+    private Set<Patient> representatives = new HashSet<Patient>();
+    
     /**
      * Set of patients that are represented.
      */
-    @ManyToMany ( fetch = FetchType.EAGER, mappedBy = "representatives" )
-    private final Set<Patient> representees     = new HashSet<Patient>();
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy="representatives")
+    private Set<Patient> representees = new HashSet<Patient>(); 
 
     /**
      * Get all patients in the database
