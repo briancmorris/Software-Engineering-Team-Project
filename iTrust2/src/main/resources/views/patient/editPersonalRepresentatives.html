@@ -6,8 +6,7 @@
 </head>
 <body th:include="layout :: body" th:with="content=~{::content}">
 	<div th:fragment="content" ng-app="repApp" ng-controller="repCtrl">
-		<h1>Add Personal Representative</h1>
-
+	
 		<script th:inline="javascript">
 		/*<![CDATA[*/
 			var app = angular.module("repApp", []);
@@ -34,6 +33,19 @@
 							}, function(rejection) {
 								$scope.message = "Could not remove personal representative";
 							})
+				}
+				
+				// handle add representative button click
+				$scope.addRep = function() {	
+					$http.post("/iTrust2/api/v1/editPersonalRepresentatives").then(
+							function(response) {
+								$scope.loadTable();
+								$scope.rep = "";
+								$scope.errorAdding = "";
+							}, function(rejection) {
+								$scope.errorAdding = "Could not add personal representative";
+							})
+					
 				}
 
 				// load table upon page loading
@@ -62,10 +74,33 @@
 							</tr>
 						</table>
 					</td>
+					<td style="width:35%;vertical-align: top">
+						<div style="padding: 0px 0px 20px 10px">
+							<h3>Add Personal Representative</h3>
+						</div>
+						
+						<form class="form-horizontal" role="form" name="addRepForm" ng-submit="addRep(addRepForm.$valid)">
+							<div class="form-group" style="padding-left:30px">
+								<label>Patient ID</label>
+								<input type="text" class="form-control" name="rep" ng-model="rep" required/>
+							</div>
+							<div class="form-group" style="padding-left:30px">								
+								<div style="padding-left:170px">
+									<button class="btn btn-primary" name="submit">Add Representative</button> 
+									<!-- <input type="submit" value="Add Code" class="btn btn-primary"/>  -->
+								</div>
+							</div>
+						</form>
+						<div>
+							<!-- <h4 style="color: red" ng-show="addCodeForm.$valid">Code doesn't meet specifications</h4>  -->
+							<p style="color:red" ng-model="errorAdding" id="errP">{{errorAdding}}</p>
+						</div>
+					</td>
 				</tr>
 			</table>
 		</div>
-				
+
+
 		<script th:inline="javascript">
 		/*<![CDATA[*/
 			var app = angular.module("repApp", []);
@@ -84,7 +119,7 @@
 				}
 				
 				$scope.removeRow = function() {
-					$http.delete("/iTrust2/api/v1/editPersonalRepresentatives").then(
+					$http.delete("/iTrust2/api/v1/editPersonalRepresentatives/removeSelf").then(
 							function(response) {
 								$scope.loadTable();
 								$scope.message = "";
@@ -119,6 +154,7 @@
 							</tr>
 						</table>
 					</td>
+					
 				</tr>
 			</table>
 		</div>
