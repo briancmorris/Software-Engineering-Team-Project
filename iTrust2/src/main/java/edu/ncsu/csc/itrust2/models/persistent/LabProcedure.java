@@ -19,22 +19,25 @@ public class LabProcedure extends DomainObject<LabProcedure> {
     /** ID of the lab procedure. */
     @Id
     @GeneratedValue ( strategy = GenerationType.AUTO )
-    private Long    id;
+    private Long      id;
+
+    /** The LOINC code for ths lab procedure. */
+    private LOINCCode code;
 
     /** The name of this lab procedure. */
     @NotEmpty
     @Length ( max = 64 )
-    private String  name;
+    private String    name;
 
     /** The description of this lab procedure. */
     @NotNull
     @Length ( max = 1024 )
-    private String  description;
+    private String    description;
 
     /**
      * The priority level of this lab procedure, specified by an HCP.
      */
-    private Integer priorityLevel;
+    private Integer   priorityLevel;
 
     /**
      * Returns the id associated with this lab procedure.
