@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -103,6 +104,64 @@ public class APIUserTest {
         mvc.perform( put( "/api/v1/users/sven_badname" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( sven ) ) ).andExpect( status().isNotFound() );
 
+    }
+
+    /**
+     * Tests HCP controller functions. This tests get requests for pages that an
+     * HCP should be able to view, these pages should have @PreAuthorize tags
+     * that block other user roles.
+     *
+     * @throws Exception
+     */
+    @Test
+    @WithMockUser ( username = "hcp", roles = { "HCP" } )
+    public void testHCPController () throws Exception {
+        mvc.perform( get( "/hcp/editPatientDemographics" ) ).andExpect( status().isOk() );
+        mvc.perform( get( "/hcp/editPrescriptions" ) ).andExpect( status().isOk() );
+        mvc.perform( get( "/hcp/emergencyHealthRecords" ) ).andExpect( status().isOk() );
+
+        // Invalid requests
+        mvc.perform( get( "/hcp/emergencyHealthRecords2" ) ).andExpect( status().isNotFound() );
+    }
+
+    /**
+     * Tests ER controller functions. This tests get requests for pages that an
+     * ER should be able to view, these pages should have @PreAuthorize tags
+     * that block other user roles.
+     *
+     * @throws Exception
+     */
+    @Test
+    @WithMockUser ( username = "er", roles = { "ER" } )
+    public void testERController () throws Exception {
+        mvc.perform( get( "/er/emergencyHealthRecords" ) ).andExpect( status().isOk() );
+
+    }
+
+    /**
+     * Tests LT controller functions. This tests get requests for pages that an
+     * LT should be able to view, these pages should have @PreAuthorize tags
+     * that block other user roles.
+     *
+     * @throws Exception
+     */
+    @Test
+    @WithMockUser ( username = "lt", roles = { "LT" } )
+    public void testLTController () throws Exception {
+        mvc.perform( get( "/lt/labProcedures" ) ).andExpect( status().isOk() );
+    }
+
+    /**
+     * Tests Admin controller functions. This tests get requests for pages that
+     * an Admin should be able to view, these pages should have @PreAuthorize
+     * tags that block other user roles.
+     *
+     * @throws Exception
+     */
+    @Test
+    @WithMockUser ( username = "admin", roles = { "ADMIN" } )
+    public void testAdminController () throws Exception {
+        mvc.perform( get( "/admin/editLabCodes" ) ).andExpect( status().isOk() );
     }
 
 }

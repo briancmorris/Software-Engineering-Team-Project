@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.ncsu.csc.itrust2.controllers.patient;
 
@@ -20,9 +20,9 @@ public class RepresentativeController {
      *            The data for the front end
      * @return Page to display to the user
      */
-    @GetMapping ( "/patient/editRepresentatives" )
+    @GetMapping ( "/patient/editPersonalRepresentatives" )
     @PreAuthorize ( "hasRole('ROLE_PATIENT')" )
     public String viewOfficeVisits ( final Model model ) {
-        return "/patient/editRepresentatives";
+        return "/patient/editPersonalRepresentatives";
     }
 }

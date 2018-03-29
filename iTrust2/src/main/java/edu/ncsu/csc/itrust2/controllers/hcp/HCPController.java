@@ -51,4 +51,16 @@ public class HCPController {
         return "/hcp/editPrescriptions";
     }
 
+    /**
+     * Returns the emergencyHealthRecords screen for the HCP
+     *
+     * @param model
+     *            Data from the front end
+     * @return The page to display
+     */
+    @RequestMapping ( value = "hcp/emergencyHealthRecords" )
+    @PreAuthorize ( "hasRole('ROLE_HCP')" )
+    public String emergencyHealthRecords ( final Model model ) {
+        return "/hcp/emergencyHealthRecords";
+    }
 }

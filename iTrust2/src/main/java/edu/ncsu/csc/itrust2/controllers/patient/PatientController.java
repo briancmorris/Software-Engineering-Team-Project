@@ -1,5 +1,9 @@
 package edu.ncsu.csc.itrust2.controllers.patient;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import javax.validation.Valid;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -106,6 +110,23 @@ public class PatientController {
         catch ( final Exception e ) {
             e.printStackTrace( System.out );
             result.rejectValue( "dateOfBirth", "dateOfBirth.notvalid", "Expected format: MM/DD/YYYY" );
+            try {
+                final SimpleDateFormat sdf = new SimpleDateFormat( "MM/dd/yyyy", Locale.ENGLISH );
+                final Date parsedDate = sdf.parse( form.getDateOfBirth() );
+
+            }
+            catch ( final Exception e2 ) {
+                result.rejectValue( "dateOfBirth", "dateOfBirth.notvalid", "Expected format: MM/DD/YYYY" );
+            }
+        }
+        if ( form.getZip().length() > 5 && form.getZip().length() < 9 ) {
+            result.rejectValue( "zip", "zip.notvalid", "Zip must be 5 or 9 characters" );
+        }
+        if ( !form.getCity().matches( "[a-zA-Z]+" ) ) {
+            result.rejectValue( "city", "city.notvalid", "City must contain 1-15 alpha characters" );
+        }
+        if ( !form.getPhone().matches( "(?:\\d{3}-){2}\\d{4}" ) ) {
+            result.rejectValue( "phone", "phone.notvalid", "Phone number must be in format 555-555-5555" );
         }
 
         if ( result.hasErrors() ) {
@@ -123,6 +144,21 @@ public class PatientController {
                     SecurityContextHolder.getContext().getAuthentication().getName() );
             return "patient/editDemographicsResult";
         }
+    }
+
+    /**
+     * Provides the page for a User to view and edit their personal
+     * representatives
+     *
+     * @param model
+     *            The data for the front end
+     * @return The page to show the user so they can edit personal
+     *         representatives
+     */
+    @GetMapping ( value = "patient/editPersonalRepresentatives" )
+    @PreAuthorize ( "hasRole('ROLE_PATIENT')" )
+    public String viewPersonalRepresentatives ( final Model model ) {
+        return "/patient/editPersonalRepresentatives";
     }
 
 }

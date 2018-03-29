@@ -50,8 +50,8 @@ public class Patient extends DomainObject<Patient> implements Serializable {
     /**
      * Randomly generated ID.
      */
-    private static final long serialVersionUID = 4617248041239679701L;
-    
+    private static final long  serialVersionUID = 4617248041239679701L;
+
     /**
      * Set of personal representatives of Patient.
      */
@@ -331,12 +331,12 @@ public class Patient extends DomainObject<Patient> implements Serializable {
      */
     @GeneratedValue ( strategy = GenerationType.AUTO )
     private Long      id;
-    
+
     /**
      * Whether the patient is a representative or not
      */
     @SuppressWarnings ( "unused" )
-    private boolean isRepresentative;
+    private boolean   isRepresentative;
 
     /**
      * Set the id of this patient
@@ -755,41 +755,36 @@ public class Patient extends DomainObject<Patient> implements Serializable {
 
     /**
      * Get the list of representatives of this patient
-     * 
+     *
      * @return representatives the list of patient's representatives
      */
-    public Set<Patient> getRepresentatives() {
+    public Set<Patient> getRepresentatives () {
         return representatives;
     }
-    
+
     /**
      * Get the list of people this patient represents
-     * 
+     *
      * @return representees the list of people this patient represents
      */
-    public Set<Patient> getRepresentees() {
+    public Set<Patient> getRepresentees () {
         return representees;
     }
-    
-    
-    
-    public boolean isRep() {
+
+    public boolean isRep () {
         return isRepresentative;
     }
-    
-    
-    public void declareSelfRep() {
+
+    public void declareSelfRep () {
         isRepresentative = true;
     }
-    
-    public void undeclareSelfRep() {
+
+    public void undeclareSelfRep () {
         isRepresentative = false;
     }
     /**
-    
-    public void declareRep(Patient p) {
-        representatives.add( p );
-    }
-    */
-    
+     *
+     * public void declareRep(Patient p) { representatives.add( p ); }
+     */
+
 }

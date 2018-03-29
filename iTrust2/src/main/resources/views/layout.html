@@ -100,6 +100,8 @@ a {
 							var admindropdown = document.getElementById('admin-dropdown');
 							var patientdropdown = document.getElementById('patient-dropdown');
 							var hcpdropdown = document.getElementById('hcp-dropdown');
+							var erdropdown = document.getElementById('er-dropdown');
+							var ltdropdown = document.getElementById('lt-dropdown');
 							if (!role.includes('PATIENT')) {
 								navbarparent.removeChild(patientdropdown);
 							}
@@ -108,6 +110,12 @@ a {
 							}
 							if (!role.includes('HCP')) {
 								navbarparent.removeChild(hcpdropdown);
+							}
+							if (!role.includes('ER')) {
+								navbarparent.removeChild(erdropdown);
+							}
+							if (!role.includes('LT')) {
+								navbarparent.removeChild(ltdropdown);
 							}
 						});
 				/* Otherwise Thymeleaf tries to parse Javascript as XML and breaks itself sometimes.  Sigh */
@@ -150,6 +158,13 @@ a {
 								id="editpersonalrepresentatives-patient">Edit Personal Representatives</a></li>
 						</ul>
 					</li>
+					<li class="dropdown"><a class="dropdown-toggle"
+						data-toggle="dropdown" href="#">Lab Procedures<span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="/iTrust2/admin/editLabCodes"
+								id="editdemographics-personnel">Edit Lab Procedure Codes</a></li>
+						</ul>
+					</li>
 				</ul>
 				<ul id="hcp-dropdown" class="nav navbar-nav">
 					<li class="dropdown"><a class="dropdown-toggle"
@@ -167,6 +182,14 @@ a {
 						</ul>
 					</li>
 					<li class="dropdown"><a class="dropdown-toggle"
+						data-toggle="dropdown" id="ehr" href="#">EHR<span
+							class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="/iTrust2/hcp/emergencyHealthRecords"
+								id="requesthealthrecords">View Emergency Health Records</a></li>
+						</ul>
+					</li>
+					<li class="dropdown"><a class="dropdown-toggle"
 						data-toggle="dropdown" href="#">Edit<span class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<li><a href="/iTrust2/personnel/editDemographics"
@@ -174,9 +197,9 @@ a {
 							<li> <a href="/iTrust2/hcp/editOfficeVisit"
 							      id="editOfficeVisit">Edit Office Visit</a></li>
 					      	<li> <a href="/iTrust2/hcp/editPrescriptions"
-							      id="editPrescriptions-personnel">Edit Prescriptions</a></li>
-							      <li><a href="/iTrust2/patient/editPersonalRepresentatives"
-								id="editpersonalrepresentatives-patient">Edit Personal Representatives</a></li>
+							      id="editPrescriptions-personnel">Edit Prescriptions</a></l
+							<li><a href="/iTrust2/patient/editPersonalRepresentatives"
+								id="editpersonalrepresentatives-hcp">Edit Personal Representatives</a></li>
 						</ul>
 					</li>
 				</ul>
@@ -199,8 +222,45 @@ a {
 						<ul class="dropdown-menu">
 							<li><a href="/iTrust2/patient/editDemographics"
 								id="editdemographics-patient">Edit Demographics</a></li>
+					        <li><a href="/iTrust2/patient/editPersonalRepresentatives"
+								id="editpersonalrepresentatives-patient">Edit Personal Representatives</a></li>
+						</ul>
+						
+					</li>
+				</ul>
+				<ul id="er-dropdown" class="nav navbar-nav">
+					<li class="dropdown"><a class="dropdown-toggle"
+						data-toggle="dropdown" id="ehr" href="#">EHR<span
+							class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="/iTrust2/er/emergencyHealthRecords"
+								id="requesthealthrecords">View Emergency Health Records</a></li>
 						</ul>
 					</li>
+					<li class="dropdown"><a class="dropdown-toggle"
+						data-toggle="dropdown" href="#">Edit<span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="/iTrust2/personnel/editDemographics"
+								id="editdemographics-personnel">Edit Demographics</a></li>
+						</ul>
+					</li>
+				</ul>
+				<ul id="lt-dropdown" class="nav navbar-nav">
+					<li class="dropdown"><a class="dropdown-toggle"
+						data-toggle="dropdown" id="ehr" href="#">Lab Procedures<span
+							class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="/iTrust2/lt/labProcedures"
+								id="requesthealthrecords">View Lab Procedures</a></li>
+						</ul>
+					</li>
+					<li class="dropdown"><a class="dropdown-toggle"
+						data-toggle="dropdown" href="#">Edit<span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="/iTrust2/personnel/editDemographics"
+								id="editdemographics-personnel">Edit Demographics</a></li>
+						</ul>
+					</li>	
 				</ul>
 				<ul id="extra-dropdown" class="nav navbar-nav">
 					<li><a
