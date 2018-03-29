@@ -1,7 +1,6 @@
 package edu.ncsu.csc.itrust2.controllers.api;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -36,7 +35,8 @@ public class APIPersonalRepresentativeController extends APIController {
     public void addRepresentativePatient ( @PathVariable ( "repID" ) final String repID ) {
         final Patient p = Patient.getByName( LoggerUtil.currentUser() );
         final Patient rep = Patient.getByName( repID );
-        p.addRepresentaive( rep );
+        p.addToRepresentatives( rep );
+        rep.addToRepresent( p );
     }
 
     /**
@@ -51,7 +51,8 @@ public class APIPersonalRepresentativeController extends APIController {
     public void removeRepresentativePatient ( @PathVariable ( "repID" ) final String repID ) {
         final Patient p = Patient.getByName( LoggerUtil.currentUser() );
         final Patient rep = Patient.getByName( repID );
-        p.removeRepresentaive( rep );
+        p.removeFromRepresentatives( rep );
+        rep.removeFromRepresent( p );
     }
 
     /**
@@ -66,36 +67,35 @@ public class APIPersonalRepresentativeController extends APIController {
     public void removeSelf ( @PathVariable ( "patientID" ) final String patientID ) {
         final Patient self = Patient.getByName( LoggerUtil.currentUser() );
         final Patient p = Patient.getByName( patientID );
-        p.removeRepresentaive( self );
+        p.removeFromRepresentatives( self );
+        self.removeFromRepresent( p );
     }
 
     /**
-     * Retrieves the list of representatives for the currently logged in
-     * patient.
+     * Retrieves the set of representatives for the currently logged in patient.
      *
-     * @return The list of representatives.
+     * @return The set of representatives.
      */
     @GetMapping ( BASE_PATH + "/patient/getRepresentatives/" )
     @PreAuthorize ( "hasRole('ROLE_PATIENT')" )
-    public List<Patient> getRepresentativesPatient () {
+    public HashSet<Patient> getRepresentativesPatient () {
         final Patient p = Patient.getByName( LoggerUtil.currentUser() );
-        final ArrayList<Patient> representatives = p.getRepresentatives();
+        final HashSet<Patient> representatives = p.getRepresentatives();
 
         return representatives;
     }
 
     /**
-     * Retrieves the list of patients that the currently logged in user
+     * Retrieves the set of patients that the currently logged in user
      * represents.
      *
-     * @return The list of patients that the currently logged in user
-     *         represents.
+     * @return The set of patients that the currently logged in user represents.
      */
     @GetMapping ( BASE_PATH + "/patient/getRepresent/" )
     @PreAuthorize ( "hasRole('ROLE_PATIENT')" )
-    public List<Patient> getRepresentPatient () {
+    public HashSet<Patient> getRepresentPatient () {
         final Patient p = Patient.getByName( LoggerUtil.currentUser() );
-        final ArrayList<Patient> represent = p.getRepresent();
+        final HashSet<Patient> represent = p.getRepresent();
 
         return represent;
     }
@@ -118,38 +118,39 @@ public class APIPersonalRepresentativeController extends APIController {
         final Patient p = Patient.getByName( patientID );
         final Patient rep = Patient.getByName( repID );
 
-        p.addRepresentaive( rep );
+        p.addToRepresentatives( rep );
+        rep.addToRepresent( p );
     }
 
     /**
-     * Retrieves the list of representatives for the specified patient.
+     * Retrieves the set of representatives for the specified patient.
      *
      * @param patientID
-     *            The ID of the patient to get the list of representatives for.
-     * @return The list of representatives for the specified patient..
+     *            The ID of the patient to get the set of representatives for.
+     * @return The set of representatives for the specified patient..
      */
     @GetMapping ( BASE_PATH + "/hcp/getRepresentatives/{patientID}" )
     @PreAuthorize ( "hasRole('ROLE_HCP')" )
-    public List<Patient> getRepresentativesHCP ( @PathVariable ( "patientID" ) final String patientID ) {
+    public HashSet<Patient> getRepresentativesHCP ( @PathVariable ( "patientID" ) final String patientID ) {
         final Patient p = Patient.getByName( patientID );
-        final ArrayList<Patient> representatives = p.getRepresentatives();
+        final HashSet<Patient> representatives = p.getRepresentatives();
 
         return representatives;
     }
 
     /**
-     * Retrieves the list of patients that the specified patient represents.
+     * Retrieves the set of patients that the specified patient represents.
      *
      * @param patientID
      *            The ID of the patient that represents other patients.
-     * @return The list of patients that the specified patient represents.
+     * @return The set of patients that the specified patient represents.
      *
      */
     @GetMapping ( BASE_PATH + "/hcp/getRepresent/{patientID}" )
     @PreAuthorize ( "hasRole('ROLE_HCP')" )
-    public List<Patient> getRepresentHCP ( @PathVariable ( "patientID" ) final String patientID ) {
+    public HashSet<Patient> getRepresentHCP ( @PathVariable ( "patientID" ) final String patientID ) {
         final Patient p = Patient.getByName( patientID );
-        final ArrayList<Patient> represent = p.getRepresent();
+        final HashSet<Patient> represent = p.getRepresent();
 
         return represent;
     }

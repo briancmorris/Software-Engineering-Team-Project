@@ -3,12 +3,13 @@ package edu.ncsu.csc.itrust2.models.persistent;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -16,6 +17,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -195,7 +198,7 @@ public class Patient extends DomainObject<Patient> implements Serializable {
     @OneToOne
     @JoinColumn ( name = "self_id", columnDefinition = "varchar(100)" )
     @Id
-    private User      self;
+    private User             self;
 
     /**
      * For keeping track of the User who is the mother of this patient.
@@ -203,7 +206,7 @@ public class Patient extends DomainObject<Patient> implements Serializable {
      */
     @ManyToOne
     @JoinColumn ( name = "mother_id", columnDefinition = "varchar(100)" )
-    private User      mother;
+    private User             mother;
 
     /**
      * For keeping track of the User who is the father of this patient.
@@ -211,106 +214,122 @@ public class Patient extends DomainObject<Patient> implements Serializable {
      */
     @ManyToOne
     @JoinColumn ( name = "father_id", columnDefinition = "varchar(100)" )
-    private User      father;
+    private User             father;
 
     /**
      * The first name of this patient
      */
     @Length ( max = 20 )
-    private String    firstName;
+    private String           firstName;
 
     /**
      * The preferred name of this patient
      */
     @Length ( max = 20 )
-    private String    preferredName;
+    private String           preferredName;
 
     /**
      * The last name of this patient
      */
     @Length ( max = 30 )
-    private String    lastName;
+    private String           lastName;
 
     /**
      * The email address of this patient
      */
     @Length ( max = 30 )
-    private String    email;
+    private String           email;
 
     /**
      * The address line 1 of this patient
      */
     @Length ( max = 50 )
-    private String    address1;
+    private String           address1;
 
     /**
      * The address line 2 of this patient
      */
     @Length ( max = 50 )
-    private String    address2;
+    private String           address2;
 
     /**
      * The city of residence of this patient
      */
     @Length ( max = 15 )
-    private String    city;
+    private String           city;
 
     /**
      * The state of residence of this patient
      */
     @Enumerated ( EnumType.STRING )
-    private State     state;
+    private State            state;
 
     /**
      * The zip code of this patient
      */
     @Length ( min = 5, max = 10 )
-    private String    zip;
+    private String           zip;
 
     /**
      * The phone number of this patient
      */
     @Length ( min = 12, max = 12 )
-    private String    phone;
+    private String           phone;
 
     /**
      * The birthday of this patient
      */
-    private Calendar  dateOfBirth;
+    private Calendar         dateOfBirth;
 
     /**
      * The date of death of this patient
      */
-    private Calendar  dateOfDeath;
+    private Calendar         dateOfDeath;
 
     /**
      * The cause of death of this patient
      */
-    private String    causeOfDeath;
+    private String           causeOfDeath;
 
     /**
      * The blood type of this patient
      */
     @Enumerated ( EnumType.STRING )
-    private BloodType bloodType;
+    private BloodType        bloodType;
 
     /**
      * The ethnicity of this patient
      */
     @Enumerated ( EnumType.STRING )
-    private Ethnicity ethnicity;
+    private Ethnicity        ethnicity;
 
     /**
      * The gender of this patient
      */
     @Enumerated ( EnumType.STRING )
-    private Gender    gender;
+    private Gender           gender;
 
     /**
      * The id of this patient
      */
     @GeneratedValue ( strategy = GenerationType.AUTO )
-    private Long      id;
+    private Long             id;
+
+    /**
+     * The set of patients that represent this patient.
+     */
+    @ManyToMany ( cascade = { CascadeType.ALL } )
+    @JoinTable ( name = "Representatives", joinColumns = { @JoinColumn ( name = "" ) },
+            inverseJoinColumns = { @JoinColumn ( name = "" ) } )
+    private HashSet<Patient> representatives;
+
+    /**
+     * The set of patients that this patient represents.
+     */
+    @ManyToMany ( cascade = { CascadeType.ALL } )
+    @JoinTable ( name = "Represent", joinColumns = { @JoinColumn ( name = "" ) },
+            inverseJoinColumns = { @JoinColumn ( name = "" ) } )
+    private HashSet<Patient> represent;
 
     /**
      * Set the id of this patient
@@ -728,46 +747,85 @@ public class Patient extends DomainObject<Patient> implements Serializable {
     }
 
     /**
-     * Adds a personal representative to this patient's representative list.
+     * Adds a personal representative to this patient's representative set.
      *
      * @param rep
      *            The representative to add.
      */
-    public void addRepresentaive ( final Patient rep ) {
-        // TODO Auto-generated method stub
+    public void addToRepresentatives ( final Patient rep ) {
+        if ( representatives == null ) {
+            representatives = new HashSet<Patient>();
+        }
+        representatives.add( rep );
 
     }
 
     /**
-     * Removes a personal representative from this patient's representative
-     * list.
+     * Adds a patient they represent to the represent set.
+     *
+     * @param patient
+     *            The patient this patient represents.
+     */
+    public void addToRepresent ( final Patient patient ) {
+        if ( represent == null ) {
+            represent = new HashSet<Patient>();
+        }
+        represent.add( patient );
+
+    }
+
+    /**
+     * Removes a personal representative from this patient's representative set.
      *
      * @param rep
      *            The representative to remove.
      */
-    public void removeRepresentaive ( final Patient rep ) {
-        // TODO Auto-generated method stub
-
+    public void removeFromRepresentatives ( final Patient rep ) {
+        if ( representatives == null ) {
+            return;
+        }
+        else {
+            representatives.remove( rep );
+        }
     }
 
     /**
-     * Returns the list of representatives for this patient.
+     * Removes the given patient from the represent set.
      *
-     * @return The list of representatives for this patient.
+     * @param patient
+     *            the patient to remove.
      */
-    public ArrayList<Patient> getRepresentatives () {
-        // TODO Auto-generated method stub
-        return null;
+    public void removeFromRepresent ( final Patient patient ) {
+        if ( represent == null ) {
+            return;
+        }
+        else {
+            represent.remove( patient );
+        }
     }
 
     /**
-     * Returns the list of users this patient represents.
-     * 
-     * @return The list of users this patient represents.
+     * Returns the set of representatives for this patient.
+     *
+     * @return The set of representatives for this patient.
      */
-    public ArrayList<Patient> getRepresent () {
-        // TODO Auto-generated method stub
-        return null;
+    public HashSet<Patient> getRepresentatives () {
+        if ( representatives == null ) {
+            representatives = new HashSet<Patient>();
+        }
+        return representatives;
+    }
+
+    /**
+     * Returns the set of users this patient represents.
+     *
+     * @return The set of users this patient represents.
+     */
+    public HashSet<Patient> getRepresent () {
+        if ( represent == null ) {
+            represent = new HashSet<Patient>();
+        }
+        return represent;
     }
 
 }
