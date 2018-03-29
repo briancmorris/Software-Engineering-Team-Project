@@ -22,4 +22,4 @@ Scenario Outline: Lab Tech Role User
 	
 Examples:
 	| user   | pass   | name   | role      |
-	| aagarw | 123456 | Anu    | Lab Tech  |
+	| aagarw | 123456 | Anu    | Lab Tech  | 
