@@ -63,15 +63,17 @@ public class APIRepresentativeController extends APIController {
                     HttpStatus.NOT_FOUND );
         }
         try {
-            final Session sf = HibernateUtil.openSession();
-            sf.beginTransaction();
+            //final Session sf = HibernateUtil.openSession();
+            //sf.beginTransaction();
             p.getRepresentatives().add( rep );
             rep.getRepresentees().add( p );
             rep.declareSelfRep();
-            sf.save( p );
-            sf.save( rep );
-            sf.getTransaction().commit();
-            sf.close();
+            p.save();
+            rep.save();
+            //sf.save( p );
+            //sf.save( rep );
+            //sf.getTransaction().commit();
+            //sf.close();
         }
         catch ( final Exception e ) {
             return new ResponseEntity( errorResponse( "Failed to declare representative " + username ),
@@ -92,17 +94,19 @@ public class APIRepresentativeController extends APIController {
                     HttpStatus.NOT_FOUND );
         }
         try {
-            final Session sf = HibernateUtil.openSession();
-            sf.beginTransaction();
+            //final Session sf = HibernateUtil.openSession();
+            //sf.beginTransaction();
             p.getRepresentatives().remove( rep );
             rep.getRepresentees().remove( p );
             if ( rep.getRepresentees().isEmpty() ) {
                 rep.undeclareSelfRep();
             }
-            sf.save( p );
-            sf.save( rep );
-            sf.getTransaction().commit();
-            sf.close();
+            p.save();
+            rep.save();
+            //sf.save( p );
+            //sf.save( rep );
+            //sf.getTransaction().commit();
+            //sf.close();
         }
         catch ( final Exception e ) {
             return new ResponseEntity( errorResponse( "Failed to undeclare representative " + username ),
@@ -123,17 +127,19 @@ public class APIRepresentativeController extends APIController {
                     HttpStatus.NOT_FOUND );
         }
         try {
-            final Session sf = HibernateUtil.openSession();
-            sf.beginTransaction();
+            //final Session sf = HibernateUtil.openSession();
+            //sf.beginTransaction();
             p.getRepresentatives().remove( rep );
             rep.getRepresentees().remove( p );
             if ( rep.getRepresentees().isEmpty() ) {
                 rep.undeclareSelfRep();
             }
-            sf.save( p );
-            sf.save( rep );
-            sf.getTransaction().commit();
-            sf.close();
+            p.save();
+            rep.save();
+            //sf.save( p );
+            //sf.save( rep );
+            //sf.getTransaction().commit();
+            //sf.close();
         }
         catch ( final Exception e ) {
             return new ResponseEntity( errorResponse( "Failed to undeclare self as representative from " + username ),
@@ -168,14 +174,16 @@ public class APIRepresentativeController extends APIController {
                     HttpStatus.NOT_FOUND );
         }
         try {
-            final Session sf = HibernateUtil.openSession();
-            sf.beginTransaction();
+            //final Session sf = HibernateUtil.openSession();
+            //sf.beginTransaction();
             patient.getRepresentatives().add( p );
             p.getRepresentees().add( patient );
-            sf.save( patient );
-            sf.save( p );
-            sf.getTransaction().commit();
-            sf.close();
+            patient.save();
+            p.save();
+            //sf.save( patient );
+            //sf.save( p );
+            //sf.getTransaction().commit();
+            //sf.close();
         }
         catch ( final Exception e ) {
             return new ResponseEntity( errorResponse( "Failed to declare representative for username " + username ),
