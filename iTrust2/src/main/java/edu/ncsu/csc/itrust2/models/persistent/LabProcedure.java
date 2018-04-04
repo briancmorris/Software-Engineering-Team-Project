@@ -1,6 +1,7 @@
 package edu.ncsu.csc.itrust2.models.persistent;
 
-import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,8 +11,16 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotEmpty;
 
+import edu.ncsu.csc.itrust2.models.enums.PriorityLevel;
+import edu.ncsu.csc.itrust2.models.enums.Status;
+
+/**
+ * Maintains data relevant to a Lab Procedure, stored in the database.
+ *
+ * @author Brian Morris
+ *
+ */
 @Entity
 @Table ( name = "LabProcedure" )
 public class LabProcedure extends DomainObject<LabProcedure> {
@@ -19,25 +28,42 @@ public class LabProcedure extends DomainObject<LabProcedure> {
     /** ID of the lab procedure. */
     @Id
     @GeneratedValue ( strategy = GenerationType.AUTO )
-    private Long      id;
+    private Long          id;
 
-    /** The LOINC code for ths lab procedure. */
-    private LOINCCode code;
-
-    /** The name of this lab procedure. */
-    @NotEmpty
-    @Length ( max = 64 )
-    private String    name;
-
-    /** The description of this lab procedure. */
+    /** The LOINC code for this lab procedure. */
     @NotNull
-    @Length ( max = 1024 )
-    private String    description;
+    private LOINCCode     code;
 
     /**
      * The priority level of this lab procedure, specified by an HCP.
      */
-    private Integer   priorityLevel;
+    @NotNull
+    private PriorityLevel priorityLevel;
+
+    /**
+     * The date this object was assigned.
+     */
+    @NotNull
+    @Length ( min = 10, max = 10 )
+    private String        date;
+
+    /** The comments of this lab procedure, left by the HCP. */
+    @NotNull
+    @Length ( max = 1024 )
+    private String        comments;
+
+    /** The status of this lab procedure. */
+    private Status        status;
+
+    /**
+     * The lab tech assigned to this procedure.
+     */
+    private User          labTech;
+
+    /**
+     * The office visit that this lab procedure is a part of.
+     */
+    private OfficeVisit   officeVisit;
 
     /**
      * Returns the id associated with this lab procedure.
@@ -45,7 +71,7 @@ public class LabProcedure extends DomainObject<LabProcedure> {
      * @return The id of the lab procedure.
      */
     @Override
-    public Serializable getId () {
+    public Long getId () {
         return id;
     }
 
@@ -65,7 +91,7 @@ public class LabProcedure extends DomainObject<LabProcedure> {
      *
      * @return The priority level of this lab procedure.
      */
-    public Integer getPriorityLevel () {
+    public PriorityLevel getPriorityLevel () {
         return priorityLevel;
     }
 
@@ -75,46 +101,114 @@ public class LabProcedure extends DomainObject<LabProcedure> {
      * @param priorityLevel
      *            The priority level to assign.
      */
-    public void setPriorityLevel ( final Integer priorityLevel ) {
+    public void setPriorityLevel ( final PriorityLevel priorityLevel ) {
         this.priorityLevel = priorityLevel;
     }
 
     /**
-     * Returns the name of this lab procedure.
+     * Returns the date of this lab procedure.
      *
-     * @return The name of this lab procedure.
+     * @return The date of this lab procedure.
      */
-    public String getName () {
-        return name;
+    public String getDate () {
+        return date;
     }
 
     /**
-     * Sets the name of this lab procedure.
+     * Sets the date of this lab procedure. Must be of the format dd-MM-yyyy.
      *
-     * @param name
-     *            The new name of this lab procedure.
+     * @param date
+     *            The new date of this lab procedure.
      */
-    public void setName ( final String name ) {
-        this.name = name;
+    public void setDate ( final String date ) {
+        /**
+         * StackOverflow Solution:
+         * https://stackoverflow.com/questions/226910/how-to-sanity-check-a-date-in-java
+         */
+        try {
+            final DateFormat df = new SimpleDateFormat( "dd-MM-yyyy" );
+            df.setLenient( false );
+            df.parse( date );
+            this.date = date;
+        }
+        catch ( final Exception e ) {
+            throw new IllegalArgumentException( "Invalid date string format." );
+        }
     }
 
     /**
-     * Returns the description of this lab procedure.
+     * Returns the comments of this lab procedure.
      *
-     * @return The description of this lab procedure.
+     * @return The comments of this lab procedure.
      */
-    public String getDescription () {
-        return description;
+    public String getComments () {
+        return comments;
     }
 
     /**
-     * Sets the description of this lab procedure.
+     * Sets the comments of this lab procedure.
      *
-     * @param description
-     *            The new description of this lab procedure.
+     * @param comments
+     *            The new comments of this lab procedure.
      */
-    public void setDescription ( final String description ) {
-        this.description = description;
+    public void setComments ( final String comments ) {
+        this.comments = comments;
     }
 
+    /**
+     * Returns the status of this lab procedure.
+     *
+     * @return The status of this lab procedure.
+     */
+    public Status getStatus () {
+        return status;
+    }
+
+    /**
+     * Sets the status of this lab procedure.
+     *
+     * @param status
+     *            The new status of this lab procedure.
+     */
+    public void setStatus ( final Status status ) {
+        this.status = status;
+    }
+
+    /**
+     * Returns the assigned lab tech of this lab procedure.
+     *
+     * @return The assigned lab tech of this lab procedure.
+     */
+    public User getLabTech () {
+        return labTech;
+    }
+
+    /**
+     * Sets the assigned lab tech of this lab procedure.
+     *
+     * @param labTech
+     *            The new lab tech for this procedure.
+     */
+    public void setLabTech ( final User labTech ) {
+        this.labTech = labTech;
+    }
+
+    /**
+     * Returns the office visit that this lab procedure is tied to.
+     *
+     * @return The office visit that this lab procedure is tied to.
+     */
+    public OfficeVisit getOfficeVisit () {
+        return officeVisit;
+    }
+
+    /**
+     * Sets the office visit that this lab procedure is tied to.
+     *
+     * @param officeVisit
+     *            The office visit that this lab procedure is tied to.
+     */
+    public void setOfficeVisit ( final OfficeVisit officeVisit ) {
+        this.officeVisit = officeVisit;
+    }
 }
