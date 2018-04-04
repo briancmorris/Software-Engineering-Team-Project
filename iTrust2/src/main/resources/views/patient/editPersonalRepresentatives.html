@@ -47,6 +47,7 @@
 								$scope.errorAdding = "";
 							}, function(rejection) {
 								$scope.errorAdding = "Could not add personal representative";
+								console.log(rejection.status)
 							})
 					
 				}

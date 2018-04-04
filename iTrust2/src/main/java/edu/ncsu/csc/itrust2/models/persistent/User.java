@@ -50,19 +50,20 @@ public class User extends DomainObject<User> implements Serializable {
     
     /**
      * Set of personal representatives of Patient.
-     */
+     
     @ManyToMany(fetch = FetchType.EAGER, cascade={CascadeType.ALL})
     @JoinTable(name="PATIENT_REPRESENTATIVES",
         joinColumns={@JoinColumn(name="REP_ID")},
-        inverseJoinColumns={@JoinColumn(name="PATIENT_ID")})
+        inverseJoinColumns={@JoinColumn(name="USER_ID")})
     private Set<User> representatives = new HashSet<User>();
     
     /**
      * Set of patients that are represented.
-     */
+     
     @ManyToMany(fetch = FetchType.EAGER, mappedBy="representatives")
     private Set<User> representees = new HashSet<User>(); 
-
+    */
+    
     /**
      * Get all users in the database
      *
@@ -227,7 +228,7 @@ public class User extends DomainObject<User> implements Serializable {
     @Enumerated ( EnumType.STRING )
     private Role    role;
 
-    private boolean isRepresentative;
+    //private boolean isRepresentative;
 
     /**
      * Get the username of this user
@@ -398,7 +399,7 @@ public class User extends DomainObject<User> implements Serializable {
      * Get the list of representatives of this patient
      *
      * @return representatives the list of patient's representatives
-     */
+     
     public Set<User> getRepresentatives () {
         return representatives;
     }
@@ -407,7 +408,7 @@ public class User extends DomainObject<User> implements Serializable {
      * Get the list of people this patient represents
      *
      * @return representees the list of people this patient represents
-     */
+     
     public Set<User> getRepresentees () {
         return representees;
     }
@@ -423,4 +424,13 @@ public class User extends DomainObject<User> implements Serializable {
     public void undeclareSelfRep () {
         isRepresentative = false;
     }
+
+    public void setPersonalRepresentatives ( HashSet<User> hashSet ) {
+        representatives = hashSet;
+    }
+
+    public void setPersonalRepresentees ( HashSet<User> hashSet ) {
+        representees = hashSet;
+    }
+    */
 }
