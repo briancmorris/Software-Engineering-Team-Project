@@ -10,6 +10,7 @@ import edu.ncsu.csc.itrust2.models.enums.BloodType;
 import edu.ncsu.csc.itrust2.models.enums.Ethnicity;
 import edu.ncsu.csc.itrust2.models.enums.Gender;
 import edu.ncsu.csc.itrust2.models.enums.PatientSmokingStatus;
+import edu.ncsu.csc.itrust2.models.enums.PriorityLevel;
 import edu.ncsu.csc.itrust2.models.enums.Role;
 import edu.ncsu.csc.itrust2.models.enums.State;
 import edu.ncsu.csc.itrust2.models.enums.Status;
@@ -120,5 +121,15 @@ public class EnumTest {
         final Status test = Status.APPROVED;
         final int testCode = test.getCode();
         assertEquals( testCode, 3 );
+    }
+
+    /**
+     * Tests PriorityLevel enum.
+     */
+    @Test
+    public void testPriorityLevel () {
+        final PriorityLevel test = PriorityLevel.ONE;
+        final int testCode = test.getCode();
+        assertEquals( testCode, 1 );
     }
 }
