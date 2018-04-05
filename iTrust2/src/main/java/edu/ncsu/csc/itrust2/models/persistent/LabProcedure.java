@@ -1,7 +1,6 @@
 package edu.ncsu.csc.itrust2.models.persistent;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -44,8 +43,7 @@ public class LabProcedure extends DomainObject<LabProcedure> {
      * The date this object was assigned.
      */
     @NotNull
-    @Length ( min = 10, max = 10 )
-    private String        date;
+    private Calendar      date;
 
     /** The comments of this lab procedure, left by the HCP. */
     @NotNull
@@ -53,17 +51,27 @@ public class LabProcedure extends DomainObject<LabProcedure> {
     private String        comments;
 
     /** The status of this lab procedure. */
+    @NotNull
     private Status        status;
 
     /**
      * The lab tech assigned to this procedure.
      */
+    @NotNull
     private User          labTech;
 
     /**
      * The office visit that this lab procedure is a part of.
      */
+    @NotNull
     private OfficeVisit   officeVisit;
+
+    /**
+     * Empty constructor for Hibernate.
+     */
+    public LabProcedure () {
+
+    }
 
     /**
      * Returns the id associated with this lab procedure.
@@ -110,7 +118,7 @@ public class LabProcedure extends DomainObject<LabProcedure> {
      *
      * @return The date of this lab procedure.
      */
-    public String getDate () {
+    public Calendar getDate () {
         return date;
     }
 
@@ -120,20 +128,8 @@ public class LabProcedure extends DomainObject<LabProcedure> {
      * @param date
      *            The new date of this lab procedure.
      */
-    public void setDate ( final String date ) {
-        /**
-         * StackOverflow Solution:
-         * https://stackoverflow.com/questions/226910/how-to-sanity-check-a-date-in-java
-         */
-        try {
-            final DateFormat df = new SimpleDateFormat( "dd-MM-yyyy" );
-            df.setLenient( false );
-            df.parse( date );
-            this.date = date;
-        }
-        catch ( final Exception e ) {
-            throw new IllegalArgumentException( "Invalid date string format." );
-        }
+    public void setDate ( final Calendar date ) {
+        this.date = date;
     }
 
     /**
