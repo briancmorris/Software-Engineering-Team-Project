@@ -20,8 +20,6 @@ import edu.ncsu.csc.itrust2.models.enums.Role;
 import edu.ncsu.csc.itrust2.models.enums.TransactionType;
 import edu.ncsu.csc.itrust2.models.persistent.Patient;
 import edu.ncsu.csc.itrust2.models.persistent.User;
-import edu.ncsu.csc.itrust2.models.persistent.Patient;
-import edu.ncsu.csc.itrust2.utils.HibernateUtil;
 import edu.ncsu.csc.itrust2.utils.LoggerUtil;
 
 /**
@@ -42,22 +40,22 @@ public class APIRepresentativeController extends APIController {
     public Set<Patient> getRepresentatives () {
         Patient p = Patient.getByName( LoggerUtil.currentUser() );
         if ( p == null ) {
-            p = new Patient(User.getByName( LoggerUtil.currentUser() ));
+            p = new Patient( User.getByName( LoggerUtil.currentUser() ) );
         }
-        for ( final Patient represent : p.getRepresentatives()) {
+        for ( final Patient represent : p.getRepresentatives() ) {
             represent.setPersonalRepresentatives( new HashSet<Patient>() );
             represent.setPersonalRepresentees( new HashSet<Patient>() );
         }
-        System.out.println(p.getSelf().getUsername());
-        System.out.println(p.getRepresentatives() );
-        LoggerUtil.log( TransactionType.VIEW_REP_LIST, p.getSelf());
+        System.out.println( p.getSelf().getUsername() );
+        System.out.println( p.getRepresentatives() );
+        LoggerUtil.log( TransactionType.VIEW_REP_LIST, p.getSelf() );
         return p.getRepresentatives();
     }
 
     @GetMapping ( BASE_PATH + "/editPersonalRepresentatives/myPatients" )
     @PreAuthorize ( "hasRole('ROLE_PATIENT')" )
     public Set<Patient> getRepresentees () {
-        final Patient p = new Patient(User.getByName( LoggerUtil.currentUser() ));
+        final Patient p = new Patient( User.getByName( LoggerUtil.currentUser() ) );
         if ( !p.isRep() ) {
             return null;
         }
@@ -71,45 +69,45 @@ public class APIRepresentativeController extends APIController {
     public ResponseEntity declareRep ( @RequestBody final String username ) {
         Patient p = Patient.getByName( LoggerUtil.currentUser() );
         if ( p == null ) {
-            p = new Patient(User.getByName( LoggerUtil.currentUser() ));
+            p = new Patient( User.getByName( LoggerUtil.currentUser() ) );
         }
         Patient rep = Patient.getByName( username );
-        if (rep == null) {
-            rep = new Patient(User.getByNameAndRole( username, Role.ROLE_PATIENT ));
+        if ( rep == null ) {
+            rep = new Patient( User.getByNameAndRole( username, Role.ROLE_PATIENT ) );
         }
         if ( rep == null ) {
             return new ResponseEntity( errorResponse( "No Patient found for username " + username ),
                     HttpStatus.NOT_FOUND );
         }
         try {
-            //final Session sf = HibernateUtil.openSession();
-            //sf.beginTransaction();
-            Set<Patient> tempReps = new HashSet<Patient>();
-            Set<Patient> tempPatients = new HashSet<Patient>();
+            // final Session sf = HibernateUtil.openSession();
+            // sf.beginTransaction();
+            final Set<Patient> tempReps = new HashSet<Patient>();
+            final Set<Patient> tempPatients = new HashSet<Patient>();
             tempReps.addAll( p.getRepresentatives() );
-            //tempReps = p.getRepresentatives();
+            // tempReps = p.getRepresentatives();
             tempReps.add( rep );
-            tempPatients.addAll( rep.getRepresentees());
+            tempPatients.addAll( rep.getRepresentees() );
             tempPatients.add( p );
             p.getRepresentatives().clear();
             rep.getRepresentees().clear();
-            //rep.declareSelfRep();
+            // rep.declareSelfRep();
             p.save();
             rep.save();
-            for (final Patient represent: tempReps) {
+            for ( final Patient represent : tempReps ) {
                 p.getRepresentatives().add( represent );
             }
-            for (final Patient patients: tempPatients) {
+            for ( final Patient patients : tempPatients ) {
                 rep.getRepresentees().add( patients );
             }
             p.save();
             rep.declareSelfRep();
             rep.save();
-            //sf.save( p );
-            //sf.save( rep );
-            //sf.getTransaction().commit();
-            //sf.close();
-            for ( final Patient represent : p.getRepresentatives()) {
+            // sf.save( p );
+            // sf.save( rep );
+            // sf.getTransaction().commit();
+            // sf.close();
+            for ( final Patient represent : p.getRepresentatives() ) {
                 represent.setPersonalRepresentatives( new HashSet<Patient>() );
                 represent.setPersonalRepresentees( new HashSet<Patient>() );
             }
@@ -123,59 +121,88 @@ public class APIRepresentativeController extends APIController {
                     HttpStatus.BAD_REQUEST );
         }
         /**
-        LoggerUtil.log( TransactionType.DEC_REP, LoggerUtil.currentUser(), username,
-                p.getUsername() + " declared representative: " + username );
-        return new ResponseEntity( p, HttpStatus.OK );
-        */
+         * LoggerUtil.log( TransactionType.DEC_REP, LoggerUtil.currentUser(),
+         * username, p.getUsername() + " declared representative: " + username
+         * ); return new ResponseEntity( p, HttpStatus.OK );
+         */
     }
 
     @SuppressWarnings ( "unused" )
     @DeleteMapping ( BASE_PATH + "/editPersonalRepresentatives" )
     @PreAuthorize ( "hasRole('ROLE_PATIENT')" )
-    public ResponseEntity undelcareRep ( @RequestBody final String username ) {
-        final Patient p = new Patient(User.getByName( LoggerUtil.currentUser() ));
-        final Patient rep = new Patient(User.getByName( username ));
+    public ResponseEntity undelcareRep ( @PathVariable ( "username" ) final String username ) {
+        Patient p = Patient.getByName( LoggerUtil.currentUser() );
+        if ( p == null ) {
+            p = new Patient( User.getByName( LoggerUtil.currentUser() ) );
+        }
+        Patient rep = Patient.getByName( username );
+        if ( rep == null ) {
+            rep = new Patient( User.getByNameAndRole( username, Role.ROLE_PATIENT ) );
+        }
         if ( rep == null ) {
             return new ResponseEntity( errorResponse( "No Patient found for username " + username ),
                     HttpStatus.NOT_FOUND );
         }
         try {
-            //final Session sf = HibernateUtil.openSession();
-            //sf.beginTransaction();
-            p.getRepresentatives().remove( rep );
-            rep.getRepresentees().remove( p );
-            if ( rep.getRepresentees().isEmpty() ) {
-                rep.undeclareSelfRep();
-            }
+            // final Session sf = HibernateUtil.openSession();
+            // sf.beginTransaction();
+            final Set<Patient> tempReps = new HashSet<Patient>();
+            final Set<Patient> tempPatients = new HashSet<Patient>();
+            tempReps.addAll( p.getRepresentatives() );
+            // tempReps = p.getRepresentatives();
+            tempReps.remove( rep );
+            tempPatients.addAll( rep.getRepresentees() );
+            tempPatients.remove( p );
+            p.getRepresentatives().clear();
+            rep.getRepresentees().clear();
+            // rep.declareSelfRep();
             p.save();
             rep.save();
-            //sf.save( p );
-            //sf.save( rep );
-            //sf.getTransaction().commit();
-            //sf.close();
+            for ( final Patient represent : tempReps ) {
+                p.getRepresentatives().add( represent );
+            }
+            for ( final Patient patients : tempPatients ) {
+                rep.getRepresentees().add( patients );
+            }
+            p.save();
+            rep.undeclareSelfRep();
+            rep.save();
+            // sf.save( p );
+            // sf.save( rep );
+            // sf.getTransaction().commit();
+            // sf.close();
+            for ( final Patient represent : p.getRepresentatives() ) {
+                represent.setPersonalRepresentatives( new HashSet<Patient>() );
+                represent.setPersonalRepresentees( new HashSet<Patient>() );
+            }
+            LoggerUtil.log( TransactionType.UNDEC_REP, LoggerUtil.currentUser(), username,
+                    p.getSelf().getUsername() + " undeclared representative " + username );
+            return new ResponseEntity( HttpStatus.OK );
         }
         catch ( final Exception e ) {
             return new ResponseEntity( errorResponse( "Failed to undeclare representative " + username ),
                     HttpStatus.BAD_REQUEST );
         }
-        LoggerUtil.log( TransactionType.UNDEC_REP, LoggerUtil.currentUser(), username,
-                p.getSelf().getUsername() + " undeclared representative " + username );
-        return new ResponseEntity( p, HttpStatus.OK );
+        /**
+         * LoggerUtil.log( TransactionType.UNDEC_REP, LoggerUtil.currentUser(),
+         * username, p.getSelf().getUsername() + " undeclared representative " +
+         * username ); return new ResponseEntity( p, HttpStatus.OK );
+         */
     }
 
     @SuppressWarnings ( "unused" )
     @DeleteMapping ( BASE_PATH + "/editPersonalRepresentatives/removeSelf" )
     @PreAuthorize ( "hasRole('ROLE_PATIENT')" )
     public ResponseEntity undelcareSelfRep ( @RequestBody final String username ) {
-        final Patient rep = new Patient(User.getByName( LoggerUtil.currentUser() ));
-        final Patient p = new Patient(User.getByName( username ));
+        final Patient rep = new Patient( User.getByName( LoggerUtil.currentUser() ) );
+        final Patient p = new Patient( User.getByName( username ) );
         if ( p == null ) {
             return new ResponseEntity( errorResponse( "No Patient found for username " + username ),
                     HttpStatus.NOT_FOUND );
         }
         try {
-            //final Session sf = HibernateUtil.openSession();
-            //sf.beginTransaction();
+            // final Session sf = HibernateUtil.openSession();
+            // sf.beginTransaction();
             p.getRepresentatives().remove( rep );
             rep.getRepresentees().remove( p );
             if ( rep.getRepresentees().isEmpty() ) {
@@ -183,10 +210,10 @@ public class APIRepresentativeController extends APIController {
             }
             p.save();
             rep.save();
-            //sf.save( p );
-            //sf.save( rep );
-            //sf.getTransaction().commit();
-            //sf.close();
+            // sf.save( p );
+            // sf.save( rep );
+            // sf.getTransaction().commit();
+            // sf.close();
         }
         catch ( final Exception e ) {
             return new ResponseEntity( errorResponse( "Failed to undeclare self as representative from " + username ),
@@ -201,7 +228,7 @@ public class APIRepresentativeController extends APIController {
     @GetMapping ( BASE_PATH + "/editPersonalRepresentatives/{username}" )
     @PreAuthorize ( "hasRole('ROLE_HCP')" )
     public ResponseEntity getPatientRepresentatives ( @PathVariable ( "username" ) final String username ) {
-        final Patient patient = new Patient(User.getByName( username ));
+        final Patient patient = new Patient( User.getByName( username ) );
         if ( patient == null ) {
             return new ResponseEntity( errorResponse( "No Patient found for username " + username ),
                     HttpStatus.NOT_FOUND );
@@ -217,22 +244,22 @@ public class APIRepresentativeController extends APIController {
     @PostMapping ( BASE_PATH + "/editPersonalRepresentatives/{username}" )
     @PreAuthorize ( "hasRole('ROLE_HCP')" )
     public ResponseEntity declareRepForPatient ( @PathVariable final String username, @RequestBody Patient p ) {
-        final Patient patient = new Patient(User.getByName( username ));
+        final Patient patient = new Patient( User.getByName( username ) );
         if ( patient == null ) {
             return new ResponseEntity( errorResponse( "No Patient found for username " + username ),
                     HttpStatus.NOT_FOUND );
         }
         try {
-            //final Session sf = HibernateUtil.openSession();
-            //sf.beginTransaction();
+            // final Session sf = HibernateUtil.openSession();
+            // sf.beginTransaction();
             patient.getRepresentatives().add( p );
             p.getRepresentees().add( patient );
             patient.save();
             p.save();
-            //sf.save( patient );
-            //sf.save( p );
-            //sf.getTransaction().commit();
-            //sf.close();
+            // sf.save( patient );
+            // sf.save( p );
+            // sf.getTransaction().commit();
+            // sf.close();
         }
         catch ( final Exception e ) {
             return new ResponseEntity( errorResponse( "Failed to declare representative for username " + username ),
