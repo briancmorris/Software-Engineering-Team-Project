@@ -27,7 +27,8 @@
 				}
 				
 				$scope.removeRow = function(rep) {
-					$http.delete('/iTrust2/api/v1/editPersonalRepresentatives' + rep.self.username).then(
+					console.log(rep.self.username)
+					$http.delete('/iTrust2/api/v1/editPersonalRepresentatives/' + rep.self.username).then(
 							function(response) {
 								$scope.loadTable();
 								$scope.message = "";

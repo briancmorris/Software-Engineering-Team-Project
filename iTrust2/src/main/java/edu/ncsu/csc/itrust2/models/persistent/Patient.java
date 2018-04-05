@@ -791,9 +791,18 @@ public class Patient extends DomainObject<Patient> implements Serializable {
         representees = hashSet;
     }
     
-    /**
-     *
-     * public void declareRep(Patient p) { representatives.add( p ); }
-     */
+    @Override
+    public boolean equals ( final Object obj ) {
+        Patient p = (Patient) obj;
+        if ( this == obj ) {
+            return true;
+        } else {
+            if (this.self.getUsername().equals(p.getSelf().getUsername())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
 
 }

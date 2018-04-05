@@ -136,6 +136,7 @@ public class APIRepresentativeController extends APIController {
     @DeleteMapping ( BASE_PATH + "/editPersonalRepresentatives/{username}" )
     @PreAuthorize ( "hasRole('ROLE_PATIENT')" )
     public ResponseEntity undelcareRep ( @PathVariable ( "username" ) final String username ) {
+        System.out.println(username);
         Patient p = Patient.getByName( LoggerUtil.currentUser() );
         /**
         if ( p == null ) {
@@ -159,9 +160,18 @@ public class APIRepresentativeController extends APIController {
             final Set<Patient> tempPatients = new HashSet<Patient>();
             tempReps.addAll( p.getRepresentatives() );
             // tempReps = p.getRepresentatives();
-            tempReps.remove( rep );
+            for (final Patient r : tempReps) {
+                if (r.equals( rep )) {
+                    tempReps.remove( r );
+                }
+            }
+            //tempReps.remove( rep );
             tempPatients.addAll( rep.getRepresentees() );
-            tempPatients.remove( p );
+            for (final Patient patient : tempPatients) {
+                if (patient.equals( p )) {
+                    tempPatients.remove( patient );
+                }
+            }
             p.getRepresentatives().clear();
             rep.getRepresentees().clear();
             // rep.declareSelfRep();
@@ -174,7 +184,9 @@ public class APIRepresentativeController extends APIController {
                 rep.getRepresentees().add( patients );
             }
             p.save();
-            rep.undeclareSelfRep();
+            if (rep.getRepresentees().isEmpty()) {
+                rep.undeclareSelfRep();
+            }
             rep.save();
             // sf.save( p );
             // sf.save( rep );
@@ -222,13 +234,42 @@ public class APIRepresentativeController extends APIController {
         try {
             // final Session sf = HibernateUtil.openSession();
             // sf.beginTransaction();
-            p.getRepresentatives().remove( rep );
-            rep.getRepresentees().remove( p );
-            if ( rep.getRepresentees().isEmpty() ) {
-                rep.undeclareSelfRep();
+            final Set<Patient> tempReps = new HashSet<Patient>();
+            final Set<Patient> tempPatients = new HashSet<Patient>();
+            tempReps.addAll( p.getRepresentatives() );
+            // tempReps = p.getRepresentatives();
+            for (final Patient r : tempReps) {
+                if (r.equals( rep )) {
+                    tempReps.remove( r );
+                }
             }
+            //tempReps.remove( rep );
+            tempPatients.addAll( rep.getRepresentees() );
+            for (final Patient patient : tempPatients) {
+                if (patient.equals( p )) {
+                    tempPatients.remove( patient );
+                }
+            }
+            p.getRepresentatives().clear();
+            rep.getRepresentees().clear();
+            // rep.declareSelfRep();
             p.save();
             rep.save();
+            for ( final Patient represent : tempReps ) {
+                p.getRepresentatives().add( represent );
+            }
+            for ( final Patient patients : tempPatients ) {
+                rep.getRepresentees().add( patients );
+            }
+            p.save();
+            if (rep.getRepresentees().isEmpty()) {
+                rep.undeclareSelfRep();
+            }
+            rep.save();
+            for ( final Patient represent : p.getRepresentatives() ) {
+                represent.setPersonalRepresentatives( new HashSet<Patient>() );
+                represent.setPersonalRepresentees( new HashSet<Patient>() );
+            }
             // sf.save( p );
             // sf.save( rep );
             // sf.getTransaction().commit();
