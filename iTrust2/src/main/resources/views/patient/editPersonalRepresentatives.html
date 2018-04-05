@@ -27,7 +27,7 @@
 				}
 				
 				$scope.removeRow = function() {
-					$http.delete("/iTrust2/api/v1/editPersonalRepresentatives", $scope.rep).then(
+					$http.delete("/iTrust2/api/v1/editPersonalRepresentatives", $).then(
 							function(response) {
 								$scope.loadTable();
 								$scope.message = "";
@@ -72,7 +72,7 @@
 								<th>Action</th>
 							</tr>
 							<tr name="idRow" ng-repeat="r in reps">
-								<td name="idCell">{{r.id}}</td>
+								<td name="idCell">{{r.username}}</td>
 								<td>
 									<input type="button" value="Remove" class="btn btn-primary" ng-click="removeRow(r)"/>
 								</td>

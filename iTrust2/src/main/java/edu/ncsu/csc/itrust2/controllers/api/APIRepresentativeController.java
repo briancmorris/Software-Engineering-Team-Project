@@ -40,7 +40,16 @@ public class APIRepresentativeController extends APIController {
     @GetMapping ( BASE_PATH + "/editPersonalRepresentatives" )
     @PreAuthorize ( "hasRole('ROLE_PATIENT')" )
     public Set<Patient> getRepresentatives () {
-        final Patient p = new Patient(User.getByName( LoggerUtil.currentUser() ));
+        Patient p = Patient.getByName( LoggerUtil.currentUser() );
+        if ( p == null ) {
+            p = new Patient(User.getByName( LoggerUtil.currentUser() ));
+        }
+        for ( final Patient represent : p.getRepresentatives()) {
+            represent.setPersonalRepresentatives( new HashSet<Patient>() );
+            represent.setPersonalRepresentees( new HashSet<Patient>() );
+        }
+        System.out.println(p.getSelf().getUsername());
+        System.out.println(p.getRepresentatives() );
         LoggerUtil.log( TransactionType.VIEW_REP_LIST, p.getSelf());
         return p.getRepresentatives();
     }
@@ -60,8 +69,14 @@ public class APIRepresentativeController extends APIController {
     @PostMapping ( BASE_PATH + "/editPersonalRepresentatives" )
     @PreAuthorize ( "hasRole('ROLE_PATIENT')" )
     public ResponseEntity declareRep ( @RequestBody final String username ) {
-        final Patient p = new Patient(User.getByName( LoggerUtil.currentUser() ));
-        final Patient rep = new Patient(User.getByName( username ));
+        Patient p = Patient.getByName( LoggerUtil.currentUser() );
+        if ( p == null ) {
+            p = new Patient(User.getByName( LoggerUtil.currentUser() ));
+        }
+        Patient rep = Patient.getByName( username );
+        if (rep == null) {
+            rep = new Patient(User.getByNameAndRole( username, Role.ROLE_PATIENT ));
+        }
         if ( rep == null ) {
             return new ResponseEntity( errorResponse( "No Patient found for username " + username ),
                     HttpStatus.NOT_FOUND );
@@ -69,10 +84,26 @@ public class APIRepresentativeController extends APIController {
         try {
             //final Session sf = HibernateUtil.openSession();
             //sf.beginTransaction();
-            p.getRepresentatives().add( rep );
-            rep.getRepresentees().add( p );
-            rep.declareSelfRep();
+            Set<Patient> tempReps = new HashSet<Patient>();
+            Set<Patient> tempPatients = new HashSet<Patient>();
+            tempReps.addAll( p.getRepresentatives() );
+            //tempReps = p.getRepresentatives();
+            tempReps.add( rep );
+            tempPatients.addAll( rep.getRepresentees());
+            tempPatients.add( p );
+            p.getRepresentatives().clear();
+            rep.getRepresentees().clear();
+            //rep.declareSelfRep();
             p.save();
+            rep.save();
+            for (final Patient represent: tempReps) {
+                p.getRepresentatives().add( represent );
+            }
+            for (final Patient patients: tempPatients) {
+                rep.getRepresentees().add( patients );
+            }
+            p.save();
+            rep.declareSelfRep();
             rep.save();
             //sf.save( p );
             //sf.save( rep );
