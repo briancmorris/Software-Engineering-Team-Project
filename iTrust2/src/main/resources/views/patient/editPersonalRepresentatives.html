@@ -13,7 +13,7 @@
 			app.controller('repCtrl', function($scope, $http) {
 				
 				$scope.reps = [];
-				$scope.rep = "";
+				//$scope.rep = "";
 				$scope.loadTable = function() {
 					// Get list of reps from rest api.
 					$http.get("/iTrust2/api/v1/editPersonalRepresentatives").then(
@@ -26,8 +26,8 @@
 						});
 				}
 				
-				$scope.removeRow = function() {
-					$http.delete("/iTrust2/api/v1/editPersonalRepresentatives", $).then(
+				$scope.removeRow = function(rep) {
+					$http.delete('/iTrust2/api/v1/editPersonalRepresentatives' + rep.self.username).then(
 							function(response) {
 								$scope.loadTable();
 								$scope.message = "";
@@ -37,7 +37,6 @@
 				}
 				
 				// handle add representative button click
-				debugger;
 				$scope.addRep = function() {
 					console.log($scope.rep);
 					$http.post("/iTrust2/api/v1/editPersonalRepresentatives", $scope.rep).then(
@@ -72,7 +71,7 @@
 								<th>Action</th>
 							</tr>
 							<tr name="idRow" ng-repeat="r in reps">
-								<td name="idCell">{{r.username}}</td>
+								<td name="idCell">{{r.self.username}}</td>
 								<td>
 									<input type="button" value="Remove" class="btn btn-primary" ng-click="removeRow(r)"/>
 								</td>
@@ -87,7 +86,7 @@
 						<form class="form-horizontal" role="form" name="addRepForm" ng-submit="addRep(addRepForm.$valid)">
 							<div class="form-group" style="padding-left:30px">
 								<label>Patient ID</label>
-								<input type="text" class="form-control" name="repID" ng-model="rep" required/>
+								<input type="text" class="form-control" name="rep" ng-model="rep" required/>
 							</div>
 							<div class="form-group" style="padding-left:30px">								
 								<div style="padding-left:170px">
