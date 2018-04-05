@@ -12,18 +12,17 @@ import org.springframework.web.bind.annotation.RestController;
 import edu.ncsu.csc.itrust2.forms.er.EmergencyForm;
 import edu.ncsu.csc.itrust2.models.enums.TransactionType;
 import edu.ncsu.csc.itrust2.models.persistent.Diagnosis;
-import edu.ncsu.csc.itrust2.models.persistent.ICDCode;
 import edu.ncsu.csc.itrust2.models.persistent.Patient;
 import edu.ncsu.csc.itrust2.models.persistent.Prescription;
 import edu.ncsu.csc.itrust2.models.persistent.User;
 import edu.ncsu.csc.itrust2.utils.LoggerUtil;
 
 /**
- * Class that provides the REST endpoints for handling ICD Codes. They can be
- * retrieved individually based on id, or all in a list. An Admin can add,
- * remove, or edit them.
+ * Class that provides the REST endpoints for handling EHR information. All
+ * three endpoints will be called upon requesting EHRs, however they are
+ * separated for easy diagnosis and prescription parsing.
  *
- * @author Thomas
+ * @author Garrett Watts
  *
  */
 @RestController
@@ -31,26 +30,17 @@ import edu.ncsu.csc.itrust2.utils.LoggerUtil;
 public class APIEmergencyController extends APIController {
 
     /**
-     * Returns a list of Codes in the system
-     *
-     * @return All the codes in the system
-     */
-    @GetMapping ( BASE_PATH + "/icdcodesx" )
-    public List<ICDCode> getCodes () {
-        LoggerUtil.log( TransactionType.ICD_VIEW_ALL, LoggerUtil.currentUser(), "Fetched icd codes" );
-        return ICDCode.getAll();
-    }
-
-    /**
-     * Returns the code with the given ID
+     * Returns the demographics for a patients EHR
      *
      * @param id
-     *            The ID of the code to retrieve
-     * @return The requested Code
+     *            The patient ID to search for
+     * @return The patient's demographics
      */
     @GetMapping ( BASE_PATH + "/emergencyHealthRecords/demo/{id}" )
     @PreAuthorize ( "hasRole('ROLE_HCP') or hasRole('ROLE_ER')" )
     public ResponseEntity getEmergencyDemo ( @PathVariable ( "id" ) final String id ) {
+        // Save id as username, may be updated in loop. Used for logging.
+        String username = id;
         try {
             EmergencyForm form = new EmergencyForm( id );
             // If the patient was not found
@@ -64,15 +54,18 @@ public class APIEmergencyController extends APIController {
                     // Compare the full name to the string
                     if ( name.equals( id ) ) {
                         form = new EmergencyForm( p.getSelf().getId() );
-                        if ( form.getId().equals( "" ) ) {
-                            return new ResponseEntity( errorResponse( "No patient with name " + id ),
-                                    HttpStatus.NOT_FOUND );
-                        }
-                    }
+                        username = p.getSelf().getId();
 
+                    }
+                }
+                // No patient found by id or full name
+                if ( form.getId().equals( "" ) ) {
+                    return new ResponseEntity( errorResponse( "No patient with name " + id ), HttpStatus.NOT_FOUND );
                 }
             }
-            LoggerUtil.log( TransactionType.ICD_VIEW, LoggerUtil.currentUser(), "Fetched icd code with id " + id );
+            // Log that the current user viewed the patients EHR
+            LoggerUtil.log( TransactionType.VIEW_EHR, LoggerUtil.currentUser(), username,
+                    "EHR viewed for " + username );
             return new ResponseEntity( form, HttpStatus.OK );
         }
         catch ( final Exception e ) {
@@ -84,11 +77,11 @@ public class APIEmergencyController extends APIController {
     }
 
     /**
-     * Returns the code with the given ID
+     * Returns the diagnoses for a patients EHR
      *
      * @param id
-     *            The ID of the code to retrieve
-     * @return The requested Code
+     *            The patient ID to search for
+     * @return The patient's diagnoses
      */
     @GetMapping ( BASE_PATH + "/emergencyHealthRecords/diag/{id}" )
     @PreAuthorize ( "hasRole('ROLE_HCP') or hasRole('ROLE_ER')" )
@@ -111,18 +104,16 @@ public class APIEmergencyController extends APIController {
                 return null;
             }
         }
-        LoggerUtil.log( TransactionType.DIAGNOSIS_PATIENT_VIEW_ALL, user.getUsername(),
-                user.getUsername() + " viewed their diagnoses" );
 
         return Diagnosis.getForPatient( user );
     }
 
     /**
-     * Returns the code with the given ID
+     * Returns the prescriptions for a patients EHR
      *
      * @param id
-     *            The ID of the code to retrieve
-     * @return The requested Code
+     *            The patient ID to search for
+     * @return The patient's prescriptions
      */
     @GetMapping ( BASE_PATH + "/emergencyHealthRecords/pres/{id}" )
     @PreAuthorize ( "hasRole('ROLE_HCP') or hasRole('ROLE_ER')" )
@@ -144,9 +135,6 @@ public class APIEmergencyController extends APIController {
                 return null;
             }
         }
-        LoggerUtil.log( TransactionType.DIAGNOSIS_PATIENT_VIEW_ALL, user.getUsername(),
-                user.getUsername() + " viewed their diagnoses" );
-
         return Prescription.getForPatient( user.getId() );
     }
 

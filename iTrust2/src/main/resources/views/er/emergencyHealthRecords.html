@@ -20,53 +20,54 @@
 			var app = angular.module("viewDiagnoses", []);
 			app.controller('controller', function($scope, $http) {
 				
-				$scope.patientID;
+				
+				$scope.patientID = "";
 				$scope.prescriptions = [];
+				$scope.message = "";
 				
 				$scope.loadAll = function() {
-					$scope.loadDiag();
 					$scope.loadDemo();
 					$scope.loadPres();
+					$scope.loadDiag();
 				}
 				
-				//Working
-				$scope.loadDiag = function() {
-					$http.get("/iTrust2/api/v1/emergencyHealthRecords/diag/" + $scope.patientID).then(
-						function(response) {
-							$scope.diagnoses = response.data;
-							$scope.message = "";
-							console.log($scope.diagnoses)
-						}, function(rejection) {
-							$scope.diagnoses = [];
-							$scope.message = "Unable to display diagnoses";
-						});
-				
-				}
-				
+				//Demographics
 				$scope.loadDemo = function() {
 					$http.get("/iTrust2/api/v1/emergencyHealthRecords/demo/" + $scope.patientID).then(
 						function(response) {
 							$scope.demo = response.data;
 							$scope.message = "";
-							console.log($scope.demo)
 						}, function(rejection) {
-							$scope.demo = "fail";
-							$scope.message = "Unable to display demographics";
+							$scope.demo = "";
+							$scope.message = "Unable to find patient by ID or full name";
 						});
 				
 				}
 				
+				//Diagnosis
+				$scope.loadDiag = function() {
+					$http.get("/iTrust2/api/v1/emergencyHealthRecords/diag/" + $scope.patientID).then(
+						function(response) {
+							$scope.diagnoses = response.data;
+						}, function(rejection) {
+							$scope.diagnoses = [];
+							$scope.message = "Unable to find patient by ID or full name";
+						});
+				
+				}
+				
+				//Prescriptions
 				$scope.loadPres = function() {
 					$http.get("/iTrust2/api/v1/emergencyHealthRecords/pres/" + $scope.patientID).then(
 						function(response) {
 							$scope.prescriptions = response.data;
-							$scope.message = "";
 						}, function(rejection) {
 							$scope.prescriptions = [];
-							$scope.message = "Unable to display prescriptions";
+							$scope.message = "Unable to find patient by ID or full name";
 						});
 				
 				}
+				
 				
 				// Helper method to create 2-digit version of a value -- from documentOfficeVisit.html
 				function twoDigit(num) {
@@ -99,7 +100,11 @@
               		<br>
              		<input type="submit" name="addRep" value="Search">
 				</form>
-				<br>
+				
+				<div>
+                <p style="color:red" ng-model="errorAdding" id="errP">{{message}}</p>
+                </div>
+                <br>
 				
 				<h2>Demographics</h2>
 				<table style="width:100%" class="table table-hover">
