@@ -13,6 +13,8 @@ import javax.validation.constraints.Pattern;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.validator.constraints.Length;
 
+import edu.ncsu.csc.itrust2.forms.admin.LOINCCodeForm;
+
 /**
  * Maintains information on LOINC compliant lab procedure codes. Used to store
  * persistent information in the database.
@@ -52,6 +54,28 @@ public class LOINCCode extends DomainObject<LabProcedure> {
     @NotNull
     @Length ( max = 16 )
     private String prop;
+
+    /**
+     * Empty constructor for Hibernate.
+     */
+    public LOINCCode () {
+
+    }
+
+    /**
+     * Constructs a LOINCCode object based on the provided LOINCCodeForm.
+     *
+     * @param form
+     *            The form to base the LOINCCode object on.
+     */
+    public LOINCCode ( final LOINCCodeForm form ) {
+        id = form.getId();
+        code = form.getCode();
+        longCommonName = form.getLongCommonName();
+        specialUsage = form.getSpecialUsage();
+        component = form.getComponent();
+        prop = form.getProp();
+    }
 
     /**
      * Returns the database ID of this LOINC code.
