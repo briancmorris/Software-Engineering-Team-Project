@@ -1,6 +1,7 @@
 package edu.ncsu.csc.itrust2.models.persistent;
 
 import java.util.Calendar;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,8 +10,10 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.criterion.Criterion;
 import org.hibernate.validator.constraints.Length;
 
+import edu.ncsu.csc.itrust2.forms.labs.LabProcedureForm;
 import edu.ncsu.csc.itrust2.models.enums.PriorityLevel;
 import edu.ncsu.csc.itrust2.models.enums.Status;
 
@@ -33,15 +36,11 @@ public class LabProcedure extends DomainObject<LabProcedure> {
     @NotNull
     private LOINCCode     code;
 
-    /**
-     * The priority level of this lab procedure, specified by an HCP.
-     */
+    /** The priority level of this lab procedure, specified by an HCP. */
     @NotNull
     private PriorityLevel priorityLevel;
 
-    /**
-     * The date this object was assigned.
-     */
+    /** The date this object was assigned. */
     @NotNull
     private Calendar      date;
 
@@ -54,15 +53,11 @@ public class LabProcedure extends DomainObject<LabProcedure> {
     @NotNull
     private Status        status;
 
-    /**
-     * The lab tech assigned to this procedure.
-     */
+    /** The lab tech assigned to this procedure. */
     @NotNull
     private User          labTech;
 
-    /**
-     * The office visit that this lab procedure is a part of.
-     */
+    /** The office visit that this lab procedure is a part of. */
     @NotNull
     private OfficeVisit   officeVisit;
 
@@ -70,6 +65,16 @@ public class LabProcedure extends DomainObject<LabProcedure> {
      * Empty constructor for Hibernate.
      */
     public LabProcedure () {
+
+    }
+
+    /**
+     * Constructs a LabProcedure object based on the provided LabProcedureForm.
+     *
+     * @param form
+     *            The LabProcedureForm to base the LabProcedure object on.
+     */
+    public LabProcedure ( final LabProcedureForm form ) {
 
     }
 
@@ -92,6 +97,25 @@ public class LabProcedure extends DomainObject<LabProcedure> {
      */
     public void setId ( final Long id ) {
         this.id = id;
+    }
+
+    /**
+     * Returns the LOINC code of this lab procedure.
+     * 
+     * @return the LOINC code of this lab procedure.
+     */
+    public LOINCCode getCode () {
+        return code;
+    }
+
+    /**
+     * Sets the LOINC code of this lab procedure.
+     * 
+     * @param code
+     *            The code to set.
+     */
+    public void setCode ( final LOINCCode code ) {
+        this.code = code;
     }
 
     /**
@@ -206,5 +230,44 @@ public class LabProcedure extends DomainObject<LabProcedure> {
      */
     public void setOfficeVisit ( final OfficeVisit officeVisit ) {
         this.officeVisit = officeVisit;
+    }
+
+    /**
+     * Returns a List of lab procedures that meet the given WHERE clause.
+     *
+     * @param where
+     *            List of Criterion to and together and search for records by
+     * @return The list of lab procedures selected.
+     */
+    @SuppressWarnings ( "unchecked" )
+    private static List<LabProcedure> getWhere ( final List<Criterion> where ) {
+        return (List<LabProcedure>) getWhere( LabProcedure.class, where );
+    }
+
+    /**
+     * Returns the lab procedure with the given ID
+     *
+     * @param id
+     *            The ID to retrieve.
+     * @return The lab procedure requested if it exists.
+     */
+    public static LabProcedure getById ( final Long id ) {
+        try {
+            return getWhere( createCriterionAsList( ID, id ) ).get( 0 );
+        }
+        catch ( final Exception e ) {
+            return null;
+        }
+
+    }
+
+    /**
+     * Returns a list of all lab procedures in the system.
+     *
+     * @return The list of lab procedures in the system.
+     */
+    @SuppressWarnings ( "unchecked" )
+    public static List<LabProcedure> getAll () {
+        return (List<LabProcedure>) DomainObject.getAll( LabProcedure.class );
     }
 }

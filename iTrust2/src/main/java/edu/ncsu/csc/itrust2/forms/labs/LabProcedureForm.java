@@ -14,15 +14,42 @@ import edu.ncsu.csc.itrust2.models.persistent.LabProcedure;
  */
 public class LabProcedureForm implements Serializable {
 
+    /** ID used to serialize this object to JSON. */
     private static final long serialVersionUID = 1L;
+
+    /** The database ID of the associated LabProcedure object. */
     private Long              id;
+
+    /** The LOINC code of the associated LabProcedure object. */
     private String            code;
+
+    /** The priority level of the associated LabProcedure object. */
     private String            priorityLevel;
+
+    /** The date the associated LabProcedure object was assigned. */
     private String            date;
+
+    /** The comments of the associated LabProcedure object. */
     private String            comments;
+
+    /** The status of the associated LabProcedure object. */
     private String            status;
+
+    /** The assigned lab tech to the associated LabProcedure object. */
     private String            labTech;
+
+    /**
+     * The database ID of the office visit linked to the associated LabProcedure
+     * object.
+     */
     private Long              officeVisitID;
+
+    /**
+     * Empty constructor for when an HCP or LT fills in a lab procedure.
+     */
+    public LabProcedureForm () {
+
+    }
 
     /**
      * Constructs a LabProcedureForm based on a given LabProcedure object.
@@ -32,7 +59,7 @@ public class LabProcedureForm implements Serializable {
      */
     public LabProcedureForm ( final LabProcedure procedure ) {
         setID( procedure.getId() );
-        // TODO LOINC Code as String
+        setCode( procedure.getCode().getCode() );
         setPriorityLevel( "" + procedure.getPriorityLevel().getCode() );
         final SimpleDateFormat format = new SimpleDateFormat( "dd-MM-yyyy" );
         setDate( format.format( procedure.getDate().getTime() ) );
@@ -188,7 +215,7 @@ public class LabProcedureForm implements Serializable {
      * Sets the office visit ID of the LabProcedureForm.
      *
      * @param officeVisitID
-     *            the officeVisitID to set.
+     *            the office visit ID to set.
      */
     public void setOfficeVisitID ( final Long officeVisitID ) {
         this.officeVisitID = officeVisitID;
