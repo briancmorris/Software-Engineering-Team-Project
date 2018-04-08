@@ -128,8 +128,14 @@ public class EnumTest {
      */
     @Test
     public void testPriorityLevel () {
+        // Test get method.
         final PriorityLevel test = PriorityLevel.ONE;
         final int testCode = test.getCode();
         assertEquals( testCode, 1 );
+
+        // Test parse method.
+        assertTrue( PriorityLevel.THREE.equals( PriorityLevel.parse( "3" ) ) );
+        assertTrue( PriorityLevel.INVALID.equals( PriorityLevel.parse( "7" ) ) );
+        assertTrue( PriorityLevel.INVALID.equals( PriorityLevel.parse( "-1" ) ) );
     }
 }
