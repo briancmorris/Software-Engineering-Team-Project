@@ -75,6 +75,14 @@ public class LabProcedure extends DomainObject<LabProcedure> {
      *            The LabProcedureForm to base the LabProcedure object on.
      */
     public LabProcedure ( final LabProcedureForm form ) {
+        setId( form.getID() );
+        setCode( LOINCCode.getByCode( form.getCode() ) );
+        setPriorityLevel( PriorityLevel.parse( form.getPriorityLevel() ) );
+        // TODO date
+        setComments( form.getComments() );
+        // TODO status
+        setLabTech( User.getByName( form.getLabTech() ) );
+        setOfficeVisit( OfficeVisit.getById( form.getOfficeVisitID() ) );
 
     }
 
@@ -101,7 +109,7 @@ public class LabProcedure extends DomainObject<LabProcedure> {
 
     /**
      * Returns the LOINC code of this lab procedure.
-     * 
+     *
      * @return the LOINC code of this lab procedure.
      */
     public LOINCCode getCode () {
@@ -110,7 +118,7 @@ public class LabProcedure extends DomainObject<LabProcedure> {
 
     /**
      * Sets the LOINC code of this lab procedure.
-     * 
+     *
      * @param code
      *            The code to set.
      */
