@@ -32,8 +32,8 @@ public class LabProcedureForm implements Serializable {
     /** The comments of the associated LabProcedure object. */
     private String            comments;
 
-    /** The status of the associated LabProcedure object. */
-    private String            status;
+    /** The completion status of the associated LabProcedure object. */
+    private String            completionStatus;
 
     /** The assigned lab tech to the associated LabProcedure object. */
     private String            labTech;
@@ -64,7 +64,7 @@ public class LabProcedureForm implements Serializable {
         final SimpleDateFormat format = new SimpleDateFormat( "dd-MM-yyyy" );
         setDate( format.format( procedure.getDate().getTime() ) );
         setComments( procedure.getComments() );
-        setStatus( "" + procedure.getStatus().getCode() );
+        setCompletionStatus( procedure.getCompletionStatus().getName() );
         setLabTech( procedure.getLabTech().getId() );
         setOfficeVisitID( procedure.getOfficeVisit().getId() );
     }
@@ -165,22 +165,22 @@ public class LabProcedureForm implements Serializable {
     }
 
     /**
-     * Returns the status of the LabProcedureForm.
+     * Returns the completion status of the LabProcedureForm.
      *
-     * @return the status of the LabProcedureForm.
+     * @return the completion status of the LabProcedureForm.
      */
-    public String getStatus () {
-        return status;
+    public String getCompletionStatus () {
+        return completionStatus;
     }
 
     /**
-     * Sets the status of the LabProcedureForm.
+     * Sets the completion status of the LabProcedureForm.
      *
-     * @param status
-     *            the status to set
+     * @param completionStatus
+     *            the completion status to set
      */
-    public void setStatus ( final String status ) {
-        this.status = status;
+    public void setCompletionStatus ( final String completionStatus ) {
+        this.completionStatus = completionStatus;
     }
 
     /**

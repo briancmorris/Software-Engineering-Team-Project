@@ -14,8 +14,8 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.validator.constraints.Length;
 
 import edu.ncsu.csc.itrust2.forms.labs.LabProcedureForm;
+import edu.ncsu.csc.itrust2.models.enums.CompletionStatus;
 import edu.ncsu.csc.itrust2.models.enums.PriorityLevel;
-import edu.ncsu.csc.itrust2.models.enums.Status;
 
 /**
  * Maintains data relevant to a Lab Procedure, stored in the database.
@@ -30,36 +30,36 @@ public class LabProcedure extends DomainObject<LabProcedure> {
     /** ID of the lab procedure. */
     @Id
     @GeneratedValue ( strategy = GenerationType.AUTO )
-    private Long          id;
+    private Long             id;
 
     /** The LOINC code for this lab procedure. */
     @NotNull
-    private LOINCCode     code;
+    private LOINCCode        code;
 
     /** The priority level of this lab procedure, specified by an HCP. */
     @NotNull
-    private PriorityLevel priorityLevel;
+    private PriorityLevel    priorityLevel;
 
     /** The date this object was assigned. */
     @NotNull
-    private Calendar      date;
+    private Calendar         date;
 
     /** The comments of this lab procedure, left by the HCP. */
     @NotNull
     @Length ( max = 1024 )
-    private String        comments;
+    private String           comments;
 
-    /** The status of this lab procedure. */
+    /** The completion status of this lab procedure. */
     @NotNull
-    private Status        status;
+    private CompletionStatus completionStatus;
 
     /** The lab tech assigned to this procedure. */
     @NotNull
-    private User          labTech;
+    private User             labTech;
 
     /** The office visit that this lab procedure is a part of. */
     @NotNull
-    private OfficeVisit   officeVisit;
+    private OfficeVisit      officeVisit;
 
     /**
      * Empty constructor for Hibernate.
@@ -184,22 +184,22 @@ public class LabProcedure extends DomainObject<LabProcedure> {
     }
 
     /**
-     * Returns the status of this lab procedure.
+     * Returns the completion status of this lab procedure.
      *
-     * @return The status of this lab procedure.
+     * @return The completion status of this lab procedure.
      */
-    public Status getStatus () {
-        return status;
+    public CompletionStatus getCompletionStatus () {
+        return completionStatus;
     }
 
     /**
-     * Sets the status of this lab procedure.
+     * Sets the completion status of this lab procedure.
      *
-     * @param status
-     *            The new status of this lab procedure.
+     * @param completionStatus
+     *            The new completion status of this lab procedure.
      */
-    public void setStatus ( final Status status ) {
-        this.status = status;
+    public void setCompletionStatus ( final CompletionStatus completionStatus ) {
+        this.completionStatus = completionStatus;
     }
 
     /**
