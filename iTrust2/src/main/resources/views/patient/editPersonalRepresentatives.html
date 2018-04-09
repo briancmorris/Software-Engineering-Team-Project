@@ -13,7 +13,6 @@
 			app.controller('repCtrl', function($scope, $http) {
 				
 				$scope.reps = [];
-				//$scope.rep = "";
 				$scope.loadTable = function() {
 					// Get list of reps from rest api.
 					$http.get("/iTrust2/api/v1/editPersonalRepresentatives").then(
@@ -26,8 +25,20 @@
 						});
 				}
 				
+				$scope.reps2 = [];
+				$scope.loadTable2 = function() {
+					// Get list of reps from rest api.
+					$http.get("/iTrust2/api/v1/editPersonalRepresentatives/myPatients").then(
+						function(response) {
+							$scope.reps2 = response.data;
+							$scope.message2 = "";
+						}, function(rejection) {
+							$scope.reps2 = [];
+							$scope.message2 = "Could not display patients represented.";
+						});
+				}
+				
 				$scope.removeRow = function(rep) {
-					console.log(rep.self.username)
 					$http.delete('/iTrust2/api/v1/editPersonalRepresentatives/' + rep.self.username).then(
 							function(response) {
 								$scope.loadTable();
@@ -37,9 +48,18 @@
 							})
 				}
 				
+				$scope.removeRow2 = function(rep) {
+					$http.delete('/iTrust2/api/v1/editPersonalRepresentatives/removeSelf' + rep.self.username).then(
+							function(response) {
+								$scope.loadTable2();
+								$scope.message2 = "";
+							}, function(rejection) {
+								$scope.message2 = "Could not remove patient represented";
+							})
+				}
+				
 				// handle add representative button click
 				$scope.addRep = function() {
-					console.log($scope.rep);
 					$http.post("/iTrust2/api/v1/editPersonalRepresentatives", $scope.rep).then(
 							function(response) {
 								$scope.loadTable();
@@ -47,14 +67,13 @@
 								$scope.errorAdding = "";
 							}, function(rejection) {
 								$scope.errorAdding = "Could not add personal representative";
-								console.log(rejection.status)
 							})
 					
 				}
 
 				// load table upon page loading
-				console.log($scope.rep)
 				$scope.loadTable();
+				$scope.loadTable2();
 				
 			});
 		/*]]>*/
@@ -104,8 +123,8 @@
 				</tr>
 			</table>
 		</div>
-
-		<!--  
+		
+  		<!--
 		<script th:inline="javascript">
 		/*<![CDATA[*/
 			var app = angular.module("repApp", []);
@@ -123,8 +142,8 @@
 						});
 				}
 				
-				$scope.removeRow = function() {
-					$http.delete("/iTrust2/api/v1/editPersonalRepresentatives/removeSelf").then(
+				$scope.removeRow = function(rep) {
+					$http.delete('/iTrust2/api/v1/editPersonalRepresentatives/removeSelf' + rep.self.username).then(
 							function(response) {
 								$scope.loadTable();
 								$scope.message = "";
@@ -139,6 +158,7 @@
 			});
 		/*]]>*/
 		</script>
+		-->
 		
 		<div ng-app="repApp" ng-controller="repCtrl">	
 			<h4 style="color:red" ng-model="message"></h4>
@@ -152,9 +172,9 @@
 								<th>Action</th>
 							</tr>
 							<tr name="idRow" ng-repeat="r in reps">
-								<td name="idCell">{{r.id}}</td>
+								<td name="idCell">{{r.self.username}}</td>
 								<td>
-									<input type="button" value="Remove" class="btn btn-primary" ng-click="removeRow(r)"/>
+									<input type="button" value="Remove" class="btn btn-primary" ng-click="removeRow2(r)"/>
 								</td>
 							</tr>
 						</table>
@@ -165,6 +185,6 @@
 		</div>
 
 	</div>
-	-->
+	
 </body>
 </html>

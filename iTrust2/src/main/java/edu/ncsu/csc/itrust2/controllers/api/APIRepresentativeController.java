@@ -46,7 +46,7 @@ public class APIRepresentativeController extends APIController {
             represent.setPersonalRepresentatives( new HashSet<Patient>() );
             represent.setPersonalRepresentees( new HashSet<Patient>() );
         }
-        LoggerUtil.log( TransactionType.VIEW_REP_LIST, p.getSelf());
+        LoggerUtil.log( TransactionType.VIEW_REP_LIST, p.getSelf() );
         return p.getRepresentatives();
     }
 
@@ -54,13 +54,13 @@ public class APIRepresentativeController extends APIController {
     @PreAuthorize ( "hasRole('ROLE_PATIENT')" )
     public Set<Patient> getRepresentees () {
         Patient p = Patient.getByName( LoggerUtil.currentUser() );
-        if (p == null) {
-            p = new Patient(User.getByName( LoggerUtil.currentUser() ));
+        if ( p == null ) {
+            p = new Patient( User.getByName( LoggerUtil.currentUser() ) );
         }
         if ( !p.isRep() ) {
-            return new HashSet<Patient>(); 
+            return new HashSet<Patient>();
         }
-        for ( final Patient patients : p.getRepresentees()) {
+        for ( final Patient patients : p.getRepresentees() ) {
             patients.setPersonalRepresentatives( new HashSet<Patient>() );
             patients.setPersonalRepresentees( new HashSet<Patient>() );
         }
@@ -136,19 +136,17 @@ public class APIRepresentativeController extends APIController {
     @DeleteMapping ( BASE_PATH + "/editPersonalRepresentatives/{username}" )
     @PreAuthorize ( "hasRole('ROLE_PATIENT')" )
     public ResponseEntity undelcareRep ( @PathVariable ( "username" ) final String username ) {
-        System.out.println(username);
-        Patient p = Patient.getByName( LoggerUtil.currentUser() );
+        System.out.println( username );
+        final Patient p = Patient.getByName( LoggerUtil.currentUser() );
         /**
-        if ( p == null ) {
-            p = new Patient(User.getByName( LoggerUtil.currentUser() ));
-        }
-        */
-        Patient rep = Patient.getByName( username );
+         * if ( p == null ) { p = new Patient(User.getByName(
+         * LoggerUtil.currentUser() )); }
+         */
+        final Patient rep = Patient.getByName( username );
         /**
-        if (rep == null) {
-            rep = new Patient(User.getByNameAndRole( username, Role.ROLE_PATIENT ));
-        }
-        */
+         * if (rep == null) { rep = new Patient(User.getByNameAndRole( username,
+         * Role.ROLE_PATIENT )); }
+         */
         if ( rep == null ) {
             return new ResponseEntity( errorResponse( "No Patient found for username " + username ),
                     HttpStatus.NOT_FOUND );
@@ -160,15 +158,15 @@ public class APIRepresentativeController extends APIController {
             final Set<Patient> tempPatients = new HashSet<Patient>();
             tempReps.addAll( p.getRepresentatives() );
             // tempReps = p.getRepresentatives();
-            for (final Patient r : tempReps) {
-                if (r.equals( rep )) {
+            for ( final Patient r : tempReps ) {
+                if ( r.equals( rep ) ) {
                     tempReps.remove( r );
                 }
             }
-            //tempReps.remove( rep );
+            // tempReps.remove( rep );
             tempPatients.addAll( rep.getRepresentees() );
-            for (final Patient patient : tempPatients) {
-                if (patient.equals( p )) {
+            for ( final Patient patient : tempPatients ) {
+                if ( patient.equals( p ) ) {
                     tempPatients.remove( patient );
                 }
             }
@@ -184,7 +182,7 @@ public class APIRepresentativeController extends APIController {
                 rep.getRepresentees().add( patients );
             }
             p.save();
-            if (rep.getRepresentees().isEmpty()) {
+            if ( rep.getRepresentees().isEmpty() ) {
                 rep.undeclareSelfRep();
             }
             rep.save();
@@ -212,21 +210,19 @@ public class APIRepresentativeController extends APIController {
     }
 
     @SuppressWarnings ( "unused" )
-    @DeleteMapping ( BASE_PATH + "/editPersonalRepresentatives/removeSelf" )
+    @DeleteMapping ( BASE_PATH + "/editPersonalRepresentatives/removeSelf/{username}" )
     @PreAuthorize ( "hasRole('ROLE_PATIENT')" )
-    public ResponseEntity undelcareSelfRep ( @RequestBody final String username ) {
-        Patient rep = Patient.getByName( LoggerUtil.currentUser() );
+    public ResponseEntity undelcareSelfRep ( @PathVariable ( "username" ) final String username ) {
+        final Patient rep = Patient.getByName( LoggerUtil.currentUser() );
         /**
-        if ( rep == null ) {
-            rep = new Patient(User.getByName( LoggerUtil.currentUser() ));
-        }
-        */
-        Patient p = Patient.getByName( username );
+         * if ( rep == null ) { rep = new Patient(User.getByName(
+         * LoggerUtil.currentUser() )); }
+         */
+        final Patient p = Patient.getByName( username );
         /**
-        if ( p == null ) {
-            p = new Patient(User.getByNameAndRole( username, Role.ROLE_PATIENT));
-        }
-        */
+         * if ( p == null ) { p = new Patient(User.getByNameAndRole( username,
+         * Role.ROLE_PATIENT)); }
+         */
         if ( p == null ) {
             return new ResponseEntity( errorResponse( "No Patient found for username " + username ),
                     HttpStatus.NOT_FOUND );
@@ -238,15 +234,15 @@ public class APIRepresentativeController extends APIController {
             final Set<Patient> tempPatients = new HashSet<Patient>();
             tempReps.addAll( p.getRepresentatives() );
             // tempReps = p.getRepresentatives();
-            for (final Patient r : tempReps) {
-                if (r.equals( rep )) {
+            for ( final Patient r : tempReps ) {
+                if ( r.equals( rep ) ) {
                     tempReps.remove( r );
                 }
             }
-            //tempReps.remove( rep );
+            // tempReps.remove( rep );
             tempPatients.addAll( rep.getRepresentees() );
-            for (final Patient patient : tempPatients) {
-                if (patient.equals( p )) {
+            for ( final Patient patient : tempPatients ) {
+                if ( patient.equals( p ) ) {
                     tempPatients.remove( patient );
                 }
             }
@@ -262,7 +258,7 @@ public class APIRepresentativeController extends APIController {
                 rep.getRepresentees().add( patients );
             }
             p.save();
-            if (rep.getRepresentees().isEmpty()) {
+            if ( rep.getRepresentees().isEmpty() ) {
                 rep.undeclareSelfRep();
             }
             rep.save();
@@ -274,14 +270,14 @@ public class APIRepresentativeController extends APIController {
             // sf.save( rep );
             // sf.getTransaction().commit();
             // sf.close();
+            LoggerUtil.log( TransactionType.UNDEC_SELF_REP, LoggerUtil.currentUser(), username,
+                    rep.getSelf().getUsername() + " undeclared self as representative of " + username );
+            return new ResponseEntity( HttpStatus.OK );
         }
         catch ( final Exception e ) {
             return new ResponseEntity( errorResponse( "Failed to undeclare self as representative from " + username ),
                     HttpStatus.BAD_REQUEST );
         }
-        LoggerUtil.log( TransactionType.UNDEC_SELF_REP, LoggerUtil.currentUser(), username,
-                rep.getSelf().getUsername() + " undeclared self as representative of " + username );
-        return new ResponseEntity( p, HttpStatus.OK );
     }
 
     @SuppressWarnings ( "unused" )
@@ -289,15 +285,15 @@ public class APIRepresentativeController extends APIController {
     @PreAuthorize ( "hasRole('ROLE_HCP')" )
     public ResponseEntity getPatientRepresentatives ( @PathVariable ( "username" ) final String username ) {
         Patient patient = Patient.getByName( username );
-        if (patient == null) {
-            patient = new Patient(User.getByNameAndRole( username, Role.ROLE_PATIENT));
+        if ( patient == null ) {
+            patient = new Patient( User.getByNameAndRole( username, Role.ROLE_PATIENT ) );
         }
         if ( patient == null ) {
             return new ResponseEntity( errorResponse( "No Patient found for username " + username ),
                     HttpStatus.NOT_FOUND );
         }
         else {
-            for ( final Patient represent : patient.getRepresentatives()) {
+            for ( final Patient represent : patient.getRepresentatives() ) {
                 represent.setPersonalRepresentatives( new HashSet<Patient>() );
                 represent.setPersonalRepresentees( new HashSet<Patient>() );
             }
@@ -312,49 +308,50 @@ public class APIRepresentativeController extends APIController {
     @PreAuthorize ( "hasRole('ROLE_HCP')" )
     public ResponseEntity declareRepForPatient ( @PathVariable final String username, @RequestBody Patient rep ) {
         Patient patient = Patient.getByName( username );
-        if (patient == null) {
-            patient = new Patient(User.getByNameAndRole( username, Role.ROLE_PATIENT));
+        if ( patient == null ) {
+            patient = new Patient( User.getByNameAndRole( username, Role.ROLE_PATIENT ) );
         }
         if ( patient == null ) {
             return new ResponseEntity( errorResponse( "No Patient found for username " + username ),
                     HttpStatus.NOT_FOUND );
         }
         try {
-            //final Session sf = HibernateUtil.openSession();
-            //sf.beginTransaction();
-            Set<Patient> tempReps = new HashSet<Patient>();
-            Set<Patient> tempPatients = new HashSet<Patient>();
+            // final Session sf = HibernateUtil.openSession();
+            // sf.beginTransaction();
+            final Set<Patient> tempReps = new HashSet<Patient>();
+            final Set<Patient> tempPatients = new HashSet<Patient>();
             tempReps.addAll( patient.getRepresentatives() );
-            //tempReps = p.getRepresentatives();
+            // tempReps = p.getRepresentatives();
             tempReps.add( rep );
-            tempPatients.addAll( rep.getRepresentees());
+            tempPatients.addAll( rep.getRepresentees() );
             tempPatients.add( patient );
             patient.getRepresentatives().clear();
             rep.getRepresentees().clear();
-            //rep.declareSelfRep();
+            // rep.declareSelfRep();
             patient.save();
             rep.save();
-            for (final Patient represent: tempReps) {
+            for ( final Patient represent : tempReps ) {
                 patient.getRepresentatives().add( represent );
             }
-            for (final Patient patients: tempPatients) {
+            for ( final Patient patients : tempPatients ) {
                 rep.getRepresentees().add( patients );
             }
             patient.save();
             rep.declareSelfRep();
             rep.save();
-            //sf.save( patient );
-            //sf.save( p );
-            //sf.getTransaction().commit();
-            //sf.close();
+            // sf.save( patient );
+            // sf.save( p );
+            // sf.getTransaction().commit();
+            // sf.close();
+            LoggerUtil.log( TransactionType.HCP_DEC_REP, LoggerUtil.currentUser(), username,
+                    "HCP declared representative: " + rep.getSelf().getUsername() + " for patient with username "
+                            + username );
+            return new ResponseEntity( patient, HttpStatus.OK );
         }
         catch ( final Exception e ) {
             return new ResponseEntity( errorResponse( "Failed to declare representative for username " + username ),
                     HttpStatus.BAD_REQUEST );
         }
-        LoggerUtil.log( TransactionType.HCP_DEC_REP, LoggerUtil.currentUser(), username, "HCP declared representative: "
-                + rep.getSelf().getUsername() + " for patient with username " + username );
-        return new ResponseEntity( patient, HttpStatus.OK );
     }
 
 }
