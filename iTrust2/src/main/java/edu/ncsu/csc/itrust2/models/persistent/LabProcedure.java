@@ -78,9 +78,16 @@ public class LabProcedure extends DomainObject<LabProcedure> {
         setId( form.getID() );
         setCode( LOINCCode.getByCode( form.getCode() ) );
         setPriorityLevel( PriorityLevel.parse( form.getPriorityLevel() ) );
-        // TODO date
+        // Parse the date.
+        final String[] dateArray = form.getDate().split( "-" );
+        final int day = Integer.parseInt( dateArray[0] );
+        final int month = Integer.parseInt( dateArray[1] );
+        final int year = Integer.parseInt( dateArray[2] );
+        final Calendar temp = Calendar.getInstance();
+        temp.set( year, month, day );
+        setDate( temp );
         setComments( form.getComments() );
-        // TODO status
+        setCompletionStatus( CompletionStatus.parse( form.getCompletionStatus() ) );
         setLabTech( User.getByName( form.getLabTech() ) );
         setOfficeVisit( OfficeVisit.getById( form.getOfficeVisitID() ) );
 
