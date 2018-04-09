@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import edu.ncsu.csc.itrust2.models.enums.AppointmentType;
 import edu.ncsu.csc.itrust2.models.enums.BloodType;
+import edu.ncsu.csc.itrust2.models.enums.CompletionStatus;
 import edu.ncsu.csc.itrust2.models.enums.Ethnicity;
 import edu.ncsu.csc.itrust2.models.enums.Gender;
 import edu.ncsu.csc.itrust2.models.enums.PatientSmokingStatus;
@@ -137,5 +138,20 @@ public class EnumTest {
         assertTrue( PriorityLevel.THREE.equals( PriorityLevel.parse( "3" ) ) );
         assertTrue( PriorityLevel.INVALID.equals( PriorityLevel.parse( "7" ) ) );
         assertTrue( PriorityLevel.INVALID.equals( PriorityLevel.parse( "-1" ) ) );
+    }
+
+    /**
+     * Tests the CompletionStatus enum.
+     */
+    @Test
+    public void testCompletionStatus () {
+        // Test the get method.
+        final CompletionStatus test = CompletionStatus.COMPLETED;
+        final String testString = test.getName();
+        assertTrue( "Completed".equals( testString ) );
+
+        // Test parse method.
+        assertTrue( CompletionStatus.IN_PROGRESS.equals( CompletionStatus.parse( "In-progress" ) ) );
+        assertTrue( CompletionStatus.NOT_SPECIFIED.equals( CompletionStatus.parse( "12345" ) ) );
     }
 }
