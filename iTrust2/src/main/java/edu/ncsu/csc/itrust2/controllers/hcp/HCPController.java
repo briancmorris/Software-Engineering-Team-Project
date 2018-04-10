@@ -63,4 +63,19 @@ public class HCPController {
     public String emergencyHealthRecords ( final Model model ) {
         return "/hcp/emergencyHealthRecords";
     }
+
+    /**
+     * Provides the page for the HCP to view and edit Patient's personal
+     * representatives
+     *
+     * @param model
+     *            The data for the front end
+     * @return The page to show the user so they can edit personal
+     *         representatives for patients
+     */
+    @GetMapping ( value = "hcp/editPersonalRepresentatives" )
+    @PreAuthorize ( "hasRole('ROLE_HCP')" )
+    public String viewPersonalRepresentatives ( final Model model ) {
+        return "/hcp/editPersonalRepresentatives";
+    }
 }

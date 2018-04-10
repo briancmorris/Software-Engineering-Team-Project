@@ -49,7 +49,7 @@
 				}
 				
 				$scope.removeRow2 = function(rep) {
-					$http.delete('/iTrust2/api/v1/editPersonalRepresentatives/removeSelf' + rep.self.username).then(
+					$http.delete('/iTrust2/api/v1/editPersonalRepresentatives/removeSelf/' + rep.self.username).then(
 							function(response) {
 								$scope.loadTable2();
 								$scope.message2 = "";
@@ -123,42 +123,6 @@
 				</tr>
 			</table>
 		</div>
-		
-  		<!--
-		<script th:inline="javascript">
-		/*<![CDATA[*/
-			var app = angular.module("repApp", []);
-			app.controller('repCtrl', function($scope, $http) {
-				$scope.reps = [];
-				$scope.loadTable = function() {
-					// Get list of reps from rest api.
-					$http.get("/iTrust2/api/v1/editPersonalRepresentatives/myPatients").then(
-						function(response) {
-							$scope.reps = response.data;
-							$scope.message = "";
-						}, function(rejection) {
-							$scope.reps = [];
-							$scope.message = "Could not display patients represented.";
-						});
-				}
-				
-				$scope.removeRow = function(rep) {
-					$http.delete('/iTrust2/api/v1/editPersonalRepresentatives/removeSelf' + rep.self.username).then(
-							function(response) {
-								$scope.loadTable();
-								$scope.message = "";
-							}, function(rejection) {
-								$scope.message = "Could not remove patient represented";
-							})
-				}
-
-				// load table upon page loading
-				$scope.loadTable();
-				
-			});
-		/*]]>*/
-		</script>
-		-->
 		
 		<div ng-app="repApp" ng-controller="repCtrl">	
 			<h4 style="color:red" ng-model="message"></h4>
