@@ -4,9 +4,13 @@ import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -33,10 +37,13 @@ public class LabProcedure extends DomainObject<LabProcedure> {
     private Long             id;
 
     /** The LOINC code for this lab procedure. */
+    @ManyToOne
+    @JoinColumn ( name = "LOINC Code", columnDefinition = "varchar(100)" )
     @NotNull
     private LOINCCode        code;
 
     /** The priority level of this lab procedure, specified by an HCP. */
+    @Enumerated ( EnumType.ORDINAL )
     @NotNull
     private PriorityLevel    priorityLevel;
 
@@ -50,14 +57,19 @@ public class LabProcedure extends DomainObject<LabProcedure> {
     private String           comments;
 
     /** The completion status of this lab procedure. */
+    @Enumerated ( EnumType.STRING )
     @NotNull
     private CompletionStatus completionStatus;
 
     /** The lab tech assigned to this procedure. */
+    @ManyToOne
+    @JoinColumn ( name = "User ID", columnDefinition = "varchar(100)" )
     @NotNull
     private User             labTech;
 
     /** The office visit that this lab procedure is a part of. */
+    @ManyToOne
+    @JoinColumn ( name = "Office Visit", columnDefinition = "varchar(100)" )
     @NotNull
     private OfficeVisit      officeVisit;
 
