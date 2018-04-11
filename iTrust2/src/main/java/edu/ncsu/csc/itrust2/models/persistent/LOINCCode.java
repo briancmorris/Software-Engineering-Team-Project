@@ -12,6 +12,7 @@ import javax.validation.constraints.Pattern;
 
 import org.hibernate.criterion.Criterion;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
 
 import edu.ncsu.csc.itrust2.forms.admin.LOINCCodeForm;
 
@@ -36,7 +37,7 @@ public class LOINCCode extends DomainObject<LabProcedure> {
     private String code;
 
     /** The long common name of the LOINC lab procedure. */
-    @NotNull
+    @NotBlank
     @Length ( max = 1024 )
     private String longCommonName;
 
@@ -46,7 +47,7 @@ public class LOINCCode extends DomainObject<LabProcedure> {
     private String specialUsage;
 
     /** The component of the LOINC lab procedure. */
-    @NotNull
+    @NotBlank
     @Length ( max = 1024 )
     private String component;
 

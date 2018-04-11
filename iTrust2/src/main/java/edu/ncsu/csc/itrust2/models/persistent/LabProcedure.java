@@ -28,7 +28,7 @@ import edu.ncsu.csc.itrust2.models.enums.PriorityLevel;
  *
  */
 @Entity
-@Table ( name = "LabProcedure" )
+@Table ( name = "LabProcedures" )
 public class LabProcedure extends DomainObject<LabProcedure> {
 
     /** ID of the lab procedure. */
@@ -37,14 +37,14 @@ public class LabProcedure extends DomainObject<LabProcedure> {
     private Long             id;
 
     /** The LOINC code for this lab procedure. */
-    @ManyToOne
-    @JoinColumn ( name = "LOINC Code", columnDefinition = "varchar(100)" )
     @NotNull
+    @ManyToOne
+    @JoinColumn ( name = "LOINC Code" )
     private LOINCCode        code;
 
     /** The priority level of this lab procedure, specified by an HCP. */
-    @Enumerated ( EnumType.ORDINAL )
     @NotNull
+    @Enumerated ( EnumType.ORDINAL )
     private PriorityLevel    priorityLevel;
 
     /** The date this object was assigned. */
@@ -57,20 +57,20 @@ public class LabProcedure extends DomainObject<LabProcedure> {
     private String           comments;
 
     /** The completion status of this lab procedure. */
-    @Enumerated ( EnumType.STRING )
     @NotNull
+    @Enumerated ( EnumType.STRING )
     private CompletionStatus completionStatus;
 
     /** The lab tech assigned to this procedure. */
-    @ManyToOne
-    @JoinColumn ( name = "User ID", columnDefinition = "varchar(100)" )
     @NotNull
+    @ManyToOne
+    @JoinColumn ( name = "lab_tech" )
     private User             labTech;
 
     /** The office visit that this lab procedure is a part of. */
-    @ManyToOne
-    @JoinColumn ( name = "Office Visit", columnDefinition = "varchar(100)" )
     @NotNull
+    @ManyToOne
+    @JoinColumn ( name = "office_visit" )
     private OfficeVisit      officeVisit;
 
     /**
