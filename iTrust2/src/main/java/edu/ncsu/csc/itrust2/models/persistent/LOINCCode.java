@@ -42,17 +42,17 @@ public class LOINCCode extends DomainObject<LabProcedure> {
 
     /** The special usage of the LOINC lab procedure. */
     @NotNull
-    @Length ( max = 64 )
+    @Length ( max = 1024 )
     private String specialUsage;
 
     /** The component of the LOINC lab procedure. */
     @NotNull
-    @Length ( max = 512 )
+    @Length ( max = 1024 )
     private String component;
 
     /** The prop of the LOINC lab procedure. */
     @NotNull
-    @Length ( max = 16 )
+    @Length ( max = 1024 )
     private String prop;
 
     /**
