@@ -39,12 +39,12 @@ public class LabProcedure extends DomainObject<LabProcedure> {
     /** The LOINC code for this lab procedure. */
     @NotNull
     @ManyToOne
-    @JoinColumn ( name = "LOINC Code" )
+    @JoinColumn ( name = "LOINC_Code" )
     private LOINCCode        code;
 
     /** The priority level of this lab procedure, specified by an HCP. */
     @NotNull
-    @Enumerated ( EnumType.ORDINAL )
+    @Enumerated ( EnumType.STRING )
     private PriorityLevel    priorityLevel;
 
     /** The date this object was assigned. */
@@ -64,13 +64,13 @@ public class LabProcedure extends DomainObject<LabProcedure> {
     /** The lab tech assigned to this procedure. */
     @NotNull
     @ManyToOne
-    @JoinColumn ( name = "lab_tech" )
+    @JoinColumn ( name = "Lab_Tech" )
     private User             labTech;
 
     /** The office visit that this lab procedure is a part of. */
     @NotNull
     @ManyToOne
-    @JoinColumn ( name = "office_visit" )
+    @JoinColumn ( name = "Office_Visit" )
     private OfficeVisit      officeVisit;
 
     /**

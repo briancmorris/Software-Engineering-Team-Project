@@ -1,8 +1,11 @@
 package edu.ncsu.csc.itrust2.unit;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.List;
 
 import org.junit.Test;
 
@@ -208,7 +211,7 @@ public class LOINCCodeTest {
     public void testGetByID () {
         // Test code.
         final LOINCCode testCode = new LOINCCode();
-        testCode.setId( new Long( 5 ) );
+        // NOTE: DO NOT set ID for an auto-generated value.
         testCode.setCode( "12345-6" );
         testCode.setLongCommonName( "This is a test lcn." );
         testCode.setComponent( "This is a test component." );
@@ -216,12 +219,28 @@ public class LOINCCodeTest {
         testCode.setSpecialUsage( "This is a test su." );
         testCode.save();
 
-        LOINCCode retrieved = LOINCCode.getById( new Long( 5 ) );
+        // Roundabout way to get the auto-generated ID.
+        final List<LOINCCode> list = LOINCCode.getAll();
+        assertTrue( list.size() >= 1 );
+        Long toRetrieveID = null;
+        LOINCCode code = null;
+        for ( int i = 0; i < list.size(); i++ ) {
+            code = list.get( i );
+            if ( testCode.getLongCommonName().equals( code.getLongCommonName() ) ) {
+                toRetrieveID = code.getId();
+                break;
+            }
+        }
+        assertNotNull( toRetrieveID );
+
+        // Retrieve the code by ID.
+        LOINCCode retrieved = LOINCCode.getById( toRetrieveID );
+        assertNotNull( retrieved );
         assertTrue( "12345-6".equals( retrieved.getCode() ) );
 
         // Remove from the database.
         testCode.delete();
-        retrieved = LOINCCode.getById( new Long( 5 ) );
+        retrieved = LOINCCode.getById( toRetrieveID );
         assertNull( retrieved );
     }
 }
