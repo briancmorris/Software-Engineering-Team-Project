@@ -200,4 +200,28 @@ public class LOINCCodeTest {
         assertTrue( testProp.equals( testForm.getProp() ) );
 
     }
+
+    /**
+     * Tests the getByID method in LOINCCode.
+     */
+    @Test
+    public void testGetByID () {
+        // Test code.
+        final LOINCCode testCode = new LOINCCode();
+        testCode.setId( new Long( 5 ) );
+        testCode.setCode( "12345-6" );
+        testCode.setLongCommonName( "This is a test lcn." );
+        testCode.setComponent( "This is a test component." );
+        testCode.setProp( "This is a test prop." );
+        testCode.setSpecialUsage( "This is a test su." );
+        testCode.save();
+
+        LOINCCode retrieved = LOINCCode.getById( new Long( 5 ) );
+        assertTrue( "12345-6".equals( retrieved.getCode() ) );
+
+        // Remove from the database.
+        testCode.delete();
+        retrieved = LOINCCode.getById( new Long( 5 ) );
+        assertNull( retrieved );
+    }
 }
