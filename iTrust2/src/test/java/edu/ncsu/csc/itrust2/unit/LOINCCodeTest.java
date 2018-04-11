@@ -205,10 +205,10 @@ public class LOINCCodeTest {
     }
 
     /**
-     * Tests the getByID method in LOINCCode.
+     * Tests the getById method in LOINCCode.
      */
     @Test
-    public void testGetByID () {
+    public void testGetById () {
         // Test code.
         final LOINCCode testCode = new LOINCCode();
         // NOTE: DO NOT set ID for an auto-generated value.
@@ -234,13 +234,98 @@ public class LOINCCodeTest {
         assertNotNull( toRetrieveID );
 
         // Retrieve the code by ID.
-        LOINCCode retrieved = LOINCCode.getById( toRetrieveID );
+        final LOINCCode retrieved = LOINCCode.getById( toRetrieveID );
         assertNotNull( retrieved );
         assertTrue( "12345-6".equals( retrieved.getCode() ) );
 
         // Remove from the database.
         testCode.delete();
-        retrieved = LOINCCode.getById( toRetrieveID );
-        assertNull( retrieved );
+        assertNull( LOINCCode.getById( toRetrieveID ) );
+    }
+
+    /**
+     * Tests the getAll method in LOINCCode.
+     */
+    @Test
+    public void testGetAll () {
+        // Test codes.
+        final LOINCCode testCode1 = new LOINCCode();
+        // NOTE: DO NOT set ID for an auto-generated value.
+        testCode1.setCode( "12345-6" );
+        testCode1.setLongCommonName( "This is a test lcn 1." );
+        testCode1.setComponent( "This is a test component 1." );
+        testCode1.setProp( "This is a test prop 1." );
+        testCode1.setSpecialUsage( "This is a test su 1." );
+        testCode1.save();
+
+        final LOINCCode testCode2 = new LOINCCode();
+        // NOTE: DO NOT set ID for an auto-generated value.
+        testCode2.setCode( "65432-1" );
+        testCode2.setLongCommonName( "This is a test lcn 2." );
+        testCode2.setComponent( "This is a test component 2." );
+        testCode2.setProp( "This is a test prop 2." );
+        testCode2.setSpecialUsage( "This is a test su 2." );
+        testCode2.save();
+
+        // Codes list.
+        final List<LOINCCode> testList = LOINCCode.getAll();
+
+        // Must be at least 2 for the 2 test codes.
+        assertTrue( testList.size() >= 2 );
+
+        // Find both of the codes in the list.
+        LOINCCode retrievedCode1 = null;
+        LOINCCode retrievedCode2 = null;
+        for ( final LOINCCode code : testList ) {
+            if ( testCode1.getLongCommonName().equals( code.getLongCommonName() ) ) {
+                retrievedCode1 = code;
+            }
+            else if ( testCode2.getLongCommonName().equals( code.getLongCommonName() ) ) {
+                retrievedCode2 = code;
+            }
+        }
+        assertNotNull( retrievedCode1 );
+        assertNotNull( retrievedCode2 );
+
+        // Verified by above, but double check codes here.
+        assertTrue( testCode1.getCode().equals( retrievedCode1.getCode() ) );
+        assertTrue( testCode2.getCode().equals( retrievedCode2.getCode() ) );
+
+        // Delete from DB and verify deletion.
+        final Long retrievedCode1ID = retrievedCode1.getId();
+        final Long retrievedCode2ID = retrievedCode2.getId();
+        testCode1.delete();
+        testCode2.delete();
+        assertNull( LOINCCode.getById( retrievedCode1ID ) );
+        assertNull( LOINCCode.getById( retrievedCode2ID ) );
+    }
+
+    /**
+     * Tests the getByCode method in LOINCCode.
+     */
+    @Test
+    public void testGetByCode () {
+        // Test code.
+        final LOINCCode testCode = new LOINCCode();
+        // NOTE: DO NOT set ID for an auto-generated value.
+        testCode.setCode( "12345-6" );
+        testCode.setLongCommonName( "This is a test lcn." );
+        testCode.setComponent( "This is a test component." );
+        testCode.setProp( "This is a test prop." );
+        testCode.setSpecialUsage( "This is a test su." );
+        testCode.save();
+
+        // Get the code from the DB.
+        final LOINCCode retrieved = LOINCCode.getByCode( "12345-6" );
+        assertNotNull( retrieved );
+        assertTrue( "This is a test lcn.".equals( retrieved.getLongCommonName() ) );
+
+        // Remove the code from the DB and verify deletion.
+        final Long retrievedID = retrieved.getId();
+        testCode.delete();
+        assertNull( LOINCCode.getById( retrievedID ) );
+
+        // Check for a code not stored in DB.
+        assertNull( LOINCCode.getByCode( "65432-1" ) );
     }
 }
