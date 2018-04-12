@@ -93,7 +93,8 @@ public class LabProcedure extends DomainObject<LabProcedure> {
         // Parse the date.
         final String[] dateArray = form.getDate().split( "-" );
         final int day = Integer.parseInt( dateArray[0] );
-        final int month = Integer.parseInt( dateArray[1] );
+        // NOTE: Java stores month from index 0-11 ...
+        final int month = ( Integer.parseInt( dateArray[1] ) - 1 );
         final int year = Integer.parseInt( dateArray[2] );
         final Calendar temp = Calendar.getInstance();
         temp.set( year, month, day );
