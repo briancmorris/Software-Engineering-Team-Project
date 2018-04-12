@@ -24,7 +24,7 @@ import edu.ncsu.csc.itrust2.utils.LoggerUtil;
 
 /**
  * API class to handle requests for the patient and HCP representative pages
- * 
+ *
  * @author Timothy Figgins
  *
  */
@@ -33,20 +33,20 @@ import edu.ncsu.csc.itrust2.utils.LoggerUtil;
 public class APIRepresentativeController extends APIController {
 
     /**
-     * Handles GET request for pulling up the list of the currently logged in patient's
-     * list of representatives.
-     * 
+     * Handles GET request for pulling up the list of the currently logged in
+     * patient's list of representatives.
+     *
      * @return p.getRepresentatives() the list of patient representatives.
      */
     @GetMapping ( BASE_PATH + "/editPersonalRepresentatives" )
     @PreAuthorize ( "hasRole('ROLE_PATIENT')" )
     public Set<Patient> getRepresentatives () {
         Patient p = Patient.getByName( LoggerUtil.currentUser() );
-        // If Patient object does not exist create it. 
+        // If Patient object does not exist create it.
         if ( p == null ) {
             p = new Patient( User.getByName( LoggerUtil.currentUser() ) );
         }
-        // For loop to stop JSON recursion 
+        // For loop to stop JSON recursion
         for ( final Patient represent : p.getRepresentatives() ) {
             represent.setPersonalRepresentatives( new HashSet<Patient>() );
             represent.setPersonalRepresentees( new HashSet<Patient>() );
@@ -56,9 +56,9 @@ public class APIRepresentativeController extends APIController {
     }
 
     /**
-     * Handles GET request for currently logged in patient's list of representees, aka the people
-     * that the current patient represents. 
-     * 
+     * Handles GET request for currently logged in patient's list of
+     * representees, aka the people that the current patient represents.
+     *
      * @return p.getRepresentees() list of current patient's representees
      */
     @GetMapping ( BASE_PATH + "/editPersonalRepresentatives/myPatients" )
@@ -73,7 +73,7 @@ public class APIRepresentativeController extends APIController {
         if ( !p.isRep() ) {
             return new HashSet<Patient>();
         }
-        // For loop for JSON recursion 
+        // For loop for JSON recursion
         for ( final Patient patients : p.getRepresentees() ) {
             patients.setPersonalRepresentatives( new HashSet<Patient>() );
             patients.setPersonalRepresentees( new HashSet<Patient>() );
@@ -83,26 +83,31 @@ public class APIRepresentativeController extends APIController {
     }
 
     /**
-     * Handles POST request for the current user adding a personal representative.
-     * 
-     * @param username name of the rep being added.
-     * @return ReponseEntity with an error or the current patient object. 
+     * Handles POST request for the current user adding a personal
+     * representative.
+     *
+     * @param username
+     *            name of the rep being added.
+     * @return ReponseEntity with an error or the current patient object.
      */
     @SuppressWarnings ( "unused" )
     @PostMapping ( BASE_PATH + "/editPersonalRepresentatives" )
     @PreAuthorize ( "hasRole('ROLE_PATIENT')" )
     public ResponseEntity declareRep ( @RequestBody final String username ) {
         Patient p = Patient.getByName( LoggerUtil.currentUser() );
+        System.out.println( p.getFirstName() );
         // If patient object does not exist create it.
         if ( p == null ) {
             p = new Patient( User.getByName( LoggerUtil.currentUser() ) );
         }
+        System.out.println( p.getFirstName() );
         Patient rep = Patient.getByName( username );
         // If patient object for rep does not exist create it.
         if ( rep == null ) {
             rep = new Patient( User.getByNameAndRole( username, Role.ROLE_PATIENT ) );
         }
-        // If rep cannot be created because the User could not be found, return an error.
+        // If rep cannot be created because the User could not be found, return
+        // an error.
         if ( rep == null ) {
             return new ResponseEntity( errorResponse( "No Patient found for username " + username ),
                     HttpStatus.NOT_FOUND );
@@ -111,19 +116,19 @@ public class APIRepresentativeController extends APIController {
             // Create temp sets to hold info
             final Set<Patient> tempReps = new HashSet<Patient>();
             final Set<Patient> tempPatients = new HashSet<Patient>();
-            
+
             // Add reps and representees to their respective temp sets
             tempReps.addAll( p.getRepresentatives() );
             tempReps.add( rep ); // add new rep
             tempPatients.addAll( rep.getRepresentees() );
             tempPatients.add( p ); // add patient to new rep list
-            
+
             // Clear lists
             p.getRepresentatives().clear();
             rep.getRepresentees().clear();
             p.save();
             rep.save();
-            
+
             // Re add everything
             for ( final Patient represent : tempReps ) {
                 p.getRepresentatives().add( represent );
@@ -134,7 +139,7 @@ public class APIRepresentativeController extends APIController {
             p.save();
             rep.declareSelfRep();
             rep.save();
-            
+
             // For loop for JSON recursion
             for ( final Patient represent : p.getRepresentatives() ) {
                 represent.setPersonalRepresentatives( new HashSet<Patient>() );
@@ -145,16 +150,17 @@ public class APIRepresentativeController extends APIController {
             return new ResponseEntity( p, HttpStatus.OK );
         }
         catch ( final Exception e ) {
-            System.out.println( "fail" );
             return new ResponseEntity( errorResponse( "Failed to declare representative " + username ),
                     HttpStatus.BAD_REQUEST );
         }
     }
 
     /**
-     * Handles DELETE request for the current logged in patient removing a representative.
-     * 
-     * @param username name of representative 
+     * Handles DELETE request for the current logged in patient removing a
+     * representative.
+     *
+     * @param username
+     *            name of representative
      * @return ResponseEntity error or currently logged in patient object
      */
     @DeleteMapping ( BASE_PATH + "/editPersonalRepresentatives/{username}" )
@@ -162,7 +168,8 @@ public class APIRepresentativeController extends APIController {
     public ResponseEntity undelcareRep ( @PathVariable ( "username" ) final String username ) {
         final Patient p = Patient.getByName( LoggerUtil.currentUser() );
         final Patient rep = Patient.getByName( username );
-        // Handles the case where the rep can't be found for whatever reason.  Hopefully should never occur.
+        // Handles the case where the rep can't be found for whatever reason.
+        // Hopefully should never occur.
         if ( rep == null ) {
             return new ResponseEntity( errorResponse( "No Patient found for username " + username ),
                     HttpStatus.NOT_FOUND );
@@ -171,7 +178,7 @@ public class APIRepresentativeController extends APIController {
             // Create temp sets to hold info
             final Set<Patient> tempReps = new HashSet<Patient>();
             final Set<Patient> tempPatients = new HashSet<Patient>();
-            
+
             // Add all representatives to temp set
             tempReps.addAll( p.getRepresentatives() );
             // Find the rep that needs to be removed
@@ -188,13 +195,13 @@ public class APIRepresentativeController extends APIController {
                     tempPatients.remove( patient );
                 }
             }
-            
+
             // Clear sets
             p.getRepresentatives().clear();
             rep.getRepresentees().clear();
             p.save();
             rep.save();
-            
+
             // Add patients and reps back
             for ( final Patient represent : tempReps ) {
                 p.getRepresentatives().add( represent );
@@ -204,13 +211,15 @@ public class APIRepresentativeController extends APIController {
             }
             p.save();
             if ( rep.getRepresentees().isEmpty() ) {
-                rep.undeclareSelfRep(); // If no more representees, no longer a representative
+                rep.undeclareSelfRep(); // If no more representees, no longer a
+                                        // representative
             }
             rep.save();
             for ( final Patient represent : p.getRepresentatives() ) {
                 represent.setPersonalRepresentatives( new HashSet<Patient>() );
                 represent.setPersonalRepresentees( new HashSet<Patient>() );
             }
+
             LoggerUtil.log( TransactionType.UNDEC_REP, LoggerUtil.currentUser(), username,
                     p.getSelf().getUsername() + " undeclared representative " + username );
             return new ResponseEntity( HttpStatus.OK );
@@ -222,9 +231,11 @@ public class APIRepresentativeController extends APIController {
     }
 
     /**
-     * Handles DELETE request for removing oneself as a representative from a patient.
-     * 
-     * @param username of patient that is being represented
+     * Handles DELETE request for removing oneself as a representative from a
+     * patient.
+     *
+     * @param username
+     *            of patient that is being represented
      * @return ResponseEntity error or patient object
      */
     @DeleteMapping ( BASE_PATH + "/editPersonalRepresentatives/removeSelf/{username}" )
@@ -242,10 +253,10 @@ public class APIRepresentativeController extends APIController {
             // Create temp sets for data
             final Set<Patient> tempReps = new HashSet<Patient>();
             final Set<Patient> tempPatients = new HashSet<Patient>();
-            
+
             // Add all the reps to the temp sets
             tempReps.addAll( p.getRepresentatives() );
-            // Find the rep that needs to be removed. 
+            // Find the rep that needs to be removed.
             for ( final Patient r : tempReps ) {
                 if ( r.equals( rep ) ) {
                     tempReps.remove( r );
@@ -259,13 +270,13 @@ public class APIRepresentativeController extends APIController {
                     tempPatients.remove( patient );
                 }
             }
-            
+
             // Clear sets
             p.getRepresentatives().clear();
             rep.getRepresentees().clear();
             p.save();
             rep.save();
-            
+
             // Add patients and reps back
             for ( final Patient represent : tempReps ) {
                 p.getRepresentatives().add( represent );
@@ -278,7 +289,7 @@ public class APIRepresentativeController extends APIController {
                 rep.undeclareSelfRep();
             }
             rep.save();
-            
+
             // For loop for JSON recursion
             for ( final Patient represent : p.getRepresentatives() ) {
                 represent.setPersonalRepresentatives( new HashSet<Patient>() );
@@ -295,9 +306,11 @@ public class APIRepresentativeController extends APIController {
     }
 
     /**
-     * Handles GET request for an HCP to get the list of a patient's representatives
-     * 
-     * @param username of patient
+     * Handles GET request for an HCP to get the list of a patient's
+     * representatives
+     *
+     * @param username
+     *            of patient
      * @return ReponseEntity list of patient representatives or error
      */
     @SuppressWarnings ( "unused" )
@@ -322,11 +335,13 @@ public class APIRepresentativeController extends APIController {
             return new ResponseEntity( patient.getRepresentatives(), HttpStatus.OK );
         }
     }
-    
+
     /**
-     * Handles GET request for an HCP to get the list of a patient's representees
-     * 
-     * @param username of patient
+     * Handles GET request for an HCP to get the list of a patient's
+     * representees
+     *
+     * @param username
+     *            of patient
      * @return ReponseEntity list of patient representees or error
      */
     @SuppressWarnings ( "unused" )
@@ -354,22 +369,25 @@ public class APIRepresentativeController extends APIController {
 
     /**
      * Handles POST request for an HCP to add a representative for a patient.
-     * 
-     * @param username name of patient
-     * @param representative name of representative
-     * @return ResponseEntity patient object or error 
+     *
+     * @param username
+     *            name of patient
+     * @param representative
+     *            name of representative
+     * @return ResponseEntity patient object or error
      */
     @SuppressWarnings ( "unused" )
     @PostMapping ( BASE_PATH + "/editPersonalRepresentatives/{username}" )
     @PreAuthorize ( "hasRole('ROLE_HCP')" )
-    public ResponseEntity declareRepForPatient ( @PathVariable final String username, @RequestBody String representative ) {
+    public ResponseEntity declareRepForPatient ( @PathVariable final String username,
+            @RequestBody String representative ) {
         Patient patient = Patient.getByName( username );
         if ( patient == null ) {
             patient = new Patient( User.getByNameAndRole( username, Role.ROLE_PATIENT ) );
         }
         Patient rep = Patient.getByName( representative );
         if ( rep == null ) {
-            rep = new Patient(User.getByNameAndRole( representative, Role.ROLE_PATIENT ));
+            rep = new Patient( User.getByNameAndRole( representative, Role.ROLE_PATIENT ) );
         }
         if ( patient == null ) {
             return new ResponseEntity( errorResponse( "No Patient found for username " + username ),
@@ -380,23 +398,23 @@ public class APIRepresentativeController extends APIController {
                     HttpStatus.NOT_FOUND );
         }
         try {
-            // Create temp sets 
+            // Create temp sets
             final Set<Patient> tempReps = new HashSet<Patient>();
             final Set<Patient> tempPatients = new HashSet<Patient>();
-            
+
             // Add all representatives including new rep to tempRep set
             tempReps.addAll( patient.getRepresentatives() );
             tempReps.add( rep );
             // Add all representees including patient to tempPatients set
             tempPatients.addAll( rep.getRepresentees() );
             tempPatients.add( patient );
-            
+
             // Clear sets
             patient.getRepresentatives().clear();
             rep.getRepresentees().clear();
             patient.save();
             rep.save();
-            
+
             // Add reps and patients back to respective sets
             for ( final Patient represent : tempReps ) {
                 patient.getRepresentatives().add( represent );
@@ -405,7 +423,7 @@ public class APIRepresentativeController extends APIController {
                 rep.getRepresentees().add( patients );
             }
             patient.save();
-            rep.declareSelfRep();  // set boolean for isRepresentative to true
+            rep.declareSelfRep(); // set boolean for isRepresentative to true
             rep.save();
             LoggerUtil.log( TransactionType.HCP_DEC_REP, LoggerUtil.currentUser(), username,
                     "HCP declared representative: " + rep.getSelf().getUsername() + " for patient with username "

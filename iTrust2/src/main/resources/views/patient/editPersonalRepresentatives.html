@@ -14,7 +14,7 @@
 				
 				$scope.reps = [];
 				$scope.loadTable = function() {
-					// Get list of reps from rest api.
+					// Get list of patient representatives from rest api.
 					$http.get("/iTrust2/api/v1/editPersonalRepresentatives").then(
 						function(response) {
 							$scope.reps = response.data;
@@ -27,7 +27,7 @@
 				
 				$scope.reps2 = [];
 				$scope.loadTable2 = function() {
-					// Get list of reps from rest api.
+					// Get list of patient representees from rest api.
 					$http.get("/iTrust2/api/v1/editPersonalRepresentatives/myPatients").then(
 						function(response) {
 							$scope.reps2 = response.data;
@@ -39,6 +39,7 @@
 				}
 				
 				$scope.removeRow = function(rep) {
+					// Remove patient representative
 					$http.delete('/iTrust2/api/v1/editPersonalRepresentatives/' + rep.self.username).then(
 							function(response) {
 								$scope.loadTable();
@@ -49,6 +50,7 @@
 				}
 				
 				$scope.removeRow2 = function(rep) {
+					// Remove patient representee
 					$http.delete('/iTrust2/api/v1/editPersonalRepresentatives/removeSelf/' + rep.self.username).then(
 							function(response) {
 								$scope.loadTable2();
@@ -60,6 +62,7 @@
 				
 				// handle add representative button click
 				$scope.addRep = function() {
+					// Add patient representative
 					$http.post("/iTrust2/api/v1/editPersonalRepresentatives", $scope.rep).then(
 							function(response) {
 								$scope.loadTable();
@@ -135,7 +138,7 @@
 								<th>Patient ID</th>
 								<th>Action</th>
 							</tr>
-							<tr name="idRow" ng-repeat="r in reps">
+							<tr name="idRow" ng-repeat="r in reps2">
 								<td name="idCell">{{r.self.username}}</td>
 								<td>
 									<input type="button" value="Remove" class="btn btn-primary" ng-click="removeRow2(r)"/>

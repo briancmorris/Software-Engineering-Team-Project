@@ -13,21 +13,32 @@
 			app.controller('repCtrl', function($scope, $http) {
 				
 				$scope.reps = [];
+				$scope.reps2 = [];
+				$scope.patient = "";
 				$scope.showRep = function(patient) {
-					// Get list of reps of patient from rest api.
-					$http.get('/iTrust2/api/v1/editPersonalRepresentatives/' + rep.self.username).then(
+					// Get list of patient representatives from rest api.
+					$http.get('/iTrust2/api/v1/editPersonalRepresentatives/' + patient.self.username).then(
 						function(response) {
 							$scope.reps = response.data;
-							$scope.patient = "";
+							$scope.patient = patient;
 							$scope.message = "";
 						}, function(rejection) {
 							$scope.reps = [];
 							$scope.message = "Could not view patient's personal representatives.";
 						});
+					$http.get('/iTrust2/api/v1/editPersonalRepresentatives/patientRepresentees/' + patient.self.username).then(
+							function(response) {
+								$scope.reps2 = response.data;
+								$scope.message = "";
+							}, function(rejection) {
+								$scope.reps2 = [];
+								$scope.message = "Could not view patient's personal representees.";
+							});
 				}
 
 				// handle add representative button click for patient
 				$scope.addRep = function(rep) {
+					// Add patient representative
 					$http.post('/iTrust2/api/v1/editPersonalRepresentatives/' + rep.self.username, $scope.rep).then(
 							function(response) {
 								//$scope.loadTable();
@@ -95,6 +106,26 @@
 							<p style="color:red" ng-model="errorAdding" id="errP">{{errorAdding}}</p>
 						</div>
 					</td>
+				</tr>
+			</table>
+		</div>
+		
+		<div ng-app="repApp" ng-controller="repCtrl">	
+			<h4 style="color:red" ng-model="message"></h4>
+			<h1>Patients You Represent</h1>
+			<table style="width:100%">
+				<tr>
+					<td style="vertical-align: top">
+						<table class="table">
+							<tr>
+								<th>Patient ID</th>
+							</tr>
+							<tr name="idRow" ng-repeat="r in reps2">
+								<td name="idCell">{{r.self.username}}</td>
+							</tr>
+						</table>
+					</td>
+					
 				</tr>
 			</table>
 		</div>
