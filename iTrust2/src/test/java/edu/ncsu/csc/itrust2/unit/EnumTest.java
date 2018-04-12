@@ -10,6 +10,7 @@ import edu.ncsu.csc.itrust2.models.enums.BloodType;
 import edu.ncsu.csc.itrust2.models.enums.CompletionStatus;
 import edu.ncsu.csc.itrust2.models.enums.Ethnicity;
 import edu.ncsu.csc.itrust2.models.enums.Gender;
+import edu.ncsu.csc.itrust2.models.enums.HouseholdSmokingStatus;
 import edu.ncsu.csc.itrust2.models.enums.PatientSmokingStatus;
 import edu.ncsu.csc.itrust2.models.enums.PriorityLevel;
 import edu.ncsu.csc.itrust2.models.enums.Role;
@@ -90,6 +91,20 @@ public class EnumTest {
         final PatientSmokingStatus test = PatientSmokingStatus.parseValue( 99 );
         final int testCode = test.getCode();
         assertEquals( testCode, 0 );
+    }
+
+    /**
+     * Tests the HouseholdSmokingStatus enum.
+     */
+    @Test
+    public void testHouseholdSmokingStatus () {
+        final HouseholdSmokingStatus test = HouseholdSmokingStatus.NONSMOKING;
+        assertEquals( 1, test.getCode() );
+
+        assertTrue( HouseholdSmokingStatus.parseValue( 2 ).equals( HouseholdSmokingStatus.OUTDOOR ) );
+        assertTrue( HouseholdSmokingStatus.getName( 3 ).equals( "INDOOR" ) );
+        assertTrue( HouseholdSmokingStatus.parseValue( -1 ).equals( HouseholdSmokingStatus.NONAPPLICABLE ) );
+
     }
 
     /**
