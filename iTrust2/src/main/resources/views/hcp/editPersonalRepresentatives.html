@@ -14,19 +14,19 @@
 				
 				$scope.reps = [];
 				$scope.reps2 = [];
-				$scope.patient = "";
-				$scope.showRep = function(patient) {
+				//$scope.patient = "";
+				$scope.rep = "";
+				$scope.showRep = function() {
 					// Get list of patient representatives from rest api.
-					$http.get('/iTrust2/api/v1/editPersonalRepresentatives/' + patient.self.username).then(
+					$http.get('/iTrust2/api/v1/editPersonalRepresentatives/' + $scope.patient).then(
 						function(response) {
 							$scope.reps = response.data;
-							$scope.patient = patient;
 							$scope.message = "";
 						}, function(rejection) {
 							$scope.reps = [];
 							$scope.message = "Could not view patient's personal representatives.";
 						});
-					$http.get('/iTrust2/api/v1/editPersonalRepresentatives/patientRepresentees/' + patient.self.username).then(
+					$http.get('/iTrust2/api/v1/editPersonalRepresentatives/patientRepresentees/' + $scope.patient).then(
 							function(response) {
 								$scope.reps2 = response.data;
 								$scope.message = "";
@@ -37,15 +37,17 @@
 				}
 
 				// handle add representative button click for patient
-				$scope.addRep = function(rep) {
+				$scope.addRep = function() {
 					// Add patient representative
-					$http.post('/iTrust2/api/v1/editPersonalRepresentatives/' + rep.self.username, $scope.rep).then(
+					$http.post('/iTrust2/api/v1/editPersonalRepresentatives/' + $scope.patient, $scope.rep).then(
 							function(response) {
-								//$scope.loadTable();
+								$scope.showRep();
 								$scope.rep = "";
 								$scope.errorAdding = "";
+								console.log("pass");
 							}, function(rejection) {
 								$scope.errorAdding = "Could not add personal representative for patient";
+								console.log("fail");
 							})
 					
 				}
@@ -112,7 +114,7 @@
 		
 		<div ng-app="repApp" ng-controller="repCtrl">	
 			<h4 style="color:red" ng-model="message"></h4>
-			<h1>Patients You Represent</h1>
+			<h1>Patients User Represent</h1>
 			<table style="width:100%">
 				<tr>
 					<td style="vertical-align: top">
