@@ -266,7 +266,11 @@ public enum TransactionType {
     /**
      * An email would be sent but email address is missing.
      */
-    CREATE_MISSING_EMAIL_LOG ( 1404, "Email notification could not be sent due to missing email address", true );
+    CREATE_MISSING_EMAIL_LOG ( 1404, "Email notification could not be sent due to missing email address", true ),
+    /**
+     * LT or HCP viewed EHR
+     */
+    VIEW_EHR ( 1515, "Emergency Health Records viewed", true );
 
     /**
      * Creates a TransactionType for logging events
