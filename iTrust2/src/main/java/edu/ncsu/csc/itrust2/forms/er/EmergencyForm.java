@@ -3,12 +3,9 @@ package edu.ncsu.csc.itrust2.forms.er;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
-import edu.ncsu.csc.itrust2.models.persistent.Diagnosis;
 import edu.ncsu.csc.itrust2.models.persistent.Patient;
-import edu.ncsu.csc.itrust2.models.persistent.Prescription;
 import edu.ncsu.csc.itrust2.models.persistent.User;
 
 /**
@@ -69,44 +66,34 @@ public class EmergencyForm {
 
         setSelf( patient.getSelf().getUsername() );
 
-        final User user = User.getByName( username );
-        setDiagnoses( Diagnosis.getForPatient( user ) );
-        setPrescriptions( Prescription.getForPatient( username ) );
-
     }
 
     /** The username of the patient **/
-    private String     self;
+    private String self;
 
     /** The first name of the patient **/
-    private String     firstName;
+    private String firstName;
 
     /** The last name of the patient **/
-    private String     lastName;
+    private String lastName;
 
     /** The date of birth of the patient **/
-    private String     dateOfBirth;
+    private String dateOfBirth;
 
     /** The blood type of the patient **/
-    private String     bloodType;
+    private String bloodType;
 
     /** The gender of the patient **/
-    private String     gender;
+    private String gender;
 
     /** The id of the patient **/
-    private String     id;
-
-    /** The diagnosis's for the patient **/
-    List<Diagnosis>    diagnoses;
-
-    /** The prescriptions for the patient **/
-    List<Prescription> prescriptions;
+    private String id;
 
     /** The age of the patient */
-    private String     age;
+    private String age;
 
     /** The full name of the patient */
-    private String     name;
+    private String name;
 
     /**
      * Get the full name of the patient
@@ -144,44 +131,6 @@ public class EmergencyForm {
      */
     public void setAge ( final String age ) {
         this.age = age;
-    }
-
-    /**
-     * Get the diagnoses
-     *
-     * @return the diagnoses
-     */
-    public List<Diagnosis> getDiagnoses () {
-        return diagnoses;
-    }
-
-    /**
-     * Set the diagnoses
-     *
-     * @param diagnoses
-     *            the diagnoses to set
-     */
-    public void setDiagnoses ( final List<Diagnosis> diagnoses ) {
-        this.diagnoses = diagnoses;
-    }
-
-    /**
-     * Get the prescriptions
-     *
-     * @return the prescriptions
-     */
-    public List<Prescription> getPrescriptions () {
-        return prescriptions;
-    }
-
-    /**
-     * Set the prescriptions
-     *
-     * @param prescriptions
-     *            the prescriptions to set
-     */
-    public void setPrescriptions ( final List<Prescription> prescriptions ) {
-        this.prescriptions = prescriptions;
     }
 
     /**

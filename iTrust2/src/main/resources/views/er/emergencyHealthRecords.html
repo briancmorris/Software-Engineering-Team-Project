@@ -21,19 +21,36 @@
 			app.controller('controller', function($scope, $http) {
 				
 				
+				$http.get("/iTrust2/api/v1/patients").then(
+						function(response) {
+							$scope.patients = response.data;
+						});
+				
+				$scope.displayName = function(p) {
+					return p.firstName + " " + p.lastName + " (" + p.self.username + ")";
+				}
+				
+				$scope.searchFilter = "";
+				$scope.filterPatients = function(patient) {
+					return ($scope.displayName(patient)).toLowerCase().match($scope.searchFilter.toLowerCase());
+				}
+				
+				
 				$scope.patientID = "";
 				$scope.prescriptions = [];
 				$scope.message = "";
 				
+
 				$scope.loadAll = function() {
 					$scope.loadDemo();
 					$scope.loadPres();
 					$scope.loadDiag();
+					console.log($scope);
 				}
 				
 				//Demographics
 				$scope.loadDemo = function() {
-					$http.get("/iTrust2/api/v1/emergencyHealthRecords/demo/" + $scope.patientID).then(
+					$http.get("/iTrust2/api/v1/emergencyHealthRecords/demo/" + $scope.selectedPatient).then(
 						function(response) {
 							$scope.demo = response.data;
 							$scope.message = "";
@@ -46,7 +63,7 @@
 				
 				//Diagnosis
 				$scope.loadDiag = function() {
-					$http.get("/iTrust2/api/v1/emergencyHealthRecords/diag/" + $scope.patientID).then(
+					$http.get("/iTrust2/api/v1/emergencyHealthRecords/diag/" + $scope.selectedPatient).then(
 						function(response) {
 							$scope.diagnoses = response.data;
 						}, function(rejection) {
@@ -58,7 +75,7 @@
 				
 				//Prescriptions
 				$scope.loadPres = function() {
-					$http.get("/iTrust2/api/v1/emergencyHealthRecords/pres/" + $scope.patientID).then(
+					$http.get("/iTrust2/api/v1/emergencyHealthRecords/pres/" + $scope.selectedPatient).then(
 						function(response) {
 							$scope.prescriptions = response.data;
 						}, function(rejection) {
@@ -68,6 +85,8 @@
 				
 				}
 				
+				
+
 				
 				// Helper method to create 2-digit version of a value -- from documentOfficeVisit.html
 				function twoDigit(num) {
@@ -94,18 +113,32 @@
 				
 				<h1>Emergency Health Records</h1>
 				<br>
-				<form ng-submit="loadAll()">
-              		<label for="patientID">Patient:</label>
-              		<input type="text" id="patientID" name="patientID" ng-model="patientID" >
-              		<br>
-             		<input type="submit" name="addRep" value="Search">
-				</form>
 				
+
+				<div style="float:left;width:30%;height:75%;overflow-y:auto">
+			<h2>Patients:</h2>
+			<!-- info on filtering taken from here: https://www.w3schools.com/angular/angular_filters.asp
+				and https://docs.angularjs.org/api/ng/filter/filter -->
+			<h4>Search: <input type="text" name="search" ng-model="searchFilter"/></h4>
+			<!-- Info on scrolling taken from here: https://www.w3schools.com/cssref/pr_pos_overflow.asp -->
+			<!-- and here: https://stackoverflow.com/questions/9560330/how-to-hide-a-vertical-scroll-bar-when-not-needed -->
+			<ul style="overflow:auto;height=90%;">
+			<!-- Information on how labels wor from here: https://stackoverflow.com/questions/7863251/clicking-the-text-to-select-corresponding-radio-button -->
+							<li ng-repeat="patient in patients | filter:filterPatients"><h4><label>
+									<input type="radio" ng-model="$parent.selectedPatient"
+									name="patient" value="{{patient.self.username}}"
+									ng-click='$parent.selectPatient(patient); loadAll()' />&nbsp;{{$parent.displayName(patient)}}</label>
+							</h4></li>
+						</ul>
+			</div>
+
+			</div>	
 				<div>
                 <p style="color:red" ng-model="errorAdding" id="errP">{{message}}</p>
                 </div>
                 <br>
 				
+			<div class="container">
 				<h2>Demographics</h2>
 				<table style="width:100%" class="table table-hover">
 					<thead>

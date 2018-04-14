@@ -1,5 +1,6 @@
 package edu.ncsu.csc.itrust2.controllers.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -136,6 +137,26 @@ public class APIEmergencyController extends APIController {
             }
         }
         return Prescription.getForPatient( user.getId() );
+    }
+
+    /**
+     * Returns a list of patients that match the given ID
+     *
+     * @param id
+     *            The patient ID to search for
+     * @return The list of patients
+     */
+    @GetMapping ( BASE_PATH + "/emergencyHealthRecords/patients" )
+    @PreAuthorize ( "hasRole('ROLE_HCP') or hasRole('ROLE_ER')" )
+    public List<Patient> getPatients ( @PathVariable ( "id" ) final String id ) {
+        final List<Patient> patients = new ArrayList<Patient>();
+        final List<Patient> allpatients = Patient.getPatients();
+        for ( final Patient p : allpatients ) {
+            if ( p.getSelf().getId().equals( id ) ) {
+                patients.add( p );
+            }
+        }
+        return patients;
     }
 
 }
