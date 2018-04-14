@@ -507,6 +507,25 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
     }
 
     /**
+     * Sets the lab procedures of this office visit to the given list.
+     *
+     * @param procedures
+     *            The list of lab procedures.
+     */
+    public void setLabProcedures ( final List<LabProcedure> procedures ) {
+        this.labProcedures = procedures;
+    }
+
+    /**
+     * Returns the stored list of lab procedures in this office visit.
+     *
+     * @return The stored list of lab procedures in this office visit.
+     */
+    public List<LabProcedure> getLabProcedures () {
+        return labProcedures;
+    }
+
+    /**
      * The patient of this office visit
      */
     @NotNull
@@ -577,9 +596,19 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
     @JoinColumn ( name = "appointment_id" )
     private AppointmentRequest       appointment;
 
+    /**
+     * The prescriptions of this office visit.
+     */
     @OneToMany ( fetch = FetchType.EAGER )
     @JoinColumn ( name = "prescriptions_id" )
     private List<Prescription>       prescriptions = Collections.emptyList();
+
+    /**
+     * The lab procedures of this office visit.
+     */
+    @OneToMany ( fetch = FetchType.EAGER )
+    @JoinColumn ( name = "lab_procedures" )
+    private List<LabProcedure>       labProcedures = Collections.emptyList();
 
     /**
      * Overrides the basic domain object save in order to save basic health
@@ -630,6 +659,44 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
         }
 
         //// END PRESCRIPTIONS ////
+
+        //// LABS ////
+
+        // Get Lab IDs that are in this visit.
+        final Set<Long> currentLabs = this.getLabProcedures().stream().map( LabProcedure::getId )
+                .collect( Collectors.toSet() );
+
+        // Get the previously saved lab IDs.
+        final Set<Long> savedLabs = oldVisit == null ? Collections.emptySet()
+                : oldVisit.getLabProcedures().stream().map( LabProcedure::getId ).collect( Collectors.toSet() );
+
+        // Save each of the lab procedures.
+        this.getLabProcedures().forEach( l -> {
+            final boolean isSaved = savedLabs.contains( l.getId() );
+            if ( isSaved ) {
+                LoggerUtil.log( TransactionType.LAB_PROCEDURE_EDIT, LoggerUtil.currentUser(),
+                        getPatient().getUsername(), "Editing lab procedure with id " + l.getId() );
+            }
+            else {
+                LoggerUtil.log( TransactionType.LAB_PROCEDURE_ADD, LoggerUtil.currentUser(), getPatient().getUsername(),
+                        "Added lab procedure with id " + l.getId() );
+            }
+            l.save();
+        } );
+
+        // Remove lab procedures that are no longer relevant.
+        if ( !savedLabs.isEmpty() ) {
+            savedLabs.forEach( id -> {
+                final boolean isMissing = currentLabs.contains( id );
+                if ( isMissing ) {
+                    LoggerUtil.log( TransactionType.LAB_PROCEDURE_REMOVE, LoggerUtil.currentUser(),
+                            getPatient().getUsername(), "Removed lab procedure with id " + id );
+                    LabProcedure.getById( id ).delete();
+                }
+            } );
+        }
+
+        //// END LABS ////
 
         try {
             super.save();
