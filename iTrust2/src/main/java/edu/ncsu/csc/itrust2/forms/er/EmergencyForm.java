@@ -26,10 +26,6 @@ public class EmergencyForm {
     public EmergencyForm ( final String username ) {
         final User user2 = User.getByName( username );
         final Patient patient = Patient.getByName( username );
-        if ( null == patient ) {
-            setId( "" );
-            return; /* Nothing to do here */
-        }
 
         setFirstName( patient.getFirstName() );
         setLastName( patient.getLastName() );
@@ -47,7 +43,7 @@ public class EmergencyForm {
                 age--;
             }
             else if ( today.getMonth() == dob.getMonth() ) {
-                if ( today.getDay() < dob.getDay() ) {
+                if ( today.getDate() < dob.getDate() ) {
                     age--;
                 }
             }
@@ -64,12 +60,7 @@ public class EmergencyForm {
 
         setId( user2.getId() );
 
-        setSelf( patient.getSelf().getUsername() );
-
     }
-
-    /** The username of the patient **/
-    private String self;
 
     /** The first name of the patient **/
     private String firstName;
@@ -131,12 +122,6 @@ public class EmergencyForm {
      */
     public void setAge ( final String age ) {
         this.age = age;
-    }
-
-    /**
-     * Empty constructor
-     */
-    public EmergencyForm () {
     }
 
     /**
@@ -251,25 +236,6 @@ public class EmergencyForm {
      */
     public void setId ( final String id ) {
         this.id = id;
-    }
-
-    /**
-     * Get the username of the patient
-     *
-     * @return the username of the patient
-     */
-    public String getSelf () {
-        return self;
-    }
-
-    /**
-     * Set the username of the patient
-     *
-     * @param self
-     *            the username of the patient
-     */
-    public void setSelf ( final String self ) {
-        this.self = self;
     }
 
 }
