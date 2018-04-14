@@ -771,22 +771,43 @@ public class Patient extends DomainObject<Patient> implements Serializable {
         return representees;
     }
 
+    /**
+     * Returns the boolean check for if a representative or not
+     * 
+     * @return is Representative
+     */
     public boolean isRep () {
         return isRepresentative;
     }
 
+    /**
+     * Sets isRepresentative to true
+     */
     public void declareSelfRep () {
         isRepresentative = true;
     }
 
+    /**
+     * Sets isRepresentative to false
+     */
     public void undeclareSelfRep () {
         isRepresentative = false;
     }
 
+    /**
+     * Sets the representative hashSet to point to another set
+     * 
+     * @param hashSet new set to point to
+     */
     public void setPersonalRepresentatives ( HashSet<Patient> hashSet ) {
         representatives = hashSet;
     }
 
+    /**
+     * Sets the representee hashSet to point to a new hashSet
+     * 
+     * @param hashSet new hashSet
+     */
     public void setPersonalRepresentees ( HashSet<Patient> hashSet ) {
         representees = hashSet;
     }
