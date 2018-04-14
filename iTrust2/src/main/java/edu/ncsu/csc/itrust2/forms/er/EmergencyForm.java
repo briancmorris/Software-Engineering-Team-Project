@@ -19,8 +19,8 @@ public class EmergencyForm {
     /**
      * Populate the emergency form from a patient user name string
      *
-     * @param patient
-     *            the patient object to set the form with
+     * @param username
+     *            the id of the patient
      */
     @SuppressWarnings ( "deprecation" )
     public EmergencyForm ( final String username ) {
@@ -37,17 +37,17 @@ public class EmergencyForm {
             setDateOfBirth( date.format( patient.getDateOfBirth().getTime() ) );
             final Date today = Calendar.getInstance().getTime();
             final Date dob = patient.getDateOfBirth().getTime();
-            int age = today.getYear() - dob.getYear();
+            int age2 = today.getYear() - dob.getYear();
 
             if ( today.getMonth() < dob.getMonth() ) {
-                age--;
+                age2--;
             }
             else if ( today.getMonth() == dob.getMonth() ) {
                 if ( today.getDate() < dob.getDate() ) {
-                    age--;
+                    age2--;
                 }
             }
-            setAge( Integer.toString( age ) );
+            setAge( Integer.toString( age2 ) );
         }
 
         if ( null != patient.getBloodType() ) {
