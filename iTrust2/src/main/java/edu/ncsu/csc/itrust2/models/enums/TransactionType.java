@@ -288,34 +288,39 @@ public enum TransactionType {
     LOINC_DELETE ( 1702, "Admin deletes LOINC code.", false ),
 
     /**
-     * An admin views the LOINC codes in the system.
+     * An user views a specific LOINC code in the system.
      */
-    LOINC_VIEW ( 1703, "Admin views LOINC codes in system.", false ),
+    LOINC_VIEW ( 1703, "Admin views a specific LOINC code in the system.", false ),
+
+    /**
+     * An user views all LOINC codes in the system.
+     */
+    LOINC_VIEW_ALL ( 1704, "Admin views LOINC codes in system.", false ),
 
     /**
      * An HCP adds a lab procedure to an office visit.
      */
-    LAB_PROCEDURE_ADD ( 1704, "HCP adds lab procedure to office visit.", true ),
+    LAB_PROCEDURE_ADD ( 1705, "HCP adds lab procedure to office visit.", true ),
 
     /**
      * An HCP removes a lab procedure from an office visit.
      */
-    LAB_PROCEDURE_REMOVE ( 1705, "HCP removes lab procedure from office visit.", true ),
+    LAB_PROCEDURE_REMOVE ( 1706, "HCP removes lab procedure from office visit.", true ),
 
     /**
      * A lab tech views their assigned lab procedures.
      */
-    LAB_PROCEDURE_VIEW ( 1706, "Lab tech views assigned lab procedures.", false ),
+    LAB_PROCEDURE_VIEW ( 1707, "Lab tech views assigned lab procedures.", false ),
 
     /**
      * A lab tech edits the comments on a lab procedure.
      */
-    LAB_PROCEDURE_EDIT ( 1707, "Lab tech edits comments on lab procedure.", true ),
+    LAB_PROCEDURE_EDIT ( 1708, "Lab tech edits comments on lab procedure.", true ),
 
     /**
      * A lab tech reassigns a lab procedure to a new lab tech.
      */
-    LAB_PROCEDURE_REASSIGN ( 1708, "Lab tech reassigns lab procedure to new lab tech.", true );
+    LAB_PROCEDURE_REASSIGN ( 1709, "Lab tech reassigns lab procedure to new lab tech.", true );
 
     /**
      * Creates a TransactionType for logging events
