@@ -606,7 +606,7 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
     /**
      * The lab procedures of this office visit.
      */
-    @OneToMany ( fetch = FetchType.EAGER )
+    @OneToMany ( fetch = FetchType.LAZY )
     @JoinColumn ( name = "lab_procedures" )
     private List<LabProcedure>       labProcedures = Collections.emptyList();
 
