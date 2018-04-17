@@ -195,6 +195,7 @@ public class APIRepresentativeController extends APIController {
             for ( final Patient r : tempReps ) {
                 if ( r.equals( rep ) ) {
                     tempReps.remove( r );
+                    break;
                 }
             }
             // add all representees to temp set
@@ -203,6 +204,7 @@ public class APIRepresentativeController extends APIController {
             for ( final Patient patient : tempPatients ) {
                 if ( patient.equals( p ) ) {
                     tempPatients.remove( patient );
+                    break;
                 }
             }
 
@@ -270,6 +272,7 @@ public class APIRepresentativeController extends APIController {
             for ( final Patient r : tempReps ) {
                 if ( r.equals( rep ) ) {
                     tempReps.remove( r );
+                    break;
                 }
             }
             // Add all the patients to the temp sets
@@ -278,6 +281,7 @@ public class APIRepresentativeController extends APIController {
             for ( final Patient patient : tempPatients ) {
                 if ( patient.equals( p ) ) {
                     tempPatients.remove( patient );
+                    break;
                 }
             }
 
