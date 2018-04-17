@@ -541,6 +541,26 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
     }
 
     /**
+     * Adds a given LabProcedure to the list of lab procedures in this visit.
+     *
+     * @param lab
+     *            The lab procedure to add.
+     */
+    public void addLabProcedure ( final LabProcedure lab ) {
+        labProcedures.add( lab );
+    }
+
+    /**
+     * Removes the given LabProcedure from this office visit.
+     * 
+     * @param lab
+     *            the LabProcedure to remove.
+     */
+    public void removeLabProcedure ( final LabProcedure lab ) {
+        labProcedures.remove( lab );
+    }
+
+    /**
      * The patient of this office visit
      */
     @NotNull

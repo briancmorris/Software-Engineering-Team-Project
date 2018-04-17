@@ -593,4 +593,26 @@ public class OfficeVisitForm implements Serializable {
     public List<LabProcedureForm> getLabProcedures () {
         return labProcedures;
     }
+
+    /**
+     * Adds the given LabProcedureForm to the list of labs associated with this
+     * office visit.
+     * 
+     * @param labForm
+     *            The LabProcedureForm to add.
+     */
+    public void addLabProcedure ( final LabProcedureForm labForm ) {
+        labProcedures.add( labForm );
+    }
+
+    /**
+     * Removes the given LabProcedureForm from the list of labs associated with
+     * this office visit.
+     * 
+     * @param labForm
+     *            The LabProcedureForm to remove.
+     */
+    public void removeLabProcedure ( final LabProcedureForm labForm ) {
+        labProcedures.remove( labForm );
+    }
 }
