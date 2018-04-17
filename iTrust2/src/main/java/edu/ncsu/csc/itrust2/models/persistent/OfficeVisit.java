@@ -531,7 +531,7 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
     @NotNull
     @ManyToOne
     @JoinColumn ( name = "patient_id", columnDefinition = "varchar(100)" )
-    private User                     patient;
+    private User                         patient;
 
     /**
      * The hcp of this office visit
@@ -539,34 +539,34 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
     @NotNull
     @ManyToOne
     @JoinColumn ( name = "hcp_id", columnDefinition = "varchar(100)" )
-    private User                     hcp;
+    private User                         hcp;
 
     /**
      * The basic health metric data associated with this office visit.
      */
     @OneToOne
     @JoinColumn ( name = "basichealthmetrics_id" )
-    private BasicHealthMetrics       basicHealthMetrics;
+    private BasicHealthMetrics           basicHealthMetrics;
 
     /**
      * The date of this office visit
      */
     @NotNull
-    private Calendar                 date;
+    private Calendar                     date;
 
     /**
      * The id of this office visit
      */
     @Id
     @GeneratedValue ( strategy = GenerationType.AUTO )
-    private Long                     id;
+    private Long                         id;
 
     /**
      * The type of this office visit
      */
     @NotNull
     @Enumerated ( EnumType.STRING )
-    private AppointmentType          type;
+    private AppointmentType              type;
 
     /**
      * The hospital of this office visit
@@ -574,7 +574,7 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
     @NotNull
     @ManyToOne
     @JoinColumn ( name = "hospital_id", columnDefinition = "varchar(100)" )
-    private Hospital                 hospital;
+    private Hospital                     hospital;
 
     /**
      * The set of diagnoses associated with this visits Marked transient so not
@@ -582,33 +582,33 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
      * loop
      */
     @OneToMany ( mappedBy = "visit" )
-    public transient List<Diagnosis> diagnoses;
+    public transient List<Diagnosis>     diagnoses;
 
     /**
      * The notes of this office visit
      */
-    private String                   notes;
+    private String                       notes;
 
     /**
      * The appointment of this office visit
      */
     @OneToOne
     @JoinColumn ( name = "appointment_id" )
-    private AppointmentRequest       appointment;
+    private AppointmentRequest           appointment;
 
     /**
      * The prescriptions of this office visit.
      */
     @OneToMany ( fetch = FetchType.EAGER )
     @JoinColumn ( name = "prescriptions_id" )
-    private List<Prescription>       prescriptions = Collections.emptyList();
+    private transient List<Prescription> prescriptions = Collections.emptyList();
 
     /**
      * The lab procedures of this office visit.
      */
-    @OneToMany ( fetch = FetchType.LAZY )
+    @OneToMany ( fetch = FetchType.EAGER )
     @JoinColumn ( name = "lab_procedures" )
-    private List<LabProcedure>       labProcedures = Collections.emptyList();
+    private transient List<LabProcedure> labProcedures = Collections.emptyList();
 
     /**
      * Overrides the basic domain object save in order to save basic health
