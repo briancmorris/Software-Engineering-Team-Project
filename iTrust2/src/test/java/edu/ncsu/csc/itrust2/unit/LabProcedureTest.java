@@ -5,8 +5,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.junit.Test;
 
@@ -35,10 +39,13 @@ public class LabProcedureTest {
      * Tests the constructor of LabProcedure that requires a LabProcedureForm.
      * Simultaneously tests the getters of LabProcedure and setters of
      * LabProcedureForm.
+     *
+     * @throws ParseException
+     *             If there is an error parsing the date.
      */
     @SuppressWarnings ( "static-access" )
     @Test
-    public void testLabProcedureConstructor () {
+    public void testLabProcedureConstructor () throws ParseException {
         // Test form.
         final LabProcedureForm form = new LabProcedureForm();
 
@@ -55,11 +62,12 @@ public class LabProcedureTest {
         form.setID( new Long( 5 ) );
         form.setCode( "12345-6" );
         form.setPriorityLevel( "2" );
-        form.setDate( "11-04-2018" );
+        form.setDate( "03/11/2018" );
+        form.setTime( "12:30 PM" );
         form.setComments( "test comments" );
         form.setCompletionStatus( "Completed" );
         form.setLabTech( "lt" );
-        form.setOfficeVisitID( new Long( 5 ) );
+        form.setOfficeVisitId( new Long( 5 ) );
 
         // Test procedure.
         final LabProcedure procedure = new LabProcedure( form );
@@ -85,9 +93,12 @@ public class LabProcedureTest {
      * Tests the constructor of LabProcedureForm that requires a LabProcedure.
      * Simultaneously tests the getters of LabProcedureForm and the setters of
      * LabProcedure.
+     *
+     * @throws ParseException
+     *             If there is an error parsing the date.
      */
     @Test
-    public void testLabProcedureFormConstructor () {
+    public void testLabProcedureFormConstructor () throws ParseException {
         // Test procedure.
         final LabProcedure procedure = new LabProcedure();
         procedure.setId( new Long( 5 ) );
@@ -111,7 +122,9 @@ public class LabProcedureTest {
 
         // Test Calendar.
         final Calendar testCal = Calendar.getInstance();
-        testCal.set( 2018, 3, 11 );
+        final SimpleDateFormat sdf = new SimpleDateFormat( "MM/dd/yyyy hh:mm aaa", Locale.ENGLISH );
+        final Date parsedDate = sdf.parse( "03/11/2018 12:30 PM" );
+        testCal.setTime( parsedDate );
         procedure.setDate( testCal );
 
         // Test form.
@@ -125,8 +138,9 @@ public class LabProcedureTest {
         assertTrue( "2".equals( form.getPriorityLevel() ) );
         assertTrue( "lt".equals( form.getLabTech() ) );
         System.out.println( form.getDate() );
-        assertTrue( "11-04-2018".equals( form.getDate() ) );
-        assertNull( form.getOfficeVisitID() );
+        assertTrue( "03/11/2018".equals( form.getDate() ) );
+        assertTrue( "12:30 PM".equals( form.getTime() ) );
+        assertNull( form.getOfficeVisitId() );
 
         testCode.delete();
 
@@ -135,9 +149,12 @@ public class LabProcedureTest {
     /**
      * Tests the getById method in LabProcedure. Simultaneously tests the getAll
      * method for LabProcedure.
+     * 
+     * @throws ParseException
+     *             if there is an error when parsing the date.
      */
     @Test
-    public void testGetById () {
+    public void testGetById () throws ParseException {
         // Test procedure.
         final LabProcedure procedure = new LabProcedure();
         // Test code.
@@ -158,8 +175,9 @@ public class LabProcedureTest {
 
         // Test Calendar.
         final Calendar testCal = Calendar.getInstance();
-        testCal.clear();
-        testCal.set( 2018, 3, 11 );
+        final SimpleDateFormat sdf = new SimpleDateFormat( "MM/dd/yyyy hh:mm aaa", Locale.ENGLISH );
+        final Date parsedDate = sdf.parse( "03/11/2018 12:30 PM" );
+        testCal.setTime( parsedDate );
         procedure.setDate( testCal );
 
         // Test OfficeVisit setup.

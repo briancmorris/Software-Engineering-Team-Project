@@ -1,5 +1,9 @@
 package edu.ncsu.csc.itrust2.unit;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
@@ -14,6 +18,7 @@ import edu.ncsu.csc.itrust2.models.persistent.Diagnosis;
 import edu.ncsu.csc.itrust2.models.persistent.Drug;
 import edu.ncsu.csc.itrust2.models.persistent.Hospital;
 import edu.ncsu.csc.itrust2.models.persistent.ICDCode;
+import edu.ncsu.csc.itrust2.models.persistent.LabProcedure;
 import edu.ncsu.csc.itrust2.models.persistent.OfficeVisit;
 import edu.ncsu.csc.itrust2.models.persistent.Prescription;
 import edu.ncsu.csc.itrust2.models.persistent.User;
@@ -97,6 +102,20 @@ public class OfficeVisitTest {
         visit.save();
 
         visit.delete();
+
+        // Test LabProcedures.
+
+        final OfficeVisit newTest = new OfficeVisit();
+        final List<LabProcedure> procedures = new ArrayList<LabProcedure>();
+        procedures.add( new LabProcedure() );
+        procedures.add( new LabProcedure() );
+
+        newTest.setLabProcedures( procedures );
+        final List<LabProcedure> proceduresTest = newTest.getLabProcedures();
+        assertEquals( 2, proceduresTest.size() );
+        assertTrue( procedures.get( 0 ).equals( proceduresTest.get( 0 ) ) );
+        assertTrue( procedures.get( 1 ).equals( proceduresTest.get( 1 ) ) );
+
     }
 
 }
