@@ -2,6 +2,7 @@ package edu.ncsu.csc.itrust2.forms.labs;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import edu.ncsu.csc.itrust2.models.persistent.LabProcedure;
 
@@ -28,6 +29,9 @@ public class LabProcedureForm implements Serializable {
 
     /** The date the associated LabProcedure object was assigned. */
     private String            date;
+
+    /** The time associated the LabProcedure object was assigned. */
+    private String            time;
 
     /** The comments of the associated LabProcedure object. */
     private String            comments;
@@ -61,12 +65,17 @@ public class LabProcedureForm implements Serializable {
         setID( procedure.getId() );
         setCode( procedure.getCode().getCode() );
         setPriorityLevel( "" + procedure.getPriorityLevel().getCode() );
-        final SimpleDateFormat format = new SimpleDateFormat( "dd-MM-yyyy" );
-        setDate( format.format( procedure.getDate().getTime() ) );
+
+        // Parse the date and time.
+        final SimpleDateFormat tempDate = new SimpleDateFormat( "MM/dd/yyyy", Locale.ENGLISH );
+        setDate( tempDate.format( procedure.getDate().getTime() ) );
+        final SimpleDateFormat tempTime = new SimpleDateFormat( "hh:mm aaa", Locale.ENGLISH );
+        setTime( tempTime.format( procedure.getDate().getTime() ) );
+
         setComments( procedure.getComments() );
         setCompletionStatus( procedure.getCompletionStatus().getName() );
         setLabTech( procedure.getLabTech().getId() );
-        setOfficeVisitID( procedure.getOfficeVisit().getId() );
+        setOfficeVisitId( procedure.getOfficeVisit().getId() );
     }
 
     /**
@@ -207,7 +216,7 @@ public class LabProcedureForm implements Serializable {
      *
      * @return the office visit ID of the LabProcedureForm.
      */
-    public Long getOfficeVisitID () {
+    public Long getOfficeVisitId () {
         return officeVisitID;
     }
 
@@ -217,8 +226,27 @@ public class LabProcedureForm implements Serializable {
      * @param officeVisitID
      *            the office visit ID to set.
      */
-    public void setOfficeVisitID ( final Long officeVisitID ) {
+    public void setOfficeVisitId ( final Long officeVisitID ) {
         this.officeVisitID = officeVisitID;
+    }
+
+    /**
+     * Returns the time of this lab procedure.
+     *
+     * @return the time of this lab procedure.
+     */
+    public String getTime () {
+        return time;
+    }
+
+    /**
+     * Sets the time of this lab procedure
+     *
+     * @param time
+     *            the time to set.
+     */
+    public void setTime ( final String time ) {
+        this.time = time;
     }
 
 }

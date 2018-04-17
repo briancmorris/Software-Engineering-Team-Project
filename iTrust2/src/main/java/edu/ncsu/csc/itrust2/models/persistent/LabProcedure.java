@@ -1,7 +1,11 @@
 package edu.ncsu.csc.itrust2.models.persistent;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -85,24 +89,25 @@ public class LabProcedure extends DomainObject<LabProcedure> {
      *
      * @param form
      *            The LabProcedureForm to base the LabProcedure object on.
+     * @throws ParseException
+     *             If there is an error with date formatting.
      */
-    public LabProcedure ( final LabProcedureForm form ) {
+    public LabProcedure ( final LabProcedureForm form ) throws ParseException {
         setId( form.getID() );
         setCode( LOINCCode.getByCode( form.getCode() ) );
         setPriorityLevel( PriorityLevel.parse( form.getPriorityLevel() ) );
+
         // Parse the date.
-        final String[] dateArray = form.getDate().split( "-" );
-        final int day = Integer.parseInt( dateArray[0] );
-        // NOTE: Java stores month from index 0-11 ...
-        final int month = ( Integer.parseInt( dateArray[1] ) - 1 );
-        final int year = Integer.parseInt( dateArray[2] );
+        final SimpleDateFormat sdf = new SimpleDateFormat( "MM/dd/yyyy hh:mm aaa", Locale.ENGLISH );
+        final Date parsedDate = sdf.parse( form.getDate() + " " + form.getTime() );
         final Calendar temp = Calendar.getInstance();
-        temp.set( year, month, day );
+        temp.setTime( parsedDate );
+
         setDate( temp );
         setComments( form.getComments() );
         setCompletionStatus( CompletionStatus.parse( form.getCompletionStatus() ) );
         setLabTech( User.getByName( form.getLabTech() ) );
-        setOfficeVisit( OfficeVisit.getById( form.getOfficeVisitID() ) );
+        setOfficeVisit( OfficeVisit.getById( form.getOfficeVisitId() ) );
 
     }
 
