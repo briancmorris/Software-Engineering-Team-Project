@@ -30,6 +30,7 @@ import org.hibernate.criterion.Criterion;
 
 import edu.ncsu.csc.itrust2.forms.hcp.OfficeVisitForm;
 import edu.ncsu.csc.itrust2.forms.hcp.PrescriptionForm;
+import edu.ncsu.csc.itrust2.forms.labs.LabProcedureForm;
 import edu.ncsu.csc.itrust2.models.enums.AppointmentType;
 import edu.ncsu.csc.itrust2.models.enums.Role;
 import edu.ncsu.csc.itrust2.models.enums.TransactionType;
@@ -238,6 +239,20 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
         if ( ps != null ) {
             setPrescriptions( ps.stream().map( ( final PrescriptionForm pf ) -> new Prescription( pf ) )
                     .collect( Collectors.toList() ) );
+        }
+
+        final List<LabProcedureForm> ls = ovf.getLabProcedures();
+        if ( ls != null ) {
+            setLabProcedures( ls.stream().map( ( final LabProcedureForm lf ) -> {
+                try {
+                    return new LabProcedure( lf );
+                }
+                catch ( final ParseException e ) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                    throw new IllegalArgumentException( "Invalid LabProcedure list." );
+                }
+            } ).collect( Collectors.toList() ) );
         }
     }
 
