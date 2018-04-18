@@ -61,6 +61,6 @@ public class HCPController {
     @RequestMapping ( value = "hcp/emergencyHealthRecords" )
     @PreAuthorize ( "hasRole('ROLE_HCP')" )
     public String emergencyHealthRecords ( final Model model ) {
-        return "/hcp/emergencyHealthRecords";
+        return "/er/emergencyHealthRecords";
     }
 }
