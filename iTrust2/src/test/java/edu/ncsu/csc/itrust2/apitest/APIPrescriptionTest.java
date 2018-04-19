@@ -170,4 +170,94 @@ public class APIPrescriptionTest {
                 .andExpect( content().string( p2.getId().toString() ) );
     }
 
+    /**
+     * Tests basic prescription API and leaves the prescriptions for patient for
+     * further testing.
+     *
+     * @throws Exception
+     */
+    @Test
+    @WithMockUser ( username = "hcp", roles = { "USER", "HCP", "ADMIN" } )
+    public void testPrescriptionCreation () throws Exception {
+
+        // Create two prescription forms for testing
+        final PrescriptionForm form1 = new PrescriptionForm();
+        form1.setDrug( drugForm.getCode() );
+        form1.setDosage( 100 );
+        form1.setRenewals( 12 );
+        form1.setPatient( "patient" );
+        form1.setStartDate( "10/10/2009" );
+        form1.setEndDate( "10/10/2010" );
+
+        final PrescriptionForm form2 = new PrescriptionForm();
+        form2.setDrug( drugForm.getCode() );
+        form2.setDosage( 200 );
+        form2.setRenewals( 3 );
+        form2.setPatient( "patient" );
+        form2.setStartDate( "10/10/2020" );
+        form2.setEndDate( "11/10/2020" );
+
+        // Add first prescription to system
+        final String content1 = mvc
+                .perform( post( "/api/v1/prescriptions" ).contentType( MediaType.APPLICATION_JSON )
+                        .content( TestUtils.asJsonString( form1 ) ) )
+                .andExpect( status().isOk() ).andReturn().getResponse().getContentAsString();
+
+        // Parse response as Prescription
+        final Prescription p1 = gson.fromJson( content1, Prescription.class );
+        final PrescriptionForm p1Form = new PrescriptionForm( p1 );
+        assertEquals( form1.getDrug(), p1Form.getDrug() );
+        assertEquals( form1.getDosage(), p1Form.getDosage() );
+        assertEquals( form1.getRenewals(), p1Form.getRenewals() );
+        assertEquals( form1.getPatient(), p1Form.getPatient() );
+        assertEquals( form1.getStartDate(), p1Form.getStartDate() );
+        assertEquals( form1.getEndDate(), p1Form.getEndDate() );
+
+        // Add second prescription to system
+        final String content2 = mvc
+                .perform( post( "/api/v1/prescriptions" ).contentType( MediaType.APPLICATION_JSON )
+                        .content( TestUtils.asJsonString( form2 ) ) )
+                .andExpect( status().isOk() ).andReturn().getResponse().getContentAsString();
+        final Prescription p2 = gson.fromJson( content2, Prescription.class );
+        final PrescriptionForm p2Form = new PrescriptionForm( p1 );
+        assertEquals( form1.getDrug(), p2Form.getDrug() );
+        assertEquals( form1.getDosage(), p2Form.getDosage() );
+        assertEquals( form1.getRenewals(), p2Form.getRenewals() );
+        assertEquals( form1.getPatient(), p2Form.getPatient() );
+        assertEquals( form1.getStartDate(), p2Form.getStartDate() );
+        assertEquals( form1.getEndDate(), p2Form.getEndDate() );
+
+        // Verify prescriptions have been added
+        final String allPrescriptionContent = mvc.perform( get( "/api/v1/prescriptions" ) ).andExpect( status().isOk() )
+                .andReturn().getResponse().getContentAsString();
+        final List<Prescription> allPrescriptions = gson.fromJson( allPrescriptionContent,
+                new TypeToken<List<Prescription>>() {
+                }.getType() );
+        assertTrue( allPrescriptions.size() >= 2 );
+
+        // Edit first prescription
+        p1.setDosage( 500 );
+        final String editContent = mvc
+                .perform( put( "/api/v1/prescriptions" ).contentType( MediaType.APPLICATION_JSON )
+                        .content( TestUtils.asJsonString( new PrescriptionForm( p1 ) ) ) )
+                .andReturn().getResponse().getContentAsString();
+        final Prescription edited = gson.fromJson( editContent, Prescription.class );
+        assertEquals( p1.getId(), edited.getId() );
+        assertEquals( p1.getDosage(), edited.getDosage() );
+
+        // Get single prescription
+        final String getContent = mvc
+                .perform( put( "/api/v1/prescriptions" ).contentType( MediaType.APPLICATION_JSON )
+                        .content( TestUtils.asJsonString( new PrescriptionForm( p1 ) ) ) )
+                .andExpect( status().isOk() ).andReturn().getResponse().getContentAsString();
+        final Prescription fetched = gson.fromJson( getContent, Prescription.class );
+        assertEquals( p1.getId(), fetched.getId() );
+
+        // Attempt invalid edit
+        p2.setRenewals( -1 );
+        mvc.perform( put( "/api/v1/prescriptions" ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( new PrescriptionForm( p2 ) ) ) ).andExpect( status().isBadRequest() );
+
+    }
+
 }
