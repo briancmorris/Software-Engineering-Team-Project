@@ -10,9 +10,11 @@ import java.util.stream.Collectors;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import edu.ncsu.csc.itrust2.forms.labs.LabProcedureForm;
 import edu.ncsu.csc.itrust2.models.enums.HouseholdSmokingStatus;
 import edu.ncsu.csc.itrust2.models.enums.PatientSmokingStatus;
 import edu.ncsu.csc.itrust2.models.persistent.Diagnosis;
+import edu.ncsu.csc.itrust2.models.persistent.LabProcedure;
 import edu.ncsu.csc.itrust2.models.persistent.OfficeVisit;
 import edu.ncsu.csc.itrust2.models.persistent.Prescription;
 
@@ -149,6 +151,8 @@ public class OfficeVisitForm implements Serializable {
 
     private List<PrescriptionForm> prescriptions;
 
+    private List<LabProcedureForm> labProcedures;
+
     /**
      * Creates an OfficeVisitForm from the OfficeVisit provided
      *
@@ -166,7 +170,9 @@ public class OfficeVisitForm implements Serializable {
         setId( ov.getId().toString() );
         setPreScheduled( ( (Boolean) ( ov.getAppointment() != null ) ).toString() );
         setDiagnoses( new ArrayList<Diagnosis>() );
-        setPrescriptions( ov.getPrescriptions().stream().map( ( Prescription p ) -> new PrescriptionForm( p ) )
+        setPrescriptions( ov.getPrescriptions().stream().map( ( final Prescription p ) -> new PrescriptionForm( p ) )
+                .collect( Collectors.toList() ) );
+        setLabProcedures( ov.getLabProcedures().stream().map( ( final LabProcedure l ) -> new LabProcedureForm( l ) )
                 .collect( Collectors.toList() ) );
     }
 
@@ -567,5 +573,46 @@ public class OfficeVisitForm implements Serializable {
      */
     public List<PrescriptionForm> getPrescriptions () {
         return prescriptions;
+    }
+
+    /**
+     * Sets list of lab procedures in this office visit.
+     *
+     * @param labProcedures
+     *            the list of lab procedures.
+     */
+    public void setLabProcedures ( final List<LabProcedureForm> labProcedures ) {
+        this.labProcedures = labProcedures;
+    }
+
+    /**
+     * Returns the list of lab procedures in this office visit.
+     *
+     * @return the list of lab procedures in this office visit.
+     */
+    public List<LabProcedureForm> getLabProcedures () {
+        return labProcedures;
+    }
+
+    /**
+     * Adds the given LabProcedureForm to the list of labs associated with this
+     * office visit.
+     * 
+     * @param labForm
+     *            The LabProcedureForm to add.
+     */
+    public void addLabProcedure ( final LabProcedureForm labForm ) {
+        labProcedures.add( labForm );
+    }
+
+    /**
+     * Removes the given LabProcedureForm from the list of labs associated with
+     * this office visit.
+     * 
+     * @param labForm
+     *            The LabProcedureForm to remove.
+     */
+    public void removeLabProcedure ( final LabProcedureForm labForm ) {
+        labProcedures.remove( labForm );
     }
 }

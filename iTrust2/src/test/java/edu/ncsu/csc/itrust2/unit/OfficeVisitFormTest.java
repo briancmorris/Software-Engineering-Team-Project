@@ -1,6 +1,7 @@
 package edu.ncsu.csc.itrust2.unit;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -13,6 +14,7 @@ import java.util.Locale;
 import org.junit.Test;
 
 import edu.ncsu.csc.itrust2.forms.hcp.OfficeVisitForm;
+import edu.ncsu.csc.itrust2.forms.labs.LabProcedureForm;
 import edu.ncsu.csc.itrust2.models.enums.AppointmentType;
 import edu.ncsu.csc.itrust2.models.enums.HouseholdSmokingStatus;
 import edu.ncsu.csc.itrust2.models.enums.PatientSmokingStatus;
@@ -248,6 +250,19 @@ public class OfficeVisitFormTest {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
+        // Test LabProcedures.
+        final OfficeVisitForm newTest = new OfficeVisitForm();
+        final List<LabProcedureForm> testList = new ArrayList<LabProcedureForm>();
+        testList.add( new LabProcedureForm() );
+        testList.add( new LabProcedureForm() );
+
+        newTest.setLabProcedures( testList );
+
+        final List<LabProcedureForm> postSetList = newTest.getLabProcedures();
+        assertEquals( 2, postSetList.size() );
+        assertTrue( testList.get( 0 ).equals( postSetList.get( 0 ) ) );
+        assertTrue( testList.get( 1 ).equals( postSetList.get( 1 ) ) );
 
     }
 
