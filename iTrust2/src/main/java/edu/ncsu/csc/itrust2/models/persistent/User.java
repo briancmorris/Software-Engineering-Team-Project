@@ -1,14 +1,21 @@
 package edu.ncsu.csc.itrust2.models.persistent;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -40,7 +47,23 @@ public class User extends DomainObject<User> implements Serializable {
      * The UID of the user
      */
     private static final long serialVersionUID = 1L;
-
+    
+    /**
+     * Set of personal representatives of Patient.
+     
+    @ManyToMany(fetch = FetchType.EAGER, cascade={CascadeType.ALL})
+    @JoinTable(name="PATIENT_REPRESENTATIVES",
+        joinColumns={@JoinColumn(name="REP_ID")},
+        inverseJoinColumns={@JoinColumn(name="USER_ID")})
+    private Set<User> representatives = new HashSet<User>();
+    
+    /**
+     * Set of patients that are represented.
+     
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy="representatives")
+    private Set<User> representees = new HashSet<User>(); 
+    */
+    
     /**
      * Get all users in the database
      *
@@ -204,6 +227,8 @@ public class User extends DomainObject<User> implements Serializable {
      */
     @Enumerated ( EnumType.STRING )
     private Role    role;
+
+    //private boolean isRepresentative;
 
     /**
      * Get the username of this user
@@ -369,5 +394,43 @@ public class User extends DomainObject<User> implements Serializable {
         }
         super.delete();
     }
+    
+    /**
+     * Get the list of representatives of this patient
+     *
+     * @return representatives the list of patient's representatives
+     
+    public Set<User> getRepresentatives () {
+        return representatives;
+    }
 
+    /**
+     * Get the list of people this patient represents
+     *
+     * @return representees the list of people this patient represents
+     
+    public Set<User> getRepresentees () {
+        return representees;
+    }
+
+    public boolean isRep () {
+        return isRepresentative;
+    }
+
+    public void declareSelfRep () {
+        isRepresentative = true;
+    }
+
+    public void undeclareSelfRep () {
+        isRepresentative = false;
+    }
+
+    public void setPersonalRepresentatives ( HashSet<User> hashSet ) {
+        representatives = hashSet;
+    }
+
+    public void setPersonalRepresentees ( HashSet<User> hashSet ) {
+        representees = hashSet;
+    }
+    */
 }
