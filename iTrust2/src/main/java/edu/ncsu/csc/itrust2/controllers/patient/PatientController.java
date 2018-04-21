@@ -146,4 +146,19 @@ public class PatientController {
         }
     }
 
+    /**
+     * Provides the page for a User to view and edit their personal
+     * representatives
+     *
+     * @param model
+     *            The data for the front end
+     * @return The page to show the user so they can edit personal
+     *         representatives
+     */
+    @GetMapping ( value = "patient/editPersonalRepresentatives" )
+    @PreAuthorize ( "hasRole('ROLE_PATIENT')" )
+    public String viewPersonalRepresentatives ( final Model model ) {
+        return "/patient/editPersonalRepresentatives";
+    }
+
 }

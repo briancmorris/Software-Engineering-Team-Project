@@ -5,16 +5,22 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -45,6 +51,20 @@ public class Patient extends DomainObject<Patient> implements Serializable {
      * Randomly generated ID.
      */
     private static final long serialVersionUID = 4617248041239679701L;
+
+    /**
+     * Set of personal representatives of Patient.
+     */
+    @ManyToMany ( fetch = FetchType.EAGER, cascade = { CascadeType.ALL } )
+    @JoinTable ( name = "PATIENT_REPRESENTATIVES", joinColumns = { @JoinColumn ( name = "REP_ID" ) },
+            inverseJoinColumns = { @JoinColumn ( name = "PATIENT_ID" ) } )
+    private Set<Patient>      representatives  = new HashSet<Patient>();
+
+    /**
+     * Set of patients that are represented.
+     */
+    @ManyToMany ( fetch = FetchType.EAGER, mappedBy = "representatives" )
+    private Set<Patient>      representees     = new HashSet<Patient>();
 
     /**
      * Get all patients in the database
@@ -310,6 +330,11 @@ public class Patient extends DomainObject<Patient> implements Serializable {
      */
     @GeneratedValue ( strategy = GenerationType.AUTO )
     private Long      id;
+
+    /**
+     * Whether the patient is a representative or not
+     */
+    private boolean   isRepresentative;
 
     /**
      * Set the id of this patient
@@ -724,6 +749,81 @@ public class Patient extends DomainObject<Patient> implements Serializable {
      */
     public void setGender ( final Gender gender ) {
         this.gender = gender;
+    }
+
+    /**
+     * Get the list of representatives of this patient
+     *
+     * @return representatives the list of patient's representatives
+     */
+    public Set<Patient> getRepresentatives () {
+        return representatives;
+    }
+
+    /**
+     * Get the list of people this patient represents
+     *
+     * @return representees the list of people this patient represents
+     */
+    public Set<Patient> getRepresentees () {
+        return representees;
+    }
+
+    /**
+     * Returns the boolean check for if a representative or not
+     *
+     * @return is Representative
+     */
+    public boolean isRep () {
+        return isRepresentative;
+    }
+
+    /**
+     * Sets isRepresentative to true
+     */
+    public void declareSelfRep () {
+        isRepresentative = true;
+    }
+
+    /**
+     * Sets isRepresentative to false
+     */
+    public void undeclareSelfRep () {
+        isRepresentative = false;
+    }
+
+    /**
+     * Sets the representative hashSet to point to another set
+     *
+     * @param hashSet
+     *            new set to point to
+     */
+    public void setPersonalRepresentatives ( final HashSet<Patient> hashSet ) {
+        representatives = hashSet;
+    }
+
+    /**
+     * Sets the representee hashSet to point to a new hashSet
+     *
+     * @param hashSet
+     *            new hashSet
+     */
+    public void setPersonalRepresentees ( final HashSet<Patient> hashSet ) {
+        representees = hashSet;
+    }
+
+    @Override
+    public boolean equals ( final Object obj ) {
+        final Patient p = (Patient) obj;
+        if ( this == obj ) {
+            return true;
+        }
+        else {
+            if ( this.self.getUsername().equals( p.getSelf().getUsername() ) ) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

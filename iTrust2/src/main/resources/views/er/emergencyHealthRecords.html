@@ -111,15 +111,22 @@
 			<div class="container">
 				<h4 style="color:red" ng-model="message"></h4>
 				
-				<h1>Emergency Health Records</h1>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-primary">
+							<div class="panel-heading">
+				
+								<h1>Emergency Health Records</h1>
+							</div>
+						
 				<br>
 				
 
-				<div style="float:left;width:30%;height:75%;overflow-y:auto">
+			<div class="panel-body">
 			<h2>Patients:</h2>
 			<!-- info on filtering taken from here: https://www.w3schools.com/angular/angular_filters.asp
 				and https://docs.angularjs.org/api/ng/filter/filter -->
-			<h4>Search: <input type="text" name="search" ng-model="searchFilter"/></h4>
+			<h4>Search: <input type="text" name="search" id="search" ng-model="searchFilter"/></h4>
 			<!-- Info on scrolling taken from here: https://www.w3schools.com/cssref/pr_pos_overflow.asp -->
 			<!-- and here: https://stackoverflow.com/questions/9560330/how-to-hide-a-vertical-scroll-bar-when-not-needed -->
 			<ul style="overflow:auto;height=90%;">
@@ -132,15 +139,17 @@
 						</ul>
 			</div>
 
-			</div>	
+				
 				<div>
                 <p style="color:red" ng-model="errorAdding" id="errP">{{message}}</p>
                 </div>
                 <br>
+                
+			
 				
-			<div class="container">
+			<div class="panel-body">
 				<h2>Demographics</h2>
-				<table style="width:100%" class="table table-hover">
+				<table class="table table-bordered">
 					<thead>
 						<tr>
 							<th>Name</th>
@@ -152,7 +161,7 @@
 					</thead>
 					<tbody>
 						<tr name="demographics">
-							<td name="name"> {{demo.name}} </td>
+							<td name="name" id="demoname"> {{demo.name}} </td>
 							<td name="age"> {{demo.age}} </td>
 							<td name="dob"> {{demo.dateOfBirth}} </td>
 							<td name="gender"> {{demo.gender}} </td>
@@ -164,11 +173,11 @@
 
 
 
-			<div class="container">
+			<div class="panel-body">
 				<h4 style="color:red" ng-model="message"></h4>
 				
 				<h2>Diagnoses</h2>
-				<table style="width:100%" class="table table-hover">
+				<table style="width:100%" class="table table-bordered">
 					<thead>
 						<tr>
 							<th>Date</th>
@@ -192,11 +201,11 @@
 
 
 
-			<div class="container">
+			<div class="panel-body">
 				<h4 style="color:red" ng-model="message"></h4>
 				
 				<h2>Prescriptions</h2>
-				<table style="width:100%" class="table table-hover">
+				<table style="width:100%" class="table table-bordered">
 					<thead>
 						<tr>
 							<th>NDC Code</th>
@@ -212,7 +221,9 @@
 				</table>
 			</div>
 		</div>
-		
+		</div>	
 		</div>
+		</div>
+		</div>	
 	</body>
 </html>

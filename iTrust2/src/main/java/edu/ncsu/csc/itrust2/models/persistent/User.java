@@ -205,6 +205,8 @@ public class User extends DomainObject<User> implements Serializable {
     @Enumerated ( EnumType.STRING )
     private Role    role;
 
+    // private boolean isRepresentative;
+
     /**
      * Get the username of this user
      *
