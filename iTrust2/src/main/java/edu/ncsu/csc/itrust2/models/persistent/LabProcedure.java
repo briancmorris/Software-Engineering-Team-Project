@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Vector;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -302,5 +303,33 @@ public class LabProcedure extends DomainObject<LabProcedure> {
     @SuppressWarnings ( "unchecked" )
     public static List<LabProcedure> getAll () {
         return (List<LabProcedure>) DomainObject.getAll( LabProcedure.class );
+    }
+
+    /**
+     * Returns a list of lab procedures for a specific office visit in the
+     * system.
+     *
+     * @param officeVisitId
+     *            the ID of the office visit to get lab procedures for.
+     * @return a list of lab procedures for a specific office visit in the
+     *         system.
+     */
+    public static List<LabProcedure> getByVisit ( final Long officeVisitId ) {
+        return getWhere( createCriterionAsList( "visit", OfficeVisit.getById( officeVisitId ) ) );
+    }
+
+    /**
+     * Returns a list of lab procedures for the specified lab tech.
+     *
+     * @param user
+     *            The lab tech to get lab procedures for
+     * @return The list of lab procedures
+     */
+    public static List<LabProcedure> getForLT ( final User user ) {
+        final List<LabProcedure> procedures = new Vector<LabProcedure>();
+        OfficeVisit.getForPatient( user.getId() ).stream().map( OfficeVisit::getId )
+                .forEach( e -> procedures.addAll( getByVisit( e ) ) );
+        return procedures;
+
     }
 }
