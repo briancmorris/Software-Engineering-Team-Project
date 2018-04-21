@@ -267,7 +267,20 @@ public class APILabProcedureController extends APIController {
         LoggerUtil.log( TransactionType.LAB_PROCEDURE_VIEW, self.getUsername(),
                 self.getUsername() + " viewed their lab procedures" );
 
+        // return LabProcedure.getForLT( self );
         return LabProcedure.getForLT( self );
+
+    }
+
+    /**
+     * Returns a list of lab procedures for the logged in lab tech.
+     *
+     * @return List of lab procedures for the lab tech.
+     */
+    @PreAuthorize ( "hasRole('ROLE_LT')" )
+    @GetMapping ( BASE_PATH + "/status" )
+    public List<CompletionStatus> getStatus () {
+        return LabProcedure.getStatus();
     }
 
 }
