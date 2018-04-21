@@ -308,9 +308,9 @@ public enum TransactionType {
     LAB_PROCEDURE_REMOVE ( 1706, "HCP removes lab procedure from office visit.", true ),
 
     /**
-     * A lab tech views their assigned lab procedures.
+     * A user views lab procedures for an office visit or were assigned to them.
      */
-    LAB_PROCEDURE_VIEW ( 1707, "Lab tech views assigned lab procedures.", false ),
+    LAB_PROCEDURE_VIEW ( 1707, "User views lab procedures for office visit.", false ),
 
     /**
      * A lab tech edits the comments on a lab procedure.
