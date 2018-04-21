@@ -4,7 +4,7 @@ Feature: New Roles
 	
 
 Scenario Outline: ER Role User
-	Given A ER role user is a registered user of the iTrust2 Medical Records system
+	Given The ER role user is a registered user of the iTrust2 Medical Records system
 	When I enter username: <user> and password: <pass> to log in
 	Then I am greeted as an Emergency Responder user
 	

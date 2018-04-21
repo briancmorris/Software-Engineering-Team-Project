@@ -37,7 +37,7 @@ public class NewRolesStepDefs {
         driver.close();
     }
 
-    @Given ( "A ER role user is a registered user of the iTrust2 Medical Records system" )
+    @Given ( "The ER role user is a registered user of the iTrust2 Medical Records system" )
     public void initER () {
         final User er = new User( "er", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_ER,
                 1 );

@@ -46,12 +46,13 @@ Examples:
 
 	
 Scenario Outline: Invalid Search Patient Emergency Health Records
-	Given user Shelly with MID: svang has not been registered as a patient within the iTrust2 system
-	And I have logged in with username: <user> and password: <pass>
-	When I navigate to View Emergency Records page for all patients in iTrust2 system
-	And I search for patient name: Shelly to view her emergency records
-	Then I am greeted with no results because patient does not exist within system
+	Given A ER role user is a registered user
+	And user <user> with first name: <firstname> and last name: <lastname>  is registered as a patient within the iTrust2 system
+	When I have logged in as an er
+	And I navigate to View Emergency Records page for all patients in iTrust2 system
+	And I search by ID for patient with an invalid field
+	Then I am greeted with no results because patient with id: <user> is not found
 	
 Examples:
-	| user   | pass   | name   | role     | patient          |
-	| aagarw | 123456 | Anu    | Patient  | svang (Shelly)   |
+	| user    | firstname | lastname |
+	| aagarw  | Anu       | Foo      |

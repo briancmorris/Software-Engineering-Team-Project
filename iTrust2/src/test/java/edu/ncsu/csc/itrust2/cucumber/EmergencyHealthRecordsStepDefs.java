@@ -8,7 +8,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -26,17 +27,27 @@ import edu.ncsu.csc.itrust2.models.enums.State;
 import edu.ncsu.csc.itrust2.models.persistent.Patient;
 import edu.ncsu.csc.itrust2.models.persistent.User;
 import edu.ncsu.csc.itrust2.utils.HibernateDataGenerator;
+import io.github.bonigarcia.wdm.ChromeDriverManager;
 
 public class EmergencyHealthRecordsStepDefs {
 
-    private final WebDriver driver  = new HtmlUnitDriver( true );
-    private final String    baseUrl = "http://localhost:8080/iTrust2";
-    WebDriverWait           wait    = new WebDriverWait( driver, 2 );
+    private WebDriver    driver  = null;
+    private final String baseUrl = "http://localhost:8080/iTrust2";
+    WebDriverWait        wait    = null;
 
     @Before
     public void setup () {
 
         HibernateDataGenerator.generateUsers();
+
+        ChromeDriverManager.getInstance().setup();
+        final ChromeOptions options = new ChromeOptions();
+        options.addArguments( "headless" );
+        options.addArguments( "window-size=1200x600" );
+        options.addArguments( "blink-settings=imagesEnabled=false" );
+        driver = new ChromeDriver( options );
+
+        wait = new WebDriverWait( driver, 2 );
 
     }
 
@@ -129,19 +140,45 @@ public class EmergencyHealthRecordsStepDefs {
         driver.findElement( By.xpath( "//input[@value='" + username + "']" ) ).click();
     }
 
+    @When ( "I search by ID for patient with an invalid field" )
+    public void searchEHRInvalid () {
+        wait.until( ExpectedConditions.visibilityOfElementLocated( By.name( "search" ) ) );
+        final WebElement searchField = driver.findElement( By.name( "search" ) );
+        searchField.clear();
+        searchField.sendKeys( "blah12345" );
+
+    }
+
     @Then ( "I am greeted with a printable page present with all relevant info related to emergency records for (.+)" )
     public void checkEHR ( final String name ) throws InterruptedException {
-        Thread.sleep( 5000 );
+
+        // Check that the patient was made with correct demographics before
+        // checking the page for the demographics
+        final Patient p = Patient.getByName( name );
+        assertTrue( p.getCity().equals( "placecity" ) );
+        Thread.sleep( 1000 );
+
+        // Assert demographics used above
+        assertTrue( driver.getPageSource().contains( "01/01/1901" ) );
+        assertTrue( driver.getPageSource().contains( "Male" ) );
+        assertTrue( driver.getPageSource().contains( "AB+" ) );
+
+    }
+
+    @Then ( "I am greeted with no results because patient with id: (.+) is not found" )
+    public void checkEHRInvalid ( final String name ) throws InterruptedException {
 
         // Check that the patient was made with correct demographics before
         // checking the page for the demographics
         final Patient p = Patient.getByName( name );
         assertTrue( p.getCity().equals( "placecity" ) );
 
-        // Assert demographics used above
-        assertTrue( driver.getPageSource().contains( "01/01/1901" ) );
-        assertTrue( driver.getPageSource().contains( "Male" ) );
-        assertTrue( driver.getPageSource().contains( "AB+" ) );
+        Thread.sleep( 1000 );
+
+        // check that the demographics are not displayed
+        assertTrue( !driver.getPageSource().contains( "01/01/1901" ) );
+        assertTrue( !driver.getPageSource().contains( "Male" ) );
+        assertTrue( !driver.getPageSource().contains( "AB+" ) );
 
     }
 
