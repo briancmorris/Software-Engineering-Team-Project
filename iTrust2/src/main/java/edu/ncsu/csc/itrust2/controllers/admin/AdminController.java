@@ -28,17 +28,4 @@ public class AdminController {
         return edu.ncsu.csc.itrust2.models.enums.Role.ROLE_ADMIN.getLanding();
     }
 
-    /**
-     * Returns the editLabCodes screen for the admin.
-     *
-     * @param model
-     *            Data from the front end
-     * @return The page to display
-     */
-    @RequestMapping ( value = "admin/editLabCodes" )
-    @PreAuthorize ( "hasRole('ROLE_ADMIN')" )
-    public String emergencyHealthRecords ( final Model model ) {
-        return "/admin/editLabCodes";
-    }
-
 }
