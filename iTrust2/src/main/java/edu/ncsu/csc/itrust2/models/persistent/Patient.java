@@ -50,23 +50,21 @@ public class Patient extends DomainObject<Patient> implements Serializable {
     /**
      * Randomly generated ID.
      */
-    private static final long  serialVersionUID = 4617248041239679701L;
-    
+    private static final long serialVersionUID = 4617248041239679701L;
+
     /**
      * Set of personal representatives of Patient.
      */
-    @ManyToMany(fetch = FetchType.EAGER, cascade={CascadeType.ALL})
-    @JoinTable(name="PATIENT_REPRESENTATIVES",
-        joinColumns={@JoinColumn(name="REP_ID")},
-        inverseJoinColumns={@JoinColumn(name="PATIENT_ID")})
-    private Set<Patient> representatives = new HashSet<Patient>();
-    
+    @ManyToMany ( fetch = FetchType.EAGER, cascade = { CascadeType.ALL } )
+    @JoinTable ( name = "PATIENT_REPRESENTATIVES", joinColumns = { @JoinColumn ( name = "REP_ID" ) },
+            inverseJoinColumns = { @JoinColumn ( name = "PATIENT_ID" ) } )
+    private Set<Patient>      representatives  = new HashSet<Patient>();
+
     /**
      * Set of patients that are represented.
      */
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy="representatives")
-    private Set<Patient> representees = new HashSet<Patient>(); 
-    
+    @ManyToMany ( fetch = FetchType.EAGER, mappedBy = "representatives" )
+    private Set<Patient>      representees     = new HashSet<Patient>();
 
     /**
      * Get all patients in the database
@@ -773,7 +771,7 @@ public class Patient extends DomainObject<Patient> implements Serializable {
 
     /**
      * Returns the boolean check for if a representative or not
-     * 
+     *
      * @return is Representative
      */
     public boolean isRep () {
@@ -796,34 +794,36 @@ public class Patient extends DomainObject<Patient> implements Serializable {
 
     /**
      * Sets the representative hashSet to point to another set
-     * 
-     * @param hashSet new set to point to
+     *
+     * @param hashSet
+     *            new set to point to
      */
-    public void setPersonalRepresentatives ( HashSet<Patient> hashSet ) {
+    public void setPersonalRepresentatives ( final HashSet<Patient> hashSet ) {
         representatives = hashSet;
     }
 
     /**
      * Sets the representee hashSet to point to a new hashSet
-     * 
-     * @param hashSet new hashSet
+     *
+     * @param hashSet
+     *            new hashSet
      */
-    public void setPersonalRepresentees ( HashSet<Patient> hashSet ) {
+    public void setPersonalRepresentees ( final HashSet<Patient> hashSet ) {
         representees = hashSet;
     }
-    
+
     @Override
     public boolean equals ( final Object obj ) {
-        Patient p = (Patient) obj;
+        final Patient p = (Patient) obj;
         if ( this == obj ) {
             return true;
-        } else {
-            if (this.self.getUsername().equals(p.getSelf().getUsername())) {
+        }
+        else {
+            if ( this.self.getUsername().equals( p.getSelf().getUsername() ) ) {
                 return true;
             }
         }
         return false;
     }
-    
 
 }
