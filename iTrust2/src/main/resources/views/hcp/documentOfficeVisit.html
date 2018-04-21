@@ -270,6 +270,9 @@
             function resetLabProcedureForm() {
               commentsEntry = "";
               labEntry = "";
+              ltEntry = "";
+              completionEntry = "";
+              priorityEntry = "";
             }
 
             //clears local variables for prescription form
@@ -296,7 +299,10 @@
             $scope.fillLabProcedures = function () {
               $scope.labProcedures.push({
                 comments: $scope.commentsEntry,
-                code: $scope.labEntry
+                code: $scope.labEntry,
+                labTech: $scope.ltEntry,
+                completionStatus: $scope.completionEntry,
+                priorityLevel: $scope.priorityEntry
               });
               resetLabProcedureForm();
             }
@@ -333,14 +339,13 @@
             
             //remove local lab procedure from list
             $scope.removeLabProcedure = function ($index) {
-              $scope.labProcedure.splice($index, 1);
+              $scope.labProcedures.splice($index, 1);
             }
 
             //call initally
             resetDiagnosisForm();
             resetPrescriptionForm();
             resetLabProcedureForm();
-
 
           });
 
@@ -656,80 +661,7 @@
                   </div>
                   
                   
-                  <!-- Lab Procedure Panel  -->
-                  <div class="col-md-4">
-                    <div class="panel panel-info">
-                      <div class="panel-heading">
-                        <h4>Lab Procedures</h4>
-                      </div>
-                      <div class="panel-body">
-                        <div class="form-group row">
-                          <div class="col-xs-6">
-                            <label>Lab Procedure:</label>
-                          </div>
-                          <div class="col-xs-6 radio-box">
-                            <div class="form-check">
-                              <ul style="list-style: none;">
-                                <li ng-repeat="l in loinccodes">
-                                  <label>
-                                    <input type="radio" ng-model="$parent.labEntry" id="{{l.code}}" name="{{l.longCommonName}}" ng-value="l" required="true" /> {{l.longCommonName}}
-                                  </label>
-                                </li>
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="form-group row">
-                          <div class="col-xs-6">
-                            <label>Date:</label>
-                          </div>
-                          <div class="col-xs-4">
-                            {{visit.date}}
-                          </div>
-                        </div>
-                        <div class="form-group row">
-                          <div class="col-xs-6">
-                            <label>Comments:</label>
-                          </div>
-                          <div class="col-xs-6">
-                            <input class="form-control" name="commentsEntry" ng-model="commentsEntry" required="true" type="text">
-                          </div>
-                        </div>
-
-                        <div class="form-group row text-center">
-                          <div class="col-md-12">
-                            <button class="btn btn-success" ng-click="fillLabProcedures()" name="fillLabProcedures">Add Lab Procedure</button>
-                          </div>
-                        </div>
-
-                        <div class="form-group row">
-                          <div class="col-md-12">
-                            <div class="panel panel-default">
-                              <div class="panel-heading">
-                                Added Lab Procedure
-                              </div>
-                              <div class="panel-body">
-                                <div class="row" ng-repeat="l in labProcedures">
-                                  <div class="col-md-4">
-                                    {{l.code.code}}
-                                  </div>
-                                  <div class="col-md-4">
-                                    {{l.comments}}
-                                  </div>
-                                  <div class="col-md-4">
-                                    <button class="btn btn-danger btn-xs" ng-click="removeLabProcedure($index)" name="removeLabProcedure">
-                                      <b>x</b>
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                      </div>
-                    </div>
-                  </div>
+                  
 
                   <!-- Prescription Panel -->
                   <div class="col-md-4">
@@ -829,6 +761,121 @@
                     </div>
                   </div>
                 </div>
+
+				<!-- Lab Procedure Panel  -->
+                  <div class="col-md-4">
+                    <div class="panel panel-info">
+                      <div class="panel-heading">
+                        <h4>Lab Procedures</h4>
+                      </div>
+                      <div class="panel-body">
+                        <div class="form-group row">
+                          <div class="col-xs-6">
+                            <label>Lab Procedure:</label>
+                          </div>
+                          <div class="col-xs-6 radio-box">
+                            <div class="form-check">
+                              <ul style="list-style: none;">
+                                <li ng-repeat="l in loinccodes">
+                                  <label>
+                                    <input type="radio" ng-model="$parent.labEntry" id="{{l.code}}" name="{{l.longCommonName}}" ng-value="l" required="true" /> {{l.longCommonName}}
+                                  </label>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <div class="col-xs-6">
+                            <label>Date:</label>
+                          </div>
+                          <div class="col-xs-4">
+                            {{visit.date}}
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <div class="col-xs-6">
+                            <label>Lab Tech:</label>
+                          </div>
+                          <div class="col-xs-6">
+                            <input class="form-control" name="ltEntry" ng-model="ltEntry" required="true" type="text">
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <div class="col-xs-6">
+                            <label>Priority Level:</label>
+                          </div>
+                          <div class="col-xs-6">
+                          	<select class="form-control" name="priorityEntry" ng-model="priorityEntry" required="true">
+                          		<option value="1">1</option>
+                          		<option value="2">2</option>
+                          		<option value="3">3</option>
+                          		<option value="4">4</option>
+                          	</select>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <div class="col-xs-6">
+                            <label>Completion Status:</label>
+                          </div>
+                          <div class="col-xs-6">
+                          	<select class="form-control" name="completionEntry" ng-model="completionEntry" required="true">
+                          		<option value="Not Started">Not Started</option>
+                          	</select>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <div class="col-xs-6">
+                            <label>Comments:</label>
+                          </div>
+                          <div class="col-xs-6">
+                            <input class="form-control" name="commentsEntry" ng-model="commentsEntry" required="true" type="text">
+                          </div>
+                        </div>
+
+                        <div class="form-group row text-center">
+                          <div class="col-md-14">
+                            <button class="btn btn-success" ng-click="fillLabProcedures()" name="fillLabProcedures">Add Lab Procedure</button>
+                          </div>
+                        </div>
+
+                        <div class="form-group row">
+                          <div class="col-md-12">
+                            <div class="panel panel-default">
+                              <div class="panel-heading">
+                                Added Lab Procedures
+                              </div>
+                              <div class="panel-body">
+                                <div class="row" ng-repeat="l in labProcedures">
+                                  <div class="col-md-2">
+                                    {{l.code.code}}
+                                  </div>
+                                  <div class="col-md-2">
+                                    {{l.priorityLevel}}
+                                  </div>
+                                  <div class="col-md-2">
+                                    {{l.labTech}}
+                                  </div>
+                                  <div class="col-md-2">
+                                    {{l.comments}}
+                                  </div>
+                                  <div class="col-md-2">
+                                    {{l.completionStatus}}
+                                  </div>
+                                  <div class="col-md-2">
+                                    <button class="btn btn-danger btn-xs" ng-click="removeLabProcedure($index)" name="removeLabProcedure">
+                                      <b>x</b>
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
 
                 <!-- Notes and Error Messages -->
                 <div class="row">
