@@ -70,7 +70,7 @@ public class APILabProcedureController extends APIController {
             if ( !saved.getComments().equals( lab.getComments() ) ) {
                 comment = true;
             }
-            if ( ! ( saved.getCompletionStatus() == lab.getCompletionStatus() ) ) {
+            if ( !saved.getCompletionStatus().equals( lab.getCompletionStatus() ) ) {
                 status = true;
             }
             if ( comment && status ) {
@@ -223,7 +223,7 @@ public class APILabProcedureController extends APIController {
      *            The id of the lab procedure to be retrieved
      * @return Response Entity containing the lab procedure if it exists
      */
-    @GetMapping ( BASE_PATH + "/labprocedure/{id}" )
+    @GetMapping ( BASE_PATH + "/labProcedure/{id}" )
     public ResponseEntity getLabProcedure ( @PathVariable ( "id" ) final Long id ) {
         final LabProcedure lab = LabProcedure.getById( id );
         LoggerUtil.log( TransactionType.LAB_PROCEDURE_VIEW, LoggerUtil.currentUser(),
@@ -258,7 +258,7 @@ public class APILabProcedureController extends APIController {
      * @return List of lab procedures for the lab tech.
      */
     @PreAuthorize ( "hasRole('ROLE_LT')" )
-    @GetMapping ( BASE_PATH + "/labprocedures" )
+    @GetMapping ( BASE_PATH + "/labProcedures" )
     public List<LabProcedure> getLabProcedures () {
         final User self = User.getByName( SecurityContextHolder.getContext().getAuthentication().getName() );
         if ( self == null ) {
