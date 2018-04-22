@@ -326,10 +326,31 @@ public class LabProcedure extends DomainObject<LabProcedure> {
      * @return The list of lab procedures
      */
     public static List<LabProcedure> getForLT ( final User user ) {
+        final List<LabProcedure> list = getAll();
+
         final List<LabProcedure> procedures = new Vector<LabProcedure>();
-        OfficeVisit.getForPatient( user.getId() ).stream().map( OfficeVisit::getId )
-                .forEach( e -> procedures.addAll( getByVisit( e ) ) );
+
+        for ( final LabProcedure l : list ) {
+            if ( l.getLabTech() != user ) {
+                procedures.add( l );
+            }
+        }
+
         return procedures;
 
+    }
+
+    /**
+     * Returns the status enumerations in a list
+     * 
+     * @return the status enumerations in a list
+     */
+    public static List<CompletionStatus> getStatus () {
+        final List<CompletionStatus> status = new Vector<CompletionStatus>();
+        status.add( CompletionStatus.COMPLETED );
+        status.add( CompletionStatus.IN_PROGRESS );
+        status.add( CompletionStatus.NOT_SPECIFIED );
+        status.add( CompletionStatus.NOT_STARTED );
+        return status;
     }
 }

@@ -75,6 +75,17 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
     }
 
     /**
+     * Get all office visits for a specific lab tech
+     *
+     * @param techName
+     *            the name of the lab tech
+     * @return the office visits of the queried lab tech
+     */
+    public static List<OfficeVisit> getForLT ( final String techName ) {
+        return getWhere( createCriterionAsList( "lt", User.getByNameAndRole( techName, Role.ROLE_LT ) ) );
+    }
+
+    /**
      * Get all office visits for a specific HCP
      *
      * @param hcpName
@@ -552,7 +563,7 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
 
     /**
      * Removes the given LabProcedure from this office visit.
-     * 
+     *
      * @param lab
      *            the LabProcedure to remove.
      */
