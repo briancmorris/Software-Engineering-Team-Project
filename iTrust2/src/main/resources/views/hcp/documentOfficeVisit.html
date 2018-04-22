@@ -776,9 +776,9 @@
                           <div class="col-xs-6 radio-box">
                             <div class="form-check">
                               <ul style="list-style: none;">
-                                <li ng-repeat="l in loinccodes">
+                                <li ng-repeat="loinc in loinccodes">
                                   <label>
-                                    <input type="radio" ng-model="$parent.labEntry" id="{{l.code}}" name="{{l.longCommonName}}" ng-value="l" required="true" /> {{l.longCommonName}}
+                                    <input type="radio" ng-model="$parent.labEntry" id="{{loinc.code}}" name="{{loinc.longCommonName}}" ng-value="loinc" required="true" /> {{loinc.longCommonName}}
                                   </label>
                                 </li>
                               </ul>
@@ -820,7 +820,7 @@
                           </div>
                           <div class="col-xs-6">
                           	<select class="form-control" name="completionEntry" ng-model="completionEntry" required="true">
-                          		<option value="Not Started">Not Started</option>
+                          		<option value="Not started">Not started</option>
                           	</select>
                           </div>
                         </div>
@@ -846,21 +846,21 @@
                                 Added Lab Procedures
                               </div>
                               <div class="panel-body">
-                                <div class="row" ng-repeat="l in labProcedures">
+                                <div class="row" ng-repeat="lab in labProcedures">
                                   <div class="col-md-2">
-                                    {{l.code.code}}
+                                    {{lab.code.code}}
                                   </div>
                                   <div class="col-md-2">
-                                    {{l.priorityLevel}}
+                                    {{lab.priorityLevel}}
                                   </div>
                                   <div class="col-md-2">
-                                    {{l.labTech}}
+                                    {{lab.labTech}}
                                   </div>
                                   <div class="col-md-2">
-                                    {{l.comments}}
+                                    {{lab.comments}}
                                   </div>
                                   <div class="col-md-2">
-                                    {{l.completionStatus}}
+                                    {{lab.completionStatus}}
                                   </div>
                                   <div class="col-md-2">
                                     <button class="btn btn-danger btn-xs" ng-click="removeLabProcedure($index)" name="removeLabProcedure">
@@ -872,7 +872,6 @@
                             </div>
                           </div>
                         </div>
-
                       </div>
                     </div>
                   </div>
