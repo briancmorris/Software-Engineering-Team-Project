@@ -65,13 +65,11 @@ public class LabProcedure extends DomainObject<LabProcedure> {
     private CompletionStatus completionStatus;
 
     /** The lab tech assigned to this procedure. */
-    @NotNull
     @ManyToOne
     @JoinColumn ( name = "Lab_Tech" )
     private User             labTech;
 
     /** The office visit that this lab procedure is a part of. */
-    // @NotNull
     @ManyToOne
     @JoinColumn ( name = "Office_Visit" )
     private OfficeVisit      officeVisit;
