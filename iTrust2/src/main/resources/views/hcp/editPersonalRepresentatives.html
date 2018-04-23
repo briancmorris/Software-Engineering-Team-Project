@@ -21,7 +21,12 @@
 					$http.get('/iTrust2/api/v1/editPersonalRepresentatives/' + $scope.patient).then(
 						function(response) {
 							$scope.reps = response.data;
-							$scope.message = "";
+							if (!$scope.reps.length) {
+								$scope.messageView = "NO PERSONAL REPRESENTATIVES";
+							}
+							else {
+								$scope.messageView = "";
+							}
 						}, function(rejection) {
 							$scope.reps = [];
 							$scope.message = "Could not view patient's personal representatives.";
@@ -29,7 +34,12 @@
 					$http.get('/iTrust2/api/v1/editPersonalRepresentatives/patientRepresentees/' + $scope.patient).then(
 							function(response) {
 								$scope.reps2 = response.data;
-								$scope.message = "";
+								if (!$scope.reps2.length) {
+									$scope.messageView2 = "NO PATIENTS REPRESENTED";
+								}
+								else {
+									$scope.messageView2 = "";
+								}
 							}, function(rejection) {
 								$scope.reps2 = [];
 								$scope.message = "Could not view patient's personal representees.";
@@ -44,10 +54,10 @@
 								$scope.showRep();
 								$scope.rep = "";
 								$scope.errorAdding = "";
-								console.log("pass");
+								$scope.successAdding = "Successfully added personal representative";
 							}, function(rejection) {
-								$scope.errorAdding = "Could not add personal representative for patient";
-								console.log("fail");
+								$scope.successAdding = "";
+								$scope.errorAdding = "Could not add personal representative";
 							})
 					
 				}
@@ -74,6 +84,13 @@
 					</div>
 				</div>
 			</form>
+			<div>
+				<!-- <h4 style="color: red" ng-show="addCodeForm.$valid">Code doesn't meet specifications</h4>  -->
+				<p style="color:red" ng-model="errorAdding" id="errP">{{errorAdding}}</p>
+			</div>
+			<div>
+				<p style="color:green" ng-model="successAdding" id="succP">{{successAdding}}</p>
+			</div>
 			<table style="width:100%">
 				<tr>
 					<td style="vertical-align: top">
@@ -85,6 +102,7 @@
 								<td name="idCell">{{r.self.username}}</td>
 							</tr>
 						</table>
+						<p style="color:black" ng-model="messageView" id="messageView">{{messageView}}</p>
 					</td>
 					<td style="width:35%;vertical-align: top">
 						<div style="padding: 0px 0px 20px 10px">
@@ -98,7 +116,7 @@
 							</div>
 							<div class="form-group" style="padding-left:30px">								
 								<div style="padding-left:170px">
-									<button class="btn btn-primary" name="submit">Add Representative</button> 
+									<button class="btn btn-primary" name="submitRep">Add Representative</button> 
 									<!-- <input type="submit" value="Add Code" class="btn btn-primary"/>  -->
 								</div>
 							</div>
@@ -126,6 +144,7 @@
 								<td name="idCell">{{r.self.username}}</td>
 							</tr>
 						</table>
+						<p style="color:black" ng-model="messageView2" id="messageView2">{{messageView2}}</p>
 					</td>
 					
 				</tr>
