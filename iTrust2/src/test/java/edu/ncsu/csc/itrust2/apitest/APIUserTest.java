@@ -161,7 +161,7 @@ public class APIUserTest {
     @Test
     @WithMockUser ( username = "admin", roles = { "ADMIN" } )
     public void testAdminController () throws Exception {
-        mvc.perform( get( "/admin/editLabCodes" ) ).andExpect( status().isOk() );
+        mvc.perform( get( "/admin/manageLOINCCodes" ) ).andExpect( status().isOk() );
     }
 
 }
