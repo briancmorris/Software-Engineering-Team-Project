@@ -39,6 +39,7 @@ public class PersonalRepsStepDefs {
         // wait = new WebDriverWait( driver, 5 );
         ChromeDriverManager.getInstance().setup();
         final ChromeOptions options = new ChromeOptions();
+        options.addArguments( "headless" );
         options.addArguments( "window-size=1200x600" );
         options.addArguments( "blink-settings=imagesEnabled=false" );
         driver = new ChromeDriver( options );
