@@ -259,20 +259,24 @@
             $scope.endEntry = "";
             $scope.renewalEntry = "";
 
-
             //clears local variables for diagnosis form
             function resetDiagnosisForm() {
               noteEntry = "";
               codeEntry = "";
             }
             
+            var labDateEntry = $scope.date;
+            var labTimeEntry = $scope.time;
+            
             //clears local variables for lab procedure form
             function resetLabProcedureForm() {
               commentsEntry = "";
               labEntry = "";
-              ltEntry = "";
-              completionEntry = "";
               priorityEntry = "";
+              completionEntry = "";
+              ltEntry = "";
+              labDateEntry = $scope.date;
+              labTimeEntry = $scope.time;
             }
 
             //clears local variables for prescription form
@@ -300,9 +304,11 @@
               $scope.labProcedures.push({
                 comments: $scope.commentsEntry,
                 code: $scope.labEntry,
-                labTech: $scope.ltEntry,
+                date: labDateEntry,
+                time: labTimeEntry,
+                priorityLevel: $scope.priorityEntry,
                 completionStatus: $scope.completionEntry,
-                priorityLevel: $scope.priorityEntry
+                labTech: $scope.ltEntry
               });
               resetLabProcedureForm();
             }
@@ -848,7 +854,7 @@
                               <div class="panel-body">
                                 <div class="row" ng-repeat="lab in labProcedures">
                                   <div class="col-md-2">
-                                    {{lab.code.code}}
+                                    {{lab.code}}
                                   </div>
                                   <div class="col-md-2">
                                     {{lab.priorityLevel}}
