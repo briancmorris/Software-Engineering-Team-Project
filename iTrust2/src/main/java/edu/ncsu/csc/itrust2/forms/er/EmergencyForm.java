@@ -19,7 +19,7 @@ public class EmergencyForm {
     /**
      * Populate the emergency form from a patient user name string
      *
-     * @param patient
+     * @param username
      *            the patient object to set the form with
      */
     @SuppressWarnings ( "deprecation" )
