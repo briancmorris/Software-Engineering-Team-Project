@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import edu.ncsu.csc.itrust2.forms.labs.LabProcedureForm;
 import edu.ncsu.csc.itrust2.models.enums.CompletionStatus;
+import edu.ncsu.csc.itrust2.models.enums.Role;
 import edu.ncsu.csc.itrust2.models.enums.TransactionType;
 import edu.ncsu.csc.itrust2.models.persistent.LabProcedure;
 import edu.ncsu.csc.itrust2.models.persistent.OfficeVisit;
@@ -144,7 +145,7 @@ public class APILabProcedureController extends APIController {
      * @param labForm
      *            id of Lab Procedure to create
      * @return ResponseEntity updated OfficeVisit or error
-     * 
+     *
      * @PreAuthorize ( "hasRole('ROLE_HCP')" )
      * @PutMapping ( BASE_PATH + "/labProcedures/{officeVisitID}" ) public
      *             ResponseEntity addLabProcedure ( @PathVariable final Long
@@ -157,7 +158,7 @@ public class APILabProcedureController extends APIController {
      *              officeVisitID ); return new ResponseEntity( errorResponse(
      *              "No Office Visit found with id " + officeVisitID ),
      *              HttpStatus.NOT_FOUND ); }
-     * 
+     *
      *              ov.addLabProcedure( lab ); ov.save(); LoggerUtil.log(
      *              TransactionType.LAB_PROCEDURE_ADD, LoggerUtil.currentUser(),
      *              "Added lab procedures to office visit found with id " +
@@ -167,7 +168,7 @@ public class APILabProcedureController extends APIController {
      *              LoggerUtil.currentUser(), "Failed to add lab procedure" );
      *              return new ResponseEntity( errorResponse( "Failed to add
      *              lab: " + e.getMessage() ), HttpStatus.BAD_REQUEST ); } }
-     * 
+     *
      *              /** Sets DELETE mapping request to remove a lab procedure
      *              from an office visit.
      *
@@ -176,7 +177,7 @@ public class APILabProcedureController extends APIController {
      * @param labID
      *            id of lab procedure to remove
      * @return ResponseEntity updated office visit or error.
-     * 
+     *
      * @PreAuthorize ( "hasRole('ROLE_HCP')" )
      * @DeleteMapping ( BASE_PATH + "/labProcedures/{officeVisitID}" ) public
      *                ResponseEntity deleteLabProcedure ( @PathVariable final
@@ -194,7 +195,7 @@ public class APILabProcedureController extends APIController {
      *                LoggerUtil.currentUser(), "No lab procedure found with id
      *                " + labID ); return new ResponseEntity( errorResponse( "No
      *                lab found with id " + labID ), HttpStatus.NOT_FOUND ); }
-     * 
+     *
      *                ov.removeLabProcedure( lab ); ov.save(); LoggerUtil.log(
      *                TransactionType.LAB_PROCEDURE_REMOVE,
      *                LoggerUtil.currentUser(), "Removed lab procedure with id "
@@ -272,6 +273,16 @@ public class APILabProcedureController extends APIController {
     @GetMapping ( BASE_PATH + "/status" )
     public List<CompletionStatus> getStatus () {
         return LabProcedure.getStatus();
+    }
+
+    /**
+     * Retrieves and returns a list of all lab techs stored in the system.
+     *
+     * @return list of lab techs.
+     */
+    @GetMapping ( BASE_PATH + "/labtechs" )
+    public List<User> getLabTechs () {
+        return User.getByRole( Role.ROLE_LT );
     }
 
 }

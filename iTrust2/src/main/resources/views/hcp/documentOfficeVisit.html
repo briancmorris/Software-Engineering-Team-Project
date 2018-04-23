@@ -155,6 +155,10 @@
                     function (response) {
                       $scope.loinccodes = response.data;
               });
+            $http.get("/iTrust2/api/v1/labtechs").then(
+                    function (response) {
+                      $scope.labtechs = response.data;
+              });
 
             $scope.submit = function () {
               $scope.errorMsg = "";
@@ -265,12 +269,12 @@
               codeEntry = "";
             }
             
+            $scope.completionEntry = "Not started"
             //clears local variables for lab procedure form
             function resetLabProcedureForm() {
               commentsEntry = "";
               labEntry = "";
               priorityEntry = "";
-              completionEntry = "";
               ltEntry = "";
             }
 
@@ -797,7 +801,9 @@
                             <label>Lab Tech:</label>
                           </div>
                           <div class="col-xs-6">
-                            <input class="form-control" name="ltEntry" ng-model="ltEntry" required="true" type="text">
+                          	<select class="form-control" name="ltEntry" ng-model="ltEntry" required="true">
+                          		<option ng-repeat="lt in labtechs" id="{{lt.username}}" name="{{lt.username}}" ng-value="lt.usename">{{lt.username}}</option>
+                          	</select>
                           </div>
                         </div>
                         <div class="form-group row">
@@ -810,16 +816,6 @@
                           		<option value="2">2</option>
                           		<option value="3">3</option>
                           		<option value="4">4</option>
-                          	</select>
-                          </div>
-                        </div>
-                        <div class="form-group row">
-                          <div class="col-xs-6">
-                            <label>Completion Status:</label>
-                          </div>
-                          <div class="col-xs-6">
-                          	<select class="form-control" name="completionEntry" ng-model="completionEntry" required="true">
-                          		<option value="Not started">Not started</option>
                           	</select>
                           </div>
                         </div>
