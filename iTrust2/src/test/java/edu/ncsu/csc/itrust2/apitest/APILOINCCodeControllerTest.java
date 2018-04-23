@@ -53,10 +53,14 @@ public class APILOINCCodeControllerTest {
 
     /**
      * Sets up tests
+     * 
+     * @throws Exception
      */
     @Before
-    public void setup () {
-        LOINCCode.getAll().clear();
+    public void setup () throws Exception {
+        for ( final LOINCCode l : LOINCCode.getAll() ) {
+            mvc.perform( delete( "/api/v1/loinccode/" + l.getId() ).contentType( MediaType.APPLICATION_JSON ) );
+        }
         mvc = MockMvcBuilders.webAppContextSetup( context ).build();
     }
 
