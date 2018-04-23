@@ -778,7 +778,7 @@
                               <ul style="list-style: none;">
                                 <li ng-repeat="loinc in loinccodes">
                                   <label>
-                                    <input type="radio" ng-model="$parent.labEntry" id="{{loinc.code}}" name="{{loinc.longCommonName}}" ng-value="loinc" required="true" /> {{loinc.longCommonName}}
+                                    <input type="radio" ng-model="$parent.labEntry" id="{{loinc.code}}" name="{{loinc.longCommonName}}" ng-value="loinc.code" required="true" /> {{loinc.longCommonName}}
                                   </label>
                                 </li>
                               </ul>
