@@ -315,7 +315,7 @@ public enum TransactionType {
     /**
      * A user views lab procedures for an office visit or were assigned to them.
      */
-    LAB_PROCEDURE_VIEW ( 1707, "User views lab procedures for office visit.", false ),
+    LAB_PROCEDURE_VIEW ( 1707, "User views lab procedures for office visit.", true ),
 
     /**
      * A lab tech edits the comments on a lab procedure.
