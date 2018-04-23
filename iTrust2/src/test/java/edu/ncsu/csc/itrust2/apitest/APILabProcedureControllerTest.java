@@ -1,5 +1,7 @@
 package edu.ncsu.csc.itrust2.apitest;
 
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -43,7 +45,7 @@ public class APILabProcedureControllerTest {
 
     @Test
     public void pass () {
-        pass();
+        assertTrue( true );
     }
     /**
      * @Test public void testLTFuctions () throws Exception {
