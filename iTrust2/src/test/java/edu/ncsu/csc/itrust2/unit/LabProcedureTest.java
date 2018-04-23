@@ -1,6 +1,7 @@
 package edu.ncsu.csc.itrust2.unit;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -149,7 +150,7 @@ public class LabProcedureTest {
     /**
      * Tests the getById method in LabProcedure. Simultaneously tests the getAll
      * method for LabProcedure.
-     * 
+     *
      * @throws ParseException
      *             if there is an error when parsing the date.
      */
@@ -228,12 +229,177 @@ public class LabProcedureTest {
         procedure.delete();
         testCode.delete();
         visit.delete();
-        hosp.delete();
+        // hosp.delete();
         bhm.delete();
 
         final LabProcedure bad = LabProcedure.getById( new Long( -55 ) );
         assertNull( bad );
 
+    }
+
+    /**
+     * Tests the delete method of LabProcedure.
+     *
+     * @throws ParseException
+     *             for invalid date
+     */
+    @Test
+    public void testDelete () throws ParseException {
+        // Test procedure.
+        final LabProcedure procedure = new LabProcedure();
+        // Test code.
+        final LOINCCode testCode = new LOINCCode();
+        // NOTE: DO NOT set ID for an auto-generated value.
+        testCode.setCode( "12345-6" );
+        testCode.setLongCommonName( "This is a test lcn." );
+        testCode.setComponent( "This is a test component." );
+        testCode.setProp( "This is a test prop." );
+        testCode.setSpecialUsage( "This is a test su." );
+        testCode.save();
+
+        procedure.setCode( testCode );
+        procedure.setLabTech( User.getByName( "lt" ) );
+        procedure.setComments( "test comments" );
+        procedure.setCompletionStatus( CompletionStatus.IN_PROGRESS );
+        procedure.setPriorityLevel( PriorityLevel.TWO );
+
+        // Test Calendar.
+        final Calendar testCal = Calendar.getInstance();
+        final SimpleDateFormat sdf = new SimpleDateFormat( "MM/dd/yyyy hh:mm aaa", Locale.ENGLISH );
+        final Date parsedDate = sdf.parse( "03/11/2018 12:30 PM" );
+        testCal.setTime( parsedDate );
+        procedure.setDate( testCal );
+
+        // Test OfficeVisit setup.
+        final OfficeVisit visit = new OfficeVisit();
+
+        final Hospital hosp = new Hospital( "Brian's Test Clinic", "5545 NCSU Blvd", "27603", "NC" );
+        hosp.save();
+
+        final BasicHealthMetrics bhm = new BasicHealthMetrics();
+
+        bhm.setDiastolic( 150 );
+        bhm.setDiastolic( 100 );
+        bhm.setHcp( User.getByName( "hcp" ) );
+        bhm.setPatient( User.getByName( "AliceThirteen" ) );
+        bhm.setHdl( 75 );
+        bhm.setHeight( 75f );
+        bhm.setHouseSmokingStatus( HouseholdSmokingStatus.NONSMOKING );
+        bhm.save();
+
+        visit.setBasicHealthMetrics( bhm );
+        visit.setType( AppointmentType.GENERAL_CHECKUP );
+        visit.setHospital( hosp );
+        visit.setPatient( User.getByName( "AliceThirteen" ) );
+        visit.setHcp( User.getByName( "hcp" ) );
+        visit.setDate( Calendar.getInstance() );
+        visit.save();
+
+        procedure.setOfficeVisit( visit );
+        procedure.save();
+
+        final List<LabProcedure> list = LabProcedure.getAll();
+        LabProcedure retrieved = null;
+        assertTrue( list.size() >= 1 );
+        for ( int i = 0; i < list.size(); i++ ) {
+            if ( testCode.getCode().equals( list.get( i ).getCode().getCode() ) ) {
+                retrieved = list.get( i );
+                break;
+            }
+        }
+        assertNotNull( retrieved );
+
+        retrieved.delete();
+        final List<LabProcedure> newList = LabProcedure.getAll();
+        assertFalse( newList.contains( retrieved ) );
+    }
+
+    /**
+     * Tests the getForLT method of LabProcedure.
+     *
+     * @throws ParseException
+     *             for invalid date
+     */
+    @Test
+    public void testGetForLT () throws ParseException {
+        // Test procedure.
+        final LabProcedure procedure = new LabProcedure();
+        // Test code.
+        final LOINCCode testCode = new LOINCCode();
+        // NOTE: DO NOT set ID for an auto-generated value.
+        testCode.setCode( "12345-6" );
+        testCode.setLongCommonName( "This is a test lcn." );
+        testCode.setComponent( "This is a test component." );
+        testCode.setProp( "This is a test prop." );
+        testCode.setSpecialUsage( "This is a test su." );
+        testCode.save();
+
+        procedure.setCode( testCode );
+        procedure.setLabTech( User.getByName( "lt" ) );
+        procedure.setComments( "test comments" );
+        procedure.setCompletionStatus( CompletionStatus.IN_PROGRESS );
+        procedure.setPriorityLevel( PriorityLevel.TWO );
+
+        // Test Calendar.
+        final Calendar testCal = Calendar.getInstance();
+        final SimpleDateFormat sdf = new SimpleDateFormat( "MM/dd/yyyy hh:mm aaa", Locale.ENGLISH );
+        final Date parsedDate = sdf.parse( "03/11/2018 12:30 PM" );
+        testCal.setTime( parsedDate );
+        procedure.setDate( testCal );
+
+        // Test OfficeVisit setup.
+        final OfficeVisit visit = new OfficeVisit();
+
+        final Hospital hosp = new Hospital( "Brian's Test Clinic", "5545 NCSU Blvd", "27603", "NC" );
+        hosp.save();
+
+        final BasicHealthMetrics bhm = new BasicHealthMetrics();
+
+        bhm.setDiastolic( 150 );
+        bhm.setDiastolic( 100 );
+        bhm.setHcp( User.getByName( "hcp" ) );
+        bhm.setPatient( User.getByName( "AliceThirteen" ) );
+        bhm.setHdl( 75 );
+        bhm.setHeight( 75f );
+        bhm.setHouseSmokingStatus( HouseholdSmokingStatus.NONSMOKING );
+        bhm.save();
+
+        visit.setBasicHealthMetrics( bhm );
+        visit.setType( AppointmentType.GENERAL_CHECKUP );
+        visit.setHospital( hosp );
+        visit.setPatient( User.getByName( "AliceThirteen" ) );
+        visit.setHcp( User.getByName( "hcp" ) );
+        visit.setDate( Calendar.getInstance() );
+        visit.save();
+
+        procedure.setOfficeVisit( visit );
+        procedure.save();
+
+        final List<LabProcedure> list = LabProcedure.getAll();
+        LabProcedure retrieved = null;
+        assertTrue( list.size() >= 1 );
+        for ( int i = 0; i < list.size(); i++ ) {
+            if ( testCode.getCode().equals( list.get( i ).getCode().getCode() ) ) {
+                retrieved = list.get( i );
+                break;
+            }
+        }
+        assertNotNull( retrieved );
+
+        final List<LabProcedure> ltList = LabProcedure.getForLT( User.getByName( "lt" ) );
+        assertTrue( ltList.size() >= 1 );
+
+        retrieved.delete();
+    }
+
+    /**
+     * Tests the getStatus method of LabProcedure.
+     */
+    @Test
+    public void testGetStatus () {
+        final List<CompletionStatus> list = LabProcedure.getStatus();
+
+        assertEquals( 4, list.size() );
     }
 
 }

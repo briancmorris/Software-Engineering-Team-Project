@@ -655,7 +655,7 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
      */
     @OneToMany ( cascade = { CascadeType.ALL }, fetch = FetchType.EAGER )
     @JoinColumn ( name = "lab_procedures" )
-    private transient List<LabProcedure> labProcedures = Collections.emptyList();
+    private List<LabProcedure>           labProcedures = Collections.emptyList();
 
     /**
      * Overrides the basic domain object save in order to save basic health
@@ -830,6 +830,11 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
                 catch ( final Exception e ) {
                     e.printStackTrace();
                 }
+            }
+        }
+        if ( labProcedures != null ) {
+            for ( final LabProcedure lab : labProcedures ) {
+                lab.delete();
             }
         }
         super.delete();

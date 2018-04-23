@@ -65,13 +65,11 @@ public class LabProcedure extends DomainObject<LabProcedure> {
     private CompletionStatus completionStatus;
 
     /** The lab tech assigned to this procedure. */
-    @NotNull
     @ManyToOne
     @JoinColumn ( name = "Lab_Tech" )
     private User             labTech;
 
     /** The office visit that this lab procedure is a part of. */
-    // @NotNull
     @ManyToOne
     @JoinColumn ( name = "Office_Visit" )
     private OfficeVisit      officeVisit;
@@ -307,7 +305,7 @@ public class LabProcedure extends DomainObject<LabProcedure> {
      *         system.
      */
     public static List<LabProcedure> getByVisit ( final Long officeVisitId ) {
-        return getWhere( createCriterionAsList( "visit", OfficeVisit.getById( officeVisitId ) ) );
+        return getWhere( createCriterionAsList( "officeVisit", OfficeVisit.getById( officeVisitId ) ) );
     }
 
     /**
@@ -344,5 +342,12 @@ public class LabProcedure extends DomainObject<LabProcedure> {
         status.add( CompletionStatus.NOT_SPECIFIED );
         status.add( CompletionStatus.NOT_STARTED );
         return status;
+    }
+
+    @Override
+    public void delete () {
+        code = null;
+        officeVisit = null;
+        super.delete();
     }
 }

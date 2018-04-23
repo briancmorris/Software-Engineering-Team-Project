@@ -113,8 +113,10 @@
 
 
             $scope.populateVisit = function () {
+           		
               $scope.prescriptions = [];
               $scope.diagnoses = [];
+              $scope.labProcedures = [];
               $scope.showBHM = true;
               var visitsLength = $scope.visits.length;
               $scope.noVisitSelected = false;
@@ -153,6 +155,23 @@
                         });
                       }
                     });
+                  
+                  // labs
+                  $http.get("/iTrust2/api/v1/labsforvisit/" + $scope.selectedVisitID).then(
+                          function (response) {
+                            $scope.labsResponse = response.data;
+                            console.log(labsResponse);
+                            var lLength = $scope.labsResponse.length;
+                            if(lLength > 0){
+                              $scope.showLabs = true;  
+                            }
+                            for (var i = 0; i < lLength; i++) {
+                              $scope.labProcedures.push({
+                                comments: $scope.labsResponse[i].comments,
+                                longCommonName: $scope.labsResponse[i].longCommonName
+                              });
+                            }
+                  });
 
                   // prescriptions
                   var pLength = $scope.visits[i].prescriptions.length;
@@ -171,23 +190,6 @@
                       renewals: $scope.visits[i].prescriptions[j].renewals
                     });
                   }
-
-                  $http.get("/iTrust2/api/v1/labsforvisit/" + $scope.selectedVisitID).then(
-                          function (response) {
-                            $scope.labsResponse = response.data;
-                            var lLength = $scope.labsResponse.length;
-                            if(lLength > 0){
-                              $scope.showLabs = true;  
-                            }
-                            for (var i = 0; i < lLength; i++) {
-                              $scope.labProcedures.push({
-                            	comments: $scope.labProcedure[i].comments,
-                                code: $scope.labProcedures[i].code,
-                                completionStatus: $scope.labProcedures[i].completionStatus,
-                                priorityLevel: $scope.labProcedures[i].priorityLevel
-                              });
-                            }
-                          });
 
                   $scope.three = false;
                   $scope.threeAndUp = false;
@@ -493,25 +495,19 @@
                         </div>
                       </div>
                       
-                      <!-- Lab Procedures Panel  -->
+                      <!-- Labs Panel  -->
                         <div class="col-md-4">
                           <div class="panel panel-info">
                             <div class="panel-heading">
                               <h4>Lab Procedures</h4>
                             </div>
-                            <div class="panel-body" ng-show="showLabProcedures">
+                            <div class="panel-body" ng-show="showLabs">
                               <div class="row">
                                 <div class="col-md-4">
-                                  <b>Lab Procedure</b>
-                                </div>
-                                <div class="col-md-4">
-                                  <b>Priority Level</b>
+                                  <b>Description</b>
                                 </div>
                                 <div class="col-md-4">
                                   <b>Comments</b>
-                                </div>
-                                <div class="col-md-4">
-                                  <b>Completion Status</b>
                                 </div>
                               </div>
                               <div class="row" ng-repeat="l in labProcedures">
@@ -519,19 +515,13 @@
                                   {{l.code.longCommonName}}
                                 </div>
                                 <div class="col-md-4">
-                                  {{l.priorityLevel}}
-                                </div>
-                                <div class="col-md-4">
                                   {{l.comments}}
-                                </div>
-                                <div class="col-md-4">
-                                  {{l.completionStatus}}
                                 </div>
                               </div>
                             </div>
                           </div>
                         </div>
-
+                      
                       <!-- Notes and Error Messages -->
                       <div class="row">
                         <div class="form-group col-md-6">
