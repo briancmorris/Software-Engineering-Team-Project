@@ -1,6 +1,5 @@
 package edu.ncsu.csc.itrust2.apitest;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -174,27 +173,29 @@ public class APILabProcedureControllerTest {
         mvc.perform( put( "/api/v1/labProcedures/reassign" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( labForm ) ) ).andExpect( status().isOk() );
 
-        // Make sure current labTech no longer has labProcedure
+        // Make sure current labTech no longer assigned to labProcedure
         mvc.perform( get( "/api/v1/labProcedure/" + lab.getId() ) ).andExpect( status().isOk() )
                 .andExpect( jsonPath( "$.labTech.username", is( "lt2" ) ) );
 
-        mvc.perform( get( "/api/v1/labProcedures" ) ).andExpect( status().isOk() )
-                .andExpect( jsonPath( "$", hasSize( 0 ) ) );
+        mvc.perform( get( "/api/v1/labProcedures" ) ).andExpect( status().isOk() );
 
         // Assign a missing lab procedure should result in failure
         mvc.perform( put( "/api/v1/labProcedures/reassign" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( fake ) ) ).andExpect( status().isBadRequest() );
+
+        // Clean up
+        l.delete();
     }
 
     /**
      * @Test public void testzGetByOfficeVisit () throws Exception {
-     * 
+     *
      *       final LOINCCodeForm lf = new LOINCCodeForm(); lf.setCode( "82345-7"
      *       ); lf.setComponent( "test" ); // lf.setId( 1L );
      *       lf.setLongCommonName( "thisisatest" ); lf.setProp( "prop" );
      *       lf.setSpecialUsage( "testusuage" ); final LOINCCode l = new
      *       LOINCCode( lf ); l.save();
-     * 
+     *
      *       final LabProcedureForm labForm = new LabProcedureForm();
      *       labForm.setCode( l.getCode() ); labForm.setComments( "test" );
      *       labForm.setCompletionStatus( CompletionStatus.NOT_STARTED.getName()
@@ -202,9 +203,9 @@ public class APILabProcedureControllerTest {
      *       labForm.setTime( "12:09 PM" ); labForm.setLabTech( "lt1" ); final
      *       List<LabProcedureForm> labprocedures = new
      *       ArrayList<LabProcedureForm>(); labprocedures.add( labForm );
-     * 
+     *
      *       mvc.perform( delete( "/api/v1/appointmentrequests" ) );
-     * 
+     *
      *       final AppointmentRequestForm appointmentForm = new
      *       AppointmentRequestForm(); appointmentForm.setDate( "11/19/2030" );
      *       appointmentForm.setTime( "4:50 AM" ); appointmentForm.setType(
@@ -216,7 +217,7 @@ public class APILabProcedureControllerTest {
      *       ).contentType( MediaType.APPLICATION_JSON ) .content(
      *       TestUtils.asJsonString( appointmentForm ) ) ).andExpect(
      *       status().isOk() );
-     * 
+     *
      *       final OfficeVisitForm visit = new OfficeVisitForm();
      *       visit.setPreScheduled( "yes" ); visit.setDate( "11/19/2030" );
      *       visit.setTime( "4:50 AM" ); visit.setHcp( "hcp" );
@@ -224,18 +225,18 @@ public class APILabProcedureControllerTest {
      *       ); visit.setType( AppointmentType.GENERAL_CHECKUP.toString() );
      *       visit.setHospital( "iTrust Test Hospital 2" );
      *       visit.setLabProcedures( labprocedures );
-     * 
+     *
      *       final OfficeVisit office = new OfficeVisit( visit ); office.save();
      *       labForm.setOfficeVisitId( office.getId() );
-     * 
+     *
      *       final LabProcedure lab = new LabProcedure( labForm );
      *       lab.setOfficeVisit( office ); lab.save(); final List<LabProcedure>
      *       lp = new ArrayList<LabProcedure>(); lp.add( lab );
      *       office.setLabProcedures( lp ); office.save();
-     * 
+     *
      *       mvc.perform( get( "/api/v1/labsforvisit/" + office.getId() )
      *       ).andExpect( status().isOk() );
-     * 
+     *
      *       }
      */
 }
