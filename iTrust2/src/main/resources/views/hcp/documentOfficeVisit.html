@@ -265,9 +265,6 @@
               codeEntry = "";
             }
             
-            var labDateEntry = $scope.date;
-            var labTimeEntry = $scope.time;
-            
             //clears local variables for lab procedure form
             function resetLabProcedureForm() {
               commentsEntry = "";
@@ -275,8 +272,6 @@
               priorityEntry = "";
               completionEntry = "";
               ltEntry = "";
-              labDateEntry = $scope.date;
-              labTimeEntry = $scope.time;
             }
 
             //clears local variables for prescription form
@@ -304,8 +299,6 @@
               $scope.labProcedures.push({
                 comments: $scope.commentsEntry,
                 code: $scope.labEntry,
-                date: labDateEntry,
-                time: labTimeEntry,
                 priorityLevel: $scope.priorityEntry,
                 completionStatus: $scope.completionEntry,
                 labTech: $scope.ltEntry

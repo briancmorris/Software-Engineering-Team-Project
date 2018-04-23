@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -652,7 +653,7 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
     /**
      * The lab procedures of this office visit.
      */
-    @OneToMany ( fetch = FetchType.EAGER )
+    @OneToMany ( cascade = { CascadeType.ALL }, fetch = FetchType.EAGER )
     @JoinColumn ( name = "lab_procedures" )
     private transient List<LabProcedure> labProcedures = Collections.emptyList();
 

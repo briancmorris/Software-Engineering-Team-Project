@@ -1,9 +1,7 @@
 package edu.ncsu.csc.itrust2.models.persistent;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
@@ -73,7 +71,7 @@ public class LabProcedure extends DomainObject<LabProcedure> {
     private User             labTech;
 
     /** The office visit that this lab procedure is a part of. */
-    @NotNull
+    // @NotNull
     @ManyToOne
     @JoinColumn ( name = "Office_Visit" )
     private OfficeVisit      officeVisit;
@@ -98,13 +96,7 @@ public class LabProcedure extends DomainObject<LabProcedure> {
         setCode( LOINCCode.getByCode( form.getCode() ) );
         setPriorityLevel( PriorityLevel.parse( form.getPriorityLevel() ) );
 
-        // Parse the date.
-        final SimpleDateFormat sdf = new SimpleDateFormat( "MM/dd/yyyy hh:mm aaa", Locale.ENGLISH );
-        final Date parsedDate = sdf.parse( form.getDate() + " " + form.getTime() );
-        final Calendar temp = Calendar.getInstance();
-        temp.setTime( parsedDate );
-
-        setDate( temp );
+        setDate( Calendar.getInstance( Locale.ENGLISH ) );
         setComments( form.getComments() );
         setCompletionStatus( CompletionStatus.parse( form.getCompletionStatus() ) );
         setLabTech( User.getByName( form.getLabTech() ) );
@@ -342,7 +334,7 @@ public class LabProcedure extends DomainObject<LabProcedure> {
 
     /**
      * Returns the status enumerations in a list
-     * 
+     *
      * @return the status enumerations in a list
      */
     public static List<CompletionStatus> getStatus () {
