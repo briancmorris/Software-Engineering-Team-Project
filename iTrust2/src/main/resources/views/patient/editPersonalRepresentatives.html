@@ -1,0 +1,174 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="layout :: head(title=~{::title},links=~{})">
+<title>Edit Personal Representatives</title>
+<!-- AngularJS library -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+</head>
+<body th:include="layout :: body" th:with="content=~{::content}">
+	<div th:fragment="content" ng-app="repApp" ng-controller="repCtrl">
+	
+		<script th:inline="javascript">
+		/*<![CDATA[*/
+			var app = angular.module("repApp", []);
+			app.controller('repCtrl', function($scope, $http) {
+				
+				$scope.reps = [];
+				$scope.loadTable = function() {
+					// Get list of patient representatives from rest api.
+					$http.get("/iTrust2/api/v1/editPersonalRepresentatives").then(
+						function(response) {
+							$scope.reps = response.data;
+							if (!$scope.reps.length) {
+								$scope.messageView = "NO PERSONAL REPRESENTATIVES";
+							}
+							else {
+								$scope.messageView = "";
+							}
+						}, function(rejection) {
+							$scope.reps = [];
+							$scope.messageView = "Could not display personal representatives.";
+						});
+				}
+				
+				$scope.reps2 = [];
+				$scope.loadTable2 = function() {
+					// Get list of patient representees from rest api.
+					$http.get("/iTrust2/api/v1/editPersonalRepresentatives/myPatients").then(
+						function(response) {
+							$scope.reps2 = response.data;
+							if (!$scope.reps2.length) {
+								$scope.messageView2 = "NO PATIENTS REPRESENTED";
+							}
+							else {
+								$scope.messageView2 = "";
+							}
+						}, function(rejection) {
+							$scope.reps2 = [];
+							$scope.messageView2 = "Could not display patients represented.";
+						});
+				}
+				
+				$scope.removeRow = function(rep) {
+					// Remove patient representative
+					$http.delete('/iTrust2/api/v1/editPersonalRepresentatives/' + rep.self.username).then(
+							function(response) {
+								$scope.loadTable();
+								$scope.message = "";
+							}, function(rejection) {
+								$scope.message = "Could not remove personal representative";
+							})
+				}
+				
+				$scope.removeRow2 = function(rep) {
+					// Remove patient representee
+					$http.delete('/iTrust2/api/v1/editPersonalRepresentatives/removeSelf/' + rep.self.username).then(
+							function(response) {
+								$scope.loadTable2();
+								$scope.message2 = "";
+							}, function(rejection) {
+								$scope.message2 = "Could not remove patient represented";
+							})
+				}
+				
+				// handle add representative button click
+				$scope.addRep = function() {
+					// Add patient representative
+					$http.post("/iTrust2/api/v1/editPersonalRepresentatives", $scope.rep).then(
+							function(response) {
+								$scope.loadTable();
+								$scope.rep = "";
+								$scope.errorAdding = "";
+								$scope.successAdding = "Successfully added personal representative";
+							}, function(rejection) {
+								$scope.successAdding = "";
+								$scope.errorAdding = "Could not add personal representative";
+							})
+					
+				}
+
+				// load table upon page loading
+				$scope.loadTable();
+				$scope.loadTable2();
+				
+			});
+		/*]]>*/
+		</script>		
+		
+		<div ng-app="repApp" ng-controller="repCtrl">	
+			<h4 style="color:red" ng-model="message"></h4>
+			<h1>Your Personal Representatives</h1>
+			<table style="width:100%">
+				<tr>
+					<td style="vertical-align: top">
+						<table class="table">
+							<tr>
+								<th>Patient ID</th>
+								<th>Action</th>
+							</tr>
+							<tr name="idRepRow" ng-repeat="r in reps">
+								<td name="idCell">{{r.self.username}}</td>
+								<td>
+									<input type="button" name="removeRep" value="Remove" class="btn btn-primary" ng-click="removeRow(r)"/>
+								</td>
+							</tr>
+						</table>
+						<p style="color:black" ng-model="messageView" id="messageView">{{messageView}}</p>
+					</td>
+					<td style="width:35%;vertical-align: top">
+						<div style="padding: 0px 0px 20px 10px">
+							<h3>Add Personal Representative</h3>
+						</div>
+						
+						<form class="form-horizontal" role="form" name="addRepForm" ng-submit="addRep(addRepForm.$valid)">
+							<div class="form-group" style="padding-left:30px">
+								<label>Patient ID</label>
+								<input type="text" class="form-control" name="rep" ng-model="rep" required/>
+							</div>
+							<div class="form-group" style="padding-left:30px">								
+								<div style="padding-left:170px">
+									<button class="btn btn-primary" name="submit">Add Representative</button> 
+									<!-- <input type="submit" value="Add Code" class="btn btn-primary"/>  -->
+								</div>
+							</div>
+						</form>
+						<div>
+							<!-- <h4 style="color: red" ng-show="addCodeForm.$valid">Code doesn't meet specifications</h4>  -->
+							<p style="color:red" ng-model="errorAdding" id="errP">{{errorAdding}}</p>
+						</div>
+						<div>
+							<p style="color:green" ng-model="successAdding" id="succP">{{successAdding}}</p>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+		
+		<div ng-app="repApp" ng-controller="repCtrl">	
+			<h4 style="color:red" ng-model="message"></h4>
+			<h1>Patients You Represent</h1>
+			<table style="width:100%">
+				<tr>
+					<td style="vertical-align: top">
+						<table class="table">
+							<tr>
+								<th>Patient ID</th>
+								<th>Action</th>
+							</tr>
+							<tr name="idRow" ng-repeat="r in reps2">
+								<td name="idCell">{{r.self.username}}</td>
+								<td>
+									<input type="button" name="removePat" value="Remove" class="btn btn-primary" ng-click="removeRow2(r)"/>
+								</td>
+							</tr>
+						</table>
+						<p style="color:black" ng-model="messageView2" id="messageView2">{{messageView2}}</p>
+					</td>
+					
+				</tr>
+			</table>
+		</div>
+
+	</div>
+	
+</body>
+</html>
