@@ -305,7 +305,7 @@ public class LabProcedure extends DomainObject<LabProcedure> {
      *         system.
      */
     public static List<LabProcedure> getByVisit ( final Long officeVisitId ) {
-        return getWhere( createCriterionAsList( "visit", OfficeVisit.getById( officeVisitId ) ) );
+        return getWhere( createCriterionAsList( "officeVisit", OfficeVisit.getById( officeVisitId ) ) );
     }
 
     /**
