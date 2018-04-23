@@ -832,6 +832,11 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
                 }
             }
         }
+        if ( labProcedures != null ) {
+            for ( final LabProcedure lab : labProcedures ) {
+                lab.delete();
+            }
+        }
         super.delete();
     }
 

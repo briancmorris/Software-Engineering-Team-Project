@@ -343,4 +343,11 @@ public class LabProcedure extends DomainObject<LabProcedure> {
         status.add( CompletionStatus.NOT_STARTED );
         return status;
     }
+
+    @Override
+    public void delete () {
+        code = null;
+        officeVisit = null;
+        super.delete();
+    }
 }
