@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -30,6 +31,7 @@ import org.hibernate.criterion.Criterion;
 
 import edu.ncsu.csc.itrust2.forms.hcp.OfficeVisitForm;
 import edu.ncsu.csc.itrust2.forms.hcp.PrescriptionForm;
+import edu.ncsu.csc.itrust2.forms.labs.LabProcedureForm;
 import edu.ncsu.csc.itrust2.models.enums.AppointmentType;
 import edu.ncsu.csc.itrust2.models.enums.Role;
 import edu.ncsu.csc.itrust2.models.enums.TransactionType;
@@ -71,6 +73,17 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
      */
     public static List<OfficeVisit> getForPatient ( final String patientName ) {
         return getWhere( createCriterionAsList( "patient", User.getByNameAndRole( patientName, Role.ROLE_PATIENT ) ) );
+    }
+
+    /**
+     * Get all office visits for a specific lab tech
+     *
+     * @param techName
+     *            the name of the lab tech
+     * @return the office visits of the queried lab tech
+     */
+    public static List<OfficeVisit> getForLT ( final String techName ) {
+        return getWhere( createCriterionAsList( "lt", User.getByNameAndRole( techName, Role.ROLE_LT ) ) );
     }
 
     /**
@@ -238,6 +251,20 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
         if ( ps != null ) {
             setPrescriptions( ps.stream().map( ( final PrescriptionForm pf ) -> new Prescription( pf ) )
                     .collect( Collectors.toList() ) );
+        }
+
+        final List<LabProcedureForm> ls = ovf.getLabProcedures();
+        if ( ls != null ) {
+            setLabProcedures( ls.stream().map( ( final LabProcedureForm lf ) -> {
+                try {
+                    return new LabProcedure( lf );
+                }
+                catch ( final ParseException e ) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                    throw new IllegalArgumentException( "Invalid LabProcedure list." );
+                }
+            } ).collect( Collectors.toList() ) );
         }
     }
 
@@ -507,12 +534,51 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
     }
 
     /**
+     * Sets the lab procedures of this office visit to the given list.
+     *
+     * @param procedures
+     *            The list of lab procedures.
+     */
+    public void setLabProcedures ( final List<LabProcedure> procedures ) {
+        this.labProcedures = procedures;
+    }
+
+    /**
+     * Returns the stored list of lab procedures in this office visit.
+     *
+     * @return The stored list of lab procedures in this office visit.
+     */
+    public List<LabProcedure> getLabProcedures () {
+        return labProcedures;
+    }
+
+    /**
+     * Adds a given LabProcedure to the list of lab procedures in this visit.
+     *
+     * @param lab
+     *            The lab procedure to add.
+     */
+    public void addLabProcedure ( final LabProcedure lab ) {
+        labProcedures.add( lab );
+    }
+
+    /**
+     * Removes the given LabProcedure from this office visit.
+     *
+     * @param lab
+     *            the LabProcedure to remove.
+     */
+    public void removeLabProcedure ( final LabProcedure lab ) {
+        labProcedures.remove( lab );
+    }
+
+    /**
      * The patient of this office visit
      */
     @NotNull
     @ManyToOne
     @JoinColumn ( name = "patient_id", columnDefinition = "varchar(100)" )
-    private User                     patient;
+    private User                         patient;
 
     /**
      * The hcp of this office visit
@@ -520,34 +586,34 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
     @NotNull
     @ManyToOne
     @JoinColumn ( name = "hcp_id", columnDefinition = "varchar(100)" )
-    private User                     hcp;
+    private User                         hcp;
 
     /**
      * The basic health metric data associated with this office visit.
      */
     @OneToOne
     @JoinColumn ( name = "basichealthmetrics_id" )
-    private BasicHealthMetrics       basicHealthMetrics;
+    private BasicHealthMetrics           basicHealthMetrics;
 
     /**
      * The date of this office visit
      */
     @NotNull
-    private Calendar                 date;
+    private Calendar                     date;
 
     /**
      * The id of this office visit
      */
     @Id
     @GeneratedValue ( strategy = GenerationType.AUTO )
-    private Long                     id;
+    private Long                         id;
 
     /**
      * The type of this office visit
      */
     @NotNull
     @Enumerated ( EnumType.STRING )
-    private AppointmentType          type;
+    private AppointmentType              type;
 
     /**
      * The hospital of this office visit
@@ -555,7 +621,7 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
     @NotNull
     @ManyToOne
     @JoinColumn ( name = "hospital_id", columnDefinition = "varchar(100)" )
-    private Hospital                 hospital;
+    private Hospital                     hospital;
 
     /**
      * The set of diagnoses associated with this visits Marked transient so not
@@ -563,23 +629,33 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
      * loop
      */
     @OneToMany ( mappedBy = "visit" )
-    public transient List<Diagnosis> diagnoses;
+    public transient List<Diagnosis>     diagnoses;
 
     /**
      * The notes of this office visit
      */
-    private String                   notes;
+    private String                       notes;
 
     /**
      * The appointment of this office visit
      */
     @OneToOne
     @JoinColumn ( name = "appointment_id" )
-    private AppointmentRequest       appointment;
+    private AppointmentRequest           appointment;
 
+    /**
+     * The prescriptions of this office visit.
+     */
     @OneToMany ( fetch = FetchType.EAGER )
     @JoinColumn ( name = "prescriptions_id" )
-    private List<Prescription>       prescriptions = Collections.emptyList();
+    private transient List<Prescription> prescriptions = Collections.emptyList();
+
+    /**
+     * The lab procedures of this office visit.
+     */
+    @OneToMany ( cascade = { CascadeType.ALL }, fetch = FetchType.EAGER )
+    @JoinColumn ( name = "lab_procedures" )
+    private List<LabProcedure>           labProcedures = Collections.emptyList();
 
     /**
      * Overrides the basic domain object save in order to save basic health
@@ -630,6 +706,44 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
         }
 
         //// END PRESCRIPTIONS ////
+
+        //// LABS ////
+
+        // Get Lab IDs that are in this visit.
+        final Set<Long> currentLabs = this.getLabProcedures().stream().map( LabProcedure::getId )
+                .collect( Collectors.toSet() );
+
+        // Get the previously saved lab IDs.
+        final Set<Long> savedLabs = oldVisit == null ? Collections.emptySet()
+                : oldVisit.getLabProcedures().stream().map( LabProcedure::getId ).collect( Collectors.toSet() );
+
+        // Save each of the lab procedures.
+        this.getLabProcedures().forEach( l -> {
+            final boolean isSaved = savedLabs.contains( l.getId() );
+            if ( isSaved ) {
+                LoggerUtil.log( TransactionType.LAB_PROCEDURE_EDIT, LoggerUtil.currentUser(),
+                        getPatient().getUsername(), "Editing lab procedure with id " + l.getId() );
+            }
+            else {
+                LoggerUtil.log( TransactionType.LAB_PROCEDURE_ADD, LoggerUtil.currentUser(), getPatient().getUsername(),
+                        "Added lab procedure with id " + l.getId() );
+            }
+            l.save();
+        } );
+
+        // Remove lab procedures that are no longer relevant.
+        if ( !savedLabs.isEmpty() ) {
+            savedLabs.forEach( id -> {
+                final boolean isMissing = currentLabs.contains( id );
+                if ( isMissing ) {
+                    LoggerUtil.log( TransactionType.LAB_PROCEDURE_REMOVE, LoggerUtil.currentUser(),
+                            getPatient().getUsername(), "Removed lab procedure with id " + id );
+                    LabProcedure.getById( id ).delete();
+                }
+            } );
+        }
+
+        //// END LABS ////
 
         try {
             super.save();
@@ -716,6 +830,11 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
                 catch ( final Exception e ) {
                     e.printStackTrace();
                 }
+            }
+        }
+        if ( labProcedures != null ) {
+            for ( final LabProcedure lab : labProcedures ) {
+                lab.delete();
             }
         }
         super.delete();

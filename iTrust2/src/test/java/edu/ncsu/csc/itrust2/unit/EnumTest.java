@@ -7,9 +7,12 @@ import org.junit.Test;
 
 import edu.ncsu.csc.itrust2.models.enums.AppointmentType;
 import edu.ncsu.csc.itrust2.models.enums.BloodType;
+import edu.ncsu.csc.itrust2.models.enums.CompletionStatus;
 import edu.ncsu.csc.itrust2.models.enums.Ethnicity;
 import edu.ncsu.csc.itrust2.models.enums.Gender;
+import edu.ncsu.csc.itrust2.models.enums.HouseholdSmokingStatus;
 import edu.ncsu.csc.itrust2.models.enums.PatientSmokingStatus;
+import edu.ncsu.csc.itrust2.models.enums.PriorityLevel;
 import edu.ncsu.csc.itrust2.models.enums.Role;
 import edu.ncsu.csc.itrust2.models.enums.State;
 import edu.ncsu.csc.itrust2.models.enums.Status;
@@ -91,6 +94,20 @@ public class EnumTest {
     }
 
     /**
+     * Tests the HouseholdSmokingStatus enum.
+     */
+    @Test
+    public void testHouseholdSmokingStatus () {
+        final HouseholdSmokingStatus test = HouseholdSmokingStatus.NONSMOKING;
+        assertEquals( 1, test.getCode() );
+
+        assertTrue( HouseholdSmokingStatus.parseValue( 2 ).equals( HouseholdSmokingStatus.OUTDOOR ) );
+        assertTrue( HouseholdSmokingStatus.getName( 3 ).equals( "INDOOR" ) );
+        assertTrue( HouseholdSmokingStatus.parseValue( -1 ).equals( HouseholdSmokingStatus.NONAPPLICABLE ) );
+
+    }
+
+    /**
      * Tests Role enum.
      */
     @Test
@@ -120,5 +137,36 @@ public class EnumTest {
         final Status test = Status.APPROVED;
         final int testCode = test.getCode();
         assertEquals( testCode, 3 );
+    }
+
+    /**
+     * Tests PriorityLevel enum.
+     */
+    @Test
+    public void testPriorityLevel () {
+        // Test get method.
+        final PriorityLevel test = PriorityLevel.ONE;
+        final int testCode = test.getCode();
+        assertEquals( testCode, 1 );
+
+        // Test parse method.
+        assertTrue( PriorityLevel.THREE.equals( PriorityLevel.parse( "3" ) ) );
+        assertTrue( PriorityLevel.INVALID.equals( PriorityLevel.parse( "7" ) ) );
+        assertTrue( PriorityLevel.INVALID.equals( PriorityLevel.parse( "-1" ) ) );
+    }
+
+    /**
+     * Tests the CompletionStatus enum.
+     */
+    @Test
+    public void testCompletionStatus () {
+        // Test the get method.
+        final CompletionStatus test = CompletionStatus.COMPLETED;
+        final String testString = test.getName();
+        assertTrue( "Completed".equals( testString ) );
+
+        // Test parse method.
+        assertTrue( CompletionStatus.IN_PROGRESS.equals( CompletionStatus.parse( "In-progress" ) ) );
+        assertTrue( CompletionStatus.NOT_SPECIFIED.equals( CompletionStatus.parse( "12345" ) ) );
     }
 }

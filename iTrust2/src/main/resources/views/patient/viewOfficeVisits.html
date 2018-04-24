@@ -113,8 +113,10 @@
 
 
             $scope.populateVisit = function () {
+           		
               $scope.prescriptions = [];
               $scope.diagnoses = [];
+              $scope.labProcedures = [];
               $scope.showBHM = true;
               var visitsLength = $scope.visits.length;
               $scope.noVisitSelected = false;
@@ -153,6 +155,23 @@
                         });
                       }
                     });
+                  
+                  // labs
+                  $http.get("/iTrust2/api/v1/labsforvisit/" + $scope.selectedVisitID).then(
+                          function (response) {
+                            $scope.labsResponse = response.data;
+                            console.log(labsResponse);
+                            var lLength = $scope.labsResponse.length;
+                            if(lLength > 0){
+                              $scope.showLabs = true;  
+                            }
+                            for (var i = 0; i < lLength; i++) {
+                              $scope.labProcedures.push({
+                                comments: $scope.labsResponse[i].comments,
+                                longCommonName: $scope.labsResponse[i].longCommonName
+                              });
+                            }
+                  });
 
                   // prescriptions
                   var pLength = $scope.visits[i].prescriptions.length;
@@ -171,8 +190,6 @@
                       renewals: $scope.visits[i].prescriptions[j].renewals
                     });
                   }
-
-
 
                   $scope.three = false;
                   $scope.threeAndUp = false;
@@ -477,7 +494,34 @@
                           </div>
                         </div>
                       </div>
-
+                      
+                      <!-- Labs Panel  -->
+                        <div class="col-md-4">
+                          <div class="panel panel-info">
+                            <div class="panel-heading">
+                              <h4>Lab Procedures</h4>
+                            </div>
+                            <div class="panel-body" ng-show="showLabs">
+                              <div class="row">
+                                <div class="col-md-4">
+                                  <b>Description</b>
+                                </div>
+                                <div class="col-md-4">
+                                  <b>Comments</b>
+                                </div>
+                              </div>
+                              <div class="row" ng-repeat="l in labProcedures">
+                                <div class="col-md-4">
+                                  {{l.code.longCommonName}}
+                                </div>
+                                <div class="col-md-4">
+                                  {{l.comments}}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      
                       <!-- Notes and Error Messages -->
                       <div class="row">
                         <div class="form-group col-md-6">

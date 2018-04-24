@@ -251,26 +251,81 @@ public enum TransactionType {
      * User views their log entries
      */
     VIEW_USER_LOG ( 1301, "Log events viewed", true ),
+
     /**
      * An email is sent to the user on password change
      */
     CREATE_PW_CHANGE_EMAIL ( 1401, "PW Change Email notification sent", true ),
+
     /**
      * An email is sent to the user on appointment request change
      */
     CREATE_APPOINTMENT_REQUEST_EMAIL ( 1402, "AppointmentRequest Email notification sent", true ),
+
     /**
      * An email is sent to the user on lockout
      */
     CREATE_LOCKOUT_EMAIL ( 1403, "Account Lockout Email notification sent", true ),
+
     /**
      * An email would be sent but email address is missing.
      */
     CREATE_MISSING_EMAIL_LOG ( 1404, "Email notification could not be sent due to missing email address", true ),
+
     /**
      * LT or HCP viewed EHR
      */
     VIEW_EHR ( 1515, "Emergency Health Records viewed", true ),
+
+    /**
+     * An admin has added a LOINC code to the system.
+     */
+    LOINC_CREATE ( 1700, "Admin adds new LOINC code.", false ),
+
+    /**
+     * An admin has edited a LOINC code in the system.
+     */
+    LOINC_EDIT ( 1701, "Admin edits LOINC code.", false ),
+
+    /**
+     * An admin deletes a LOINC code from the system.
+     */
+    LOINC_DELETE ( 1702, "Admin deletes LOINC code.", false ),
+
+    /**
+     * An user views a specific LOINC code in the system.
+     */
+    LOINC_VIEW ( 1703, "Admin views a specific LOINC code in the system.", false ),
+
+    /**
+     * An user views all LOINC codes in the system.
+     */
+    LOINC_VIEW_ALL ( 1704, "Admin views LOINC codes in system.", false ),
+
+    /**
+     * An HCP adds a lab procedure to an office visit.
+     */
+    LAB_PROCEDURE_ADD ( 1705, "HCP adds lab procedure to office visit.", true ),
+
+    /**
+     * An HCP removes a lab procedure from an office visit.
+     */
+    LAB_PROCEDURE_REMOVE ( 1706, "HCP removes lab procedure from office visit.", true ),
+
+    /**
+     * A user views lab procedures for an office visit or were assigned to them.
+     */
+    LAB_PROCEDURE_VIEW ( 1707, "User views lab procedures for office visit.", true ),
+
+    /**
+     * A lab tech edits the comments on a lab procedure.
+     */
+    LAB_PROCEDURE_EDIT ( 1708, "Lab tech edits comments on lab procedure.", true ),
+
+    /**
+     * A lab tech reassigns a lab procedure to a new lab tech.
+     */
+    LAB_PROCEDURE_REASSIGN ( 1709, "Lab tech reassigns lab procedure to new lab tech.", true ),
 
     /**
      * Patient declares representative
